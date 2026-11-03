@@ -32,3 +32,9 @@ Setelah project Supabase dipilih: buat migration dengan CLI resmi, verifikasi sc
 Saat membuka dunia, transaksi menambahkan properti geo berisi daftar operasi kosong jika properti itu belum ada dan mencatat schema_migrations versi 2. Revisi lama, ID bangunan, tabel event, dan snapshot historis dipertahankan. Setiap mutasi atlas menulis state, versi chunk terdampak, dan event dalam satu transaksi BEGIN IMMEDIATE. Undo menghapus operasi terakhir dari proyeksi aktif dan mencatat event baru. Redo memakai kembali identitas operasi. Snapshot lama tetap dapat dibaca sebagai generator v1 dengan daftar operasi kosong.
 
 Untuk migrasi PostgreSQL, bekukan tulisan sementara, ambil backup SQLite konsisten, impor snapshot dan event dengan ID asli, buat indeks unik (nation_id, cx, cz) dan (nation_id, revision), lalu bandingkan jumlah objek, ID, koordinat, hash event, serta sampel batas chunk. Jalankan suite adapter dan pengujian konflik sebelum pengalihan transaksi. Pertahankan backup SQLite untuk rollback sebelum menerima tulisan baru. Untuk jangka panjang, materialisasikan checkpoint per chunk dengan delta setelah checkpoint, dan sediakan endpoint subscription per area.
+
+## Operasi chat Phase 4
+
+SQLite menambahkan chat_preferences (mute satu arah, block dua arah), chat_reports (bukti dari pesan yang benar-benar diterima), chat_sanctions (chat atau akun hingga waktu tertentu), dan moderation_audit. Penyelesaian laporan, pemberian sanksi, pencabutan sesi akun dan pencatatan audit berjalan dalam satu transaksi. Ekspor staging PostgreSQL menyertakan empat tabel, menggunakan RLS default-deny dan memilih bukti serta audit yang masih dalam retensi. Tidak ada tabel riwayat percakapan umum.
+
+Server membersihkan bukti setelah 30 hari dan metadata audit setelah 90 hari saat startup dan secara berkala selama aktif. Penghapusan baris tidak menghapus salinan yang telah dibuat di backup eksternal; operator harus menerapkan retensi yang sesuai pada backup.

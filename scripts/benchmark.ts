@@ -1,0 +1,10 @@
+﻿import {starterWorld} from '../packages/nation-core/world.ts';
+import {chunks,type Stroke} from '../packages/nation-core/geography.ts';
+import {randomUUID} from 'node:crypto';
+const w=starterWorld();
+w.geo={strokes:Array.from({length:100},(_,i)=>({id:randomUUID(),type:'geo',tool:'island',island:'island-001',name:'Benchmark',x:(i+1)*96,z:0,radius:24,strength:3,biome:'grass',level:1,parent:'nation-001'} satisfies Stroke))};
+w.objects=Array.from({length:4000},(_,i)=>({...w.objects[i%w.objects.length],id:randomUUID(),x:Math.floor(i/40)*96+i%8,z:i%5}));
+const payload=JSON.stringify(w),start=performance.now(),heap=process.memoryUsage().heapUsed;
+const state=JSON.parse(payload);
+console.log({chunks:chunks(state.geo).size,objects:state.objects.length,bytes:Buffer.byteLength(payload),parseAndIndexMs:performance.now()-start,heapDelta:process.memoryUsage().heapUsed-heap});
+export {w};

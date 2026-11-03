@@ -3,15 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev apps/web --hostname 0.0.0.0",
+    "dev": "node scripts/serve.mjs dev",
     "build": "next build apps/web",
-    "start": "next start apps/web --hostname 0.0.0.0",
+    "start": "node scripts/serve.mjs start",
     "test": "node --experimental-strip-types --test --test-isolation=none tests/*.test.ts",
-    "typecheck": "tsc --noEmit -p apps/web/tsconfig.json"
+    "typecheck": "tsc --noEmit -p apps/web/tsconfig.json",
+    "multiplayer": "node apps/multiplayer-server/server.mjs"
   },
   "dependencies": {
+    "@colyseus/core": "^0.16.26",
+    "@colyseus/ws-transport": "^0.16.5",
     "@react-three/drei": "^10.7.0",
     "@react-three/fiber": "^9.4.0",
+    "colyseus.js": "^0.16.22",
     "next": "^16.0.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -19,6 +23,7 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.15",
     "@types/node": "^24.0.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",

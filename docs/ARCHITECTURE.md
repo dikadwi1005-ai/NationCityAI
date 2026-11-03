@@ -49,3 +49,7 @@ Generator awal tetap memakai koordinat global dan rumus Phase 1. Renderer, previ
 Indeks spasial membagi operasi menurut chunk 16 × 16. Mesh yang berada dalam frustum kamera dimuat dan dilepas saat navigasi. Zoom menentukan jarak sampel 1, 2 atau 4 meter. Vegetasi biome hutan digabung ke buffer terrain. Kamera nasional dan kamera lokal menampilkan dunia otoritatif yang sama.
 
 Batas wilayah dasar berbentuk lingkaran. Server memeriksa tingkat, cakupan induk, konflik sesama anak dan cakupan anak saat mengubah batas. Identitas negara menjadi akar. Region administratif baru tersimpan terpisah dari region warisan pada objek Phase 1. Resolusi alamat warga dan penetapan region bangunan lama membutuhkan kebijakan eksplisit pada fase berikutnya.
+
+## Routing chat Phase 4
+
+LocalChat berada di setiap room negara. Router menerima isi dan UUID permintaan, memverifikasi sesi, menguji posisi aktual dengan indeks Spatial, dan mengirim frame per penerima yang lolos. Perpindahan pulau mengakhiri konteks percakapan sebelumnya. Batas administratif pada satu pulau tidak memisahkan warga yang berdekatan. UI menerima perubahan daftar sekitar secara terpisah dari pesan. Moderasi memakai cookie admin web yang sama dengan editor dan bukti terikat penerimaan di server.

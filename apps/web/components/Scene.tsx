@@ -37,11 +37,12 @@ function Terrain({geo}:{geo:Geo}){
 }
 function Camera({action}:{action:CameraAction}){const ref=useRef<ComponentRef<typeof OrbitControls>>(null);useEffect(()=>{const c=ref.current;if(!c)return;const camera=c.object as THREE.OrthographicCamera;
  if(action.kind==='focus'){const x=action.x??0,z=action.z??0;c.target.set(x,0,z);const offset=Math.max(48,action.span??0);camera.far=Math.max(500,offset*5);camera.position.set(x+offset,offset,z+offset);camera.zoom=action.span?Math.min(10,Math.min(camera.right-camera.left,camera.top-camera.bottom)/(action.span*1.7)):10;}
+ if(action.kind==='follow')camera.zoom=26;
  if(action.kind==='home'){camera.far=500;c.target.set(0,0,0);camera.position.set(48,48,48);camera.zoom=10;}
  if(action.kind==='in')camera.zoom=Math.min(30,camera.zoom*1.25);
  if(action.kind==='out')camera.zoom=Math.max(.0001,camera.zoom/1.25);
  camera.updateProjectionMatrix();c.update();},[action]);return <OrbitControls ref={ref} makeDefault minZoom={.0001} maxZoom={30} minPolarAngle={Math.PI/6} maxPolarAngle={Math.PI/2.6} enableDamping mouseButtons={{LEFT:THREE.MOUSE.PAN,MIDDLE:THREE.MOUSE.DOLLY,RIGHT:THREE.MOUSE.ROTATE}}/>}
-export default function Scene({brush,world,draft,selected,grid,low,action,onGround,onSelect,onHover}:{brush?:{x:number;z:number;radius:number};world:World;draft:WorldObject|null;selected:string|null;grid:boolean;low:boolean;action:CameraAction;onGround:(x:number,z:number)=>void;onSelect:(id:string)=>void;onHover:(x:number,z:number)=>void}){
+export default function Scene({children,brush,world,draft,selected,grid,low,action,onGround,onSelect,onHover}:{children?:React.ReactNode;brush?:{x:number;z:number;radius:number};world:World;draft:WorldObject|null;selected:string|null;grid:boolean;low:boolean;action:CameraAction;onGround:(x:number,z:number)=>void;onSelect:(id:string)=>void;onHover:(x:number,z:number)=>void}){
  const [webgl,setWebgl]=useState(true);useEffect(()=>{const canvas=document.createElement('canvas');if(!canvas.getContext('webgl2'))setWebgl(false)},[]);
  if(!webgl)return <div className="loading">WebGL 2 tidak tersedia. Aktifkan akselerasi grafis pada browser.</div>;
  const geo=world.geo??emptyGeo;
@@ -55,6 +56,6 @@ export default function Scene({brush,world,draft,selected,grid,low,action,onGrou
  {world.objects.map(o=><group key={o.id} position={[o.x,sample(geo,o.x,o.z).h,o.z]} rotation={[0,o.rotation*Math.PI/2,0]} onClick={e=>{if(e.delta>5)return;e.stopPropagation();if(draft)onGround(o.x,o.z);else onSelect(o.id)}}><Model asset={o.asset}/>{selected===o.id&&<mesh rotation={[-Math.PI/2,0,0]} position={[0,.12,0]}><ringGeometry args={[1.8,2,40]}/><meshBasicMaterial color="#fff3bf" side={THREE.DoubleSide}/></mesh>}</group>)}
  <mesh rotation={[-Math.PI/2,0,0]} position={[0,.85,0]} onPointerMove={ground} onClick={e=>{if(e.delta>5)return;e.stopPropagation();onGround(Math.round(e.point.x/2)*2,Math.round(e.point.z/2)*2)}}><planeGeometry args={[2100000,2100000]}/><meshBasicMaterial transparent opacity={0} depthWrite={false}/></mesh>
  {draft&&<group position={[draft.x,sample(geo,draft.x,draft.z).h+.12,draft.z]}><mesh rotation={[-Math.PI/2,0,0]}><planeGeometry args={[footprint(draft).w,footprint(draft).d]}/><meshBasicMaterial color={placementError(draft,world.objects,geo)?'#ea6b65':'#f8e9a6'} transparent opacity={.75} side={THREE.DoubleSide} depthWrite={false}/></mesh><group rotation={[0,draft.rotation*Math.PI/2,0]}><Model asset={draft.asset}/></group></group>}
- <Camera action={action}/>
+ <Camera action={action}/>{children}
  </Canvas>
 }

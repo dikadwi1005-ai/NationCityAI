@@ -1,7 +1,7 @@
-import type { NextConfig } from 'next';
+
 import { resolve } from 'node:path';
 
-const config: NextConfig = {
+const config = {
   turbopack: { root: resolve(import.meta.dirname, '../..') },
   serverExternalPackages: ['node:sqlite'],
   poweredByHeader: false,

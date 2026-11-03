@@ -1,4 +1,4 @@
-# AI Nation Builder — Phase 1
+# AI Nation Builder ? Phase 4
 
 Phase 1 terverifikasi pada Windows, Node 26.13.0 dan Microsoft Edge. Klik pada viewport menempatkan rumah pada X 18, Z 12. Server mengakui penyimpanan. Setelah refresh, pengujian mencocokkan rekaman lengkap dan memilih mesh rumah dengan ID yang sama.
 
@@ -53,3 +53,17 @@ Pada Windows, jalankan `.\scripts\start-windows.ps1` dari folder proyek. Skrip m
 ## Menjalankan atlas Phase 2
 
 Masuk sebagai admin, klik **Buka atlas negara**, pilih **Buat pulau** dan masukkan nama. Pusat awal X 72, Z 0 menyediakan lokasi di laut pada dunia baru. Klik **Pratinjau terrain** untuk melihat hasil di viewport, lalu **Simpan dunia** untuk commit. Pilih pulau pada daftar untuk memindahkan kamera. Brush dapat dipusatkan dengan klik pada peta atau input koordinat. Gunakan **Ikhtisar nasional** untuk membingkai seluruh negara. Pengunjung dapat membuka atlas tanpa hak simpan.
+
+## Warga dan multiplayer
+
+Jalankan npm ci, npm run build dan npm start dari root proyek, atau gunakan skrip Windows di atas. npm run dev juga meluncurkan web dan multiplayer bersama. Buka http://localhost:3000/warga, daftar, simpan karakter, lalu pilih **Jelajahi Negara**. Untuk dua akun di satu komputer gunakan dua profil browser. Pulau yang dapat dikunjungi berasal dari atlas tersimpan. Bila Sagara belum ada, buat pulau tersebut lewat editor admin.
+
+Kedua layanan berbagi WORLD_DATA_DIR absolut. Web memakai port 3000 dan multiplayer memakai 127.0.0.1:2567 secara default. Untuk reverse proxy, arahkan HTTP matchmaking serta WebSocket ke layanan Colyseus dan tetapkan MULTIPLAYER_PUBLIC_URL sesuai origin ws/wss yang dapat dijangkau browser. MULTIPLAYER_HOST dan MULTIPLAYER_PORT mengatur alamat dengar. Lihat [laporan Phase 3](docs/PHASE_3_REPORT.md) untuk bukti browser, benchmark, migrasi PostgreSQL dan batasan.
+
+## Chat lokal dan moderasi
+
+Jalankan web dan multiplayer dengan perintah yang sama seperti Phase 3. Masuk ke **Jelajahi Negara** dengan dua akun berbeda. Ketika kedua avatar berada dalam 120 meter virtual pada pulau yang sama, panel **Obrolan lokal** terbuka. Panel menampilkan warga dalam jangkauan chat; daftar avatar di samping memakai radius visibilitas tersendiri. Tidak ada riwayat percakapan saat masuk atau kembali.
+
+Gunakan **Keamanan percakapan** untuk membisukan, memblokir, memulihkan pilihan, atau memilih alasan laporan. Klik **Laporkan pesan** pada pesan yang diterima. Moderator masuk melalui **Masuk admin** di peta lalu memilih **Moderasi**. Halaman ini menampilkan laporan, sanksi sementara dan riwayat tindakan. Radius server dapat diatur melalui CHAT_RADIUS dan VISIBILITY_RADIUS di lingkungan kedua layanan.
+
+Setelah build, jalankan `node tests/chat-browser.mjs` untuk uji tiga akun di Edge. Lihat [laporan Phase 4](docs/PHASE_4_REPORT.md) untuk cakupan, retensi bukti, performa dan batasan.

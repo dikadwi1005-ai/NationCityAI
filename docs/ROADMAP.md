@@ -13,3 +13,7 @@ Master specification tetap sumber kebenaran. Tidak ada fitur utama dihapus; semu
 
 Cross-cutting: domain commands, stable identifiers, versioned assets/world snapshots, migration tests, strict server authorization, localization Bahasa Indonesia dan future English, documentation setiap keputusan.
 
+
+Status Phase 3: lulus penerimaan lokal dua akun. Lihat [laporan Phase 3](PHASE_3_REPORT.md).
+
+Phase 4 tersedia untuk pengujian lokal. Bukti penerimaan tiga akun serta batas operasional ada di [laporan Phase 4](PHASE_4_REPORT.md). Phase 5 masih dalam roadmap.

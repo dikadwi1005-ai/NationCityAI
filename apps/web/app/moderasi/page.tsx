@@ -1,0 +1,9 @@
+﻿'use client';
+import {useEffect,useState} from 'react';
+type Queue={reports:{id:string;reason:string;evidence:string;created:number}[];audit:{action:string;actor:string;report:string;created:number}[]};
+export default function Moderasi(){const [data,setData]=useState<Queue|null>(null),[error,setError]=useState('');
+ async function load(){try{const r=await fetch('/api/moderation',{cache:'no-store'});const b=await r.json();if(!r.ok)throw Error(b.error);setData(b);setError('')}catch(e){setData(null);setError(String(e))}}
+ useEffect(()=>{void load()},[]);
+ async function act(id:string,action:string){try{const r=await fetch('/api/moderation',{method:'POST',body:JSON.stringify({id,action})});if(!r.ok)throw Error((await r.json()).error);await load()}catch(e){setError(String(e))}}
+ return <main className="citizen"><header><a href="/">Peta Negara</a></header><section className="citizen-card"><h1>Moderasi komunitas</h1><p>Bukti laporan tersedia 30 hari. Log tindakan tersimpan 90 hari.</p><button onClick={load}>Muat laporan</button>{error&&<p role="alert">{error}</p>}{data&&<><h2>Laporan terbuka ({data.reports.length})</h2>{data.reports.map(r=>{const m=JSON.parse(r.evidence);return <article key={r.id}><strong>{r.reason} · {m.name}</strong><blockquote>{m.text}</blockquote><small>{new Date(r.created).toLocaleString('id-ID')}</small>{[['dismiss','Tutup laporan'],['chat','Batasi chat 1 jam'],['account','Tangguhkan akun 24 jam']].map(([v,t])=><button key={v} onClick={()=>act(r.id,v)}>{t}</button>)}</article>})}<h2>Riwayat tindakan</h2>{data.audit.map(a=><p key={a.report}>{a.actor} · {a.action} · {new Date(a.created).toLocaleString('id-ID')}</p>)}</>}</section></main>}
+

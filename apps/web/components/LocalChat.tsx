@@ -1,0 +1,11 @@
+﻿'use client';
+import {useState} from 'react';
+import {reasons,type Neighbor,type LocalMessage,type Preference} from '../../../packages/chat/policy';
+type Props={self:string;peers:Neighbor[];messages:LocalMessage[];prefs:Preference[];notice:string;send:(type:string,data:unknown)=>void};
+export default function LocalChat({self,peers,messages,prefs,notice,send}:Props){
+ const [text,setText]=useState(''),[mini,setMini]=useState(false),[reason,setReason]=useState<string>(reasons[0]);
+ return <section className="spatial-chat" aria-label="Percakapan lokal"><div><strong>{peers.length?'Obrolan lokal · '+peers.length+' warga sekitar':'Tidak ada warga di sekitar'}</strong>{!!peers.length&&<button onClick={()=>setMini(!mini)}>{mini?'Buka chat':'Ciutkan'}</button>}</div>
+ {!!peers.length&&!mini&&<><div role="log" className="chat-lines">{messages.map(m=><article key={m.id}><span aria-hidden style={{color:m.color}}>●</span> <b>{m.name}</b> <time>{new Date(m.time).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}</time><p>{m.text}</p>{m.sender!==self&&<button onClick={()=>send('chatReport',{id:m.id,reason})}>Laporkan pesan</button>}</article>)}</div><form onSubmit={e=>{e.preventDefault();if(text.trim()){send('chatSend',{requestId:crypto.randomUUID(),text});setText('')}}}><input aria-label="Pesan lokal" maxLength={280} value={text} placeholder="Pesan ke warga sekitar" onChange={e=>setText(e.target.value)}/><button>Kirim</button></form><small>Hormati warga lain. Simpan kontak, alamat, dan data pribadi untuk diri sendiri.</small></>}
+ {(peers.length>0||prefs.length>0)&&<details><summary>Keamanan percakapan</summary><label>Alasan laporan<select value={reason} onChange={e=>setReason(e.target.value)}>{reasons.map(r=><option key={r}>{r}</option>)}</select></label>{peers.map(q=><div key={q.id}>{q.name} <button onClick={()=>send('chatPreference',{target:q.id,kind:'mute'})}>Bisukan</button><button onClick={()=>send('chatPreference',{target:q.id,kind:'block'})}>Blokir</button></div>)}{prefs.map(q=><button key={q.target} onClick={()=>send('chatPreference',{target:q.target,kind:'clear'})}>Pulihkan {q.kind==='block'?'blokir':'suara'} · {q.target.slice(0,8)}</button>)}</details>}
+ {notice&&<p role="status">{notice}</p>}</section>
+}

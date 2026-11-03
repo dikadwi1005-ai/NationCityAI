@@ -1,0 +1,23 @@
+﻿import {PGlite} from '@electric-sql/pglite';
+import assert from 'node:assert/strict';
+import {mkdtemp,rm} from 'node:fs/promises';
+import {join} from 'node:path';
+import {tmpdir} from 'node:os';
+import {randomUUID} from 'node:crypto';
+import {WorldStore} from '../packages/persistence/store.ts';
+import {exportSql} from '../scripts/postgres-export.mjs';
+const dir=await mkdtemp(join(tmpdir(),'nation-pg-'));process.env.WORLD_DATA_DIR=dir;
+const {authenticate,identify,saveLook,database}=await import('../packages/citizens/db.ts');
+const {defaults}=await import('../packages/citizens/model.ts');
+const id=identify(await authenticate('migration_test','test-password-123',true));saveLook(id,defaults);
+const file=join(dir,'nation.sqlite'),source=new WorldStore(file),pg=new PGlite();
+try{const o={...source.read().objects.find(o=>o.asset==='house'),id:randomUUID(),x:18,z:12};
+ const w=source.mutate({requestId:randomUUID(),expectedRevision:0,command:{type:'place',object:o}}),sql=exportSql(file);
+ await pg.exec(sql.replace(/COMMIT;$/,'ROLLBACK;'));assert.equal((await pg.query("SELECT to_regnamespace('nation_import') AS ns")).rows[0].ns,null);
+ await pg.exec(sql);assert.deepEqual((await pg.query('SELECT state FROM nation_import.worlds')).rows[0].state,w);
+ assert.deepEqual((await pg.query('SELECT snapshot FROM nation_import.world_events')).rows[0].snapshot,w);
+ assert.equal((await pg.query('SELECT id FROM nation_import.citizens')).rows[0].id,id);
+ await pg.exec('CREATE ROLE reader; GRANT USAGE ON SCHEMA nation_import TO reader; GRANT SELECT ON ALL TABLES IN SCHEMA nation_import TO reader; SET ROLE reader;');
+ assert.equal((await pg.query('SELECT * FROM nation_import.citizens')).rows.length,0);assert.equal((await pg.query('SELECT * FROM nation_import.appearances')).rows.length,0);
+ assert.deepEqual(source.read(),w);console.log('PASS SQLite to PostgreSQL staging import, rollback, world/appearance IDs, legacy event and deny-by-default RLS.');
+}finally{source.close();database().close();await pg.close();await rm(dir,{recursive:true,force:true})}
