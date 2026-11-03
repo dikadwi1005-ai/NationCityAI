@@ -4,3 +4,17 @@ node_modules/
 !.env.example
 data/
 *.tsbuildinfo
+
+# Private state and recovery artifacts
+*.sqlite*
+*.enc
+*.key
+*.partial
+*-recovery/
+.nation-private/
+recovery.log
+*.dump
+
+*.recovery.key
+*.sql.gz
+*.private.sql

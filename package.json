@@ -11,6 +11,7 @@
     "multiplayer": "node apps/multiplayer-server/server.mjs"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1161.0",
     "@colyseus/core": "^0.16.26",
     "@colyseus/ws-transport": "^0.16.5",
     "@react-three/drei": "^10.7.0",

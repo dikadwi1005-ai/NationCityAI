@@ -17,3 +17,5 @@ Cross-cutting: domain commands, stable identifiers, versioned assets/world snaps
 Status Phase 3: lulus penerimaan lokal dua akun. Lihat [laporan Phase 3](PHASE_3_REPORT.md).
 
 Phase 4 tersedia untuk pengujian lokal. Bukti penerimaan tiga akun serta batas operasional ada di [laporan Phase 4](PHASE_4_REPORT.md). Phase 5 masih dalam roadmap.
+
+Phase 5 lulus penerimaan lokal pemilu, penetapan jabatan dan pemulihan database uji. Lihat [laporan Phase 5](PHASE_5_REPORT.md). Kesiapan produksi memerlukan latihan restore off-site nyata dan uji konkurensi di lingkungan target. Phase 6 menggunakan antrean proposal APPROVED.

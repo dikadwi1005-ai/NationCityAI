@@ -27,7 +27,10 @@ export function identify(token:string){return database().prepare('SELECT id FROM
 export function logout(token:string){database().prepare('DELETE FROM citizen_sessions WHERE token=?').run(digest(token))}
 export function profile(id:string):Profile{const r=database().prepare('SELECT id,joined,home,location FROM citizens WHERE id=?').get(id)!;
  const a=database().prepare('SELECT version,look FROM appearances WHERE id=? ORDER BY version DESC LIMIT 1').get(id);
- return {id,joined:String(r.joined),home:String(r.home),location:r.location?JSON.parse(String(r.location)):null,version:Number(a?.version??0),look:a?JSON.parse(String(a.look)):null}}
+ const gov=database().prepare("SELECT 1 FROM sqlite_master WHERE name='office_terms'").get();
+ const title=gov?database().prepare('SELECT title FROM offices JOIN office_terms ON office_terms.office=offices.id WHERE citizen=? AND archived IS NULL AND ends>?').get(id,Date.now())?.title:undefined;
+ const residence=gov?database().prepare('SELECT name FROM gov_regions JOIN residency ON residency.region=gov_regions.id WHERE citizen=? AND ended IS NULL').get(id)?.name:undefined;
+ return {id,title:title?String(title):undefined,residence:residence?String(residence):undefined,joined:String(r.joined),home:String(r.home),location:r.location?JSON.parse(String(r.location)):null,version:Number(a?.version??0),look:a?JSON.parse(String(a.look)):null}}
 export function saveLook(id:string,raw:unknown){const look=appearance(raw);database().prepare('INSERT INTO appearances SELECT ?,COALESCE(MAX(version),0)+1,? FROM appearances WHERE id=?').run(id,JSON.stringify(look),id)}
 export function savePosition(id:string,p:Position){database().prepare('UPDATE citizens SET location=? WHERE id=?').run(JSON.stringify({x:p.x,z:p.z,island:p.island}),id)}
 export function ticket(token:string){const value=randomBytes(32).toString('hex'),db=database();db.prepare('DELETE FROM play_tickets WHERE expires<=?').run(Date.now());db.prepare('INSERT INTO play_tickets VALUES(?,?,?)').run(digest(value),digest(token),Date.now()+30000);return value}

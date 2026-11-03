@@ -1,4 +1,4 @@
-# AI Nation Builder ? Phase 4
+# AI Nation Builder ? Phase 5
 
 Phase 1 terverifikasi pada Windows, Node 26.13.0 dan Microsoft Edge. Klik pada viewport menempatkan rumah pada X 18, Z 12. Server mengakui penyimpanan. Setelah refresh, pengujian mencocokkan rekaman lengkap dan memilih mesh rumah dengan ID yang sama.
 
@@ -67,3 +67,11 @@ Jalankan web dan multiplayer dengan perintah yang sama seperti Phase 3. Masuk ke
 Gunakan **Keamanan percakapan** untuk membisukan, memblokir, memulihkan pilihan, atau memilih alasan laporan. Klik **Laporkan pesan** pada pesan yang diterima. Moderator masuk melalui **Masuk admin** di peta lalu memilih **Moderasi**. Halaman ini menampilkan laporan, sanksi sementara dan riwayat tindakan. Radius server dapat diatur melalui CHAT_RADIUS dan VISIBILITY_RADIUS di lingkungan kedua layanan.
 
 Setelah build, jalankan `node tests/chat-browser.mjs` untuk uji tiga akun di Edge. Lihat [laporan Phase 4](docs/PHASE_4_REPORT.md) untuk cakupan, retensi bukti, performa dan batasan.
+
+## Pemerintahan, pemilu dan backup privat
+
+Jalankan `npm ci`, `npm run build`, lalu `npm start` dari root proyek. Pilih **Pemerintahan** dari peta atau profil warga. Warga memakai akun dan karakter yang sudah tersimpan. Daftarkan domisili sebelum pencalonan dibuka. Admin dapat memilih wilayah atlas, membuat jabatan, menentukan jadwal, meninjau kandidat, membuka voting dan mengesahkan hasil. Portal tersedia di /pemerintahan.
+
+Launcher menyalakan web, multiplayer dan worker backup. Tentukan WORLD_DATA_DIR absolut yang sama saat menjalankan CLI secara terpisah. Halaman /pemulihan hanya untuk admin. Uji restore ke file staging sebelum mengandalkan arsip. Remote memerlukan konfigurasi S3 privat dan kunci terpisah.
+
+[Laporan Phase 5](docs/PHASE_5_REPORT.md) ? [Prosedur backup dan recovery](docs/BACKUP_AND_RECOVERY.md) ? [Hasil uji restore](docs/BACKUP_TEST_REPORT.md)

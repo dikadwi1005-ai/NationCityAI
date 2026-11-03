@@ -11,7 +11,7 @@ export function Chibi({look,motion='idle'}:{look:Look;motion?:string}){
  if(!body.current||!left.current||!right.current||!legA.current||!legB.current)return;
  body.current.position.y=(motion==='celebrate'?Math.abs(Math.sin(t*7))*.25:Math.sin(t*(walk?10:2))*.025);
  left.current.rotation.set(-stride,0,motion==='celebrate'?-2.3:-.13);
- right.current.rotation.set(motion==='point'?-1.5:stride,0,motion==='wave'?2.2+.35*Math.sin(t*10):motion==='celebrate'?2.3:.13);
+ right.current.rotation.set(motion==='speech'?-.8+.25*Math.sin(t*5):motion==='ceremony'?-1.1:motion==='announcement'?-1.2+.4*Math.sin(t*3):motion==='point'?-1.5:stride,0,motion==='wave'?2.2+.35*Math.sin(t*10):motion==='celebrate'?2.3:.13);
  legA.current.rotation.x=stride;legB.current.rotation.x=-stride});
  const skin='#e7aa83',dark='#283532';
  return <group ref={body}>

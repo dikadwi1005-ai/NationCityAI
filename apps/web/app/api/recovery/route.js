@@ -1,0 +1,8 @@
+﻿import {authorized,sameOrigin} from '../security';
+import {config,history} from '../../../../../packages/recovery/local.mjs';
+import {execFile} from 'node:child_process';import {promisify} from 'node:util';import {resolve} from 'node:path';import {existsSync,readFileSync} from 'node:fs';
+const exec=promisify(execFile),json=(v,status=200)=>Response.json(v,{status,headers:{'cache-control':'no-store'}});
+let busy=false;export const dynamic='force-dynamic';
+export function GET(r){if(!authorized(r))return json({error:'Akses administrator diperlukan.'},403);const {dir}=config();const auditFile=resolve(dir,'recovery.log');const last=existsSync(auditFile)?readFileSync(auditFile,'utf8').trim().split('\n').slice(-20).reverse().map(x=>{const {action,ok,at}=JSON.parse(x);return {action,ok,at}}):[];return json({last,location:'Direktori privat server',remote:process.env.BACKUP_S3_BUCKET?'dikonfigurasi':'belum aktif',rows:history(dir).slice(0,100).map(({id,reason,at,bytes,schema,integrity,remote})=>({id,reason,at,bytes,schema,integrity,remote}))})}
+export async function POST(r){if(!authorized(r)||!sameOrigin(r))return json({error:'Akses ditolak.'},403);if(busy)return json({error:'Backup sedang berjalan.'},409);busy=true;try{const script=['scripts/recovery.mjs','../../scripts/recovery.mjs'].map(p=>resolve(/*turbopackIgnore: true*/ p)).find(p=>existsSync(/*turbopackIgnore: true*/ p));if(!script)throw Error();await exec(process.execPath,[script,'backup'],{env:{...process.env,WORLD_DATA_DIR:process.env.WORLD_DATA_DIR||resolve('data')}});return GET(r)}catch{return json({error:'Backup atau verifikasi remote gagal. Periksa riwayat dan log server.'},503)}finally{busy=false}}
+
