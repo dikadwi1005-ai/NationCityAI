@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';import{spawn}from'node:child_process';import{once}from'node:events';import{mkdtemp,mkdir,rm,writeFile}from'node:fs/promises';import{join}from'node:path';import{tmpdir}from'node:os';import{randomUUID}from'node:crypto';import{chromium}from'playwright-core';
+const dir=await mkdtemp(join(tmpdir(),'nation-pass3-')),out='docs/phase-5c/pass3';
+const server=spawn(process.execPath,['node_modules/next/dist/bin/next','start','apps/web','-p','0','-H','127.0.0.1'],{env:{...process.env,WORLD_DATA_DIR:dir,ADMIN_KEY:randomUUID()},stdio:['ignore','pipe','inherit']}),exited=once(server,'exit');let output='',origin='',browser;
+for await(const c of server.stdout){output+=c;origin=output.match(/http:\/\/127\.0\.0\.1:\d+/)?.[0]??'';if(origin&&output.includes('Ready'))break}
+try{
+ await mkdir(out,{recursive:true});browser=await chromium.launch({channel:'msedge',args:['--enable-unsafe-swiftshader']});const p=await browser.newPage({viewport:{width:1600,height:1000}}),errors=[],gpu=[];
+ p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if(m.type()==='error'&&/shader|THREE|WebGL|geometry/i.test(m.text()))gpu.push(m.text())});await p.goto(origin+'/demo-city');await p.waitForFunction(()=>window.__nationMetrics&&window.__nationSimulation?.npc.length);await p.waitForTimeout(1500);
+ const stages=[];await p.getByRole('button',{name:'Pengaturan',exact:true}).click();
+ for(const q of ['low','medium','high']){await p.getByLabel('Kualitas visual',{exact:true}).selectOption(q);await p.waitForTimeout(2200);const samples=[];for(let i=0;i<3;i++){await p.waitForTimeout(600);samples.push(await p.evaluate(()=>window.__nationMetrics))}stages.push({quality:q,samples});await p.getByRole('button',{name:'Tutup panel'}).click();await p.screenshot({path:out+'/stage-a-'+q+'.png'});await p.getByRole('button',{name:'Pengaturan',exact:true}).click()}
+ assert.ok(stages[2].samples[2].triangles>stages[0].samples[2].triangles);assert.equal(stages[1].samples[2].projection,'perspective');
+ await p.getByLabel('Kualitas visual',{exact:true}).selectOption('medium');await p.waitForTimeout(1500);const warm=await p.evaluate(()=>window.__nationMetrics);
+ for(let i=0;i<2;i++)for(const q of ['low','high','medium']){await p.getByLabel('Kualitas visual',{exact:true}).selectOption(q);await p.waitForTimeout(450)}await p.waitForTimeout(1200);const settled=await p.evaluate(()=>window.__nationMetrics);assert.ok(settled.geometries<=warm.geometries+4);assert.ok(settled.textures<=warm.textures+4);assert.deepEqual(errors,[]);assert.deepEqual(gpu,[]);
+ await writeFile(out+'/stage-a-verification.json',JSON.stringify({at:new Date().toISOString(),browser:browser.version(),stages,warm,settled,errors,gpu},null,2));console.log(JSON.stringify({status:'PASS',stage:'A',errors,gpu,stages:stages.map(s=>({quality:s.quality,...s.samples[2]}))}));
+}finally{await browser?.close();server.kill();await exited;await rm(dir,{recursive:true,force:true})}

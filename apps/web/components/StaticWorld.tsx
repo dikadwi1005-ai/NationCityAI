@@ -3,6 +3,8 @@ import {useLayoutEffect,useMemo,useRef,useState} from 'react';
 import {BufferGeometry,Group,Matrix4,Mesh,type Material} from 'three';
 import {mergeGeometries} from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import type {ThreeEvent} from '@react-three/fiber';
+import {planarUV} from '../../../packages/world-engine/materials';
+import {useQuality} from '../../../packages/world-engine/quality-context';
 import {Model,type RoadConnections} from '../../../packages/world-engine/Models';
 import {sample,emptyGeo} from '../../../packages/nation-core/geography';
 import type {World,WorldObject} from '../../../packages/nation-core/world';
@@ -18,7 +20,7 @@ type Batch={geometry:BufferGeometry;material:Material;ranges:{end:number;id:stri
 /** Shared models compiled into material batches. Triangle spans retain object IDs
  * for picking. Road vertices still conform to the authoritative terrain sampler. */
 export default function StaticWorld({world,pick}:{world:World;pick:(id:string,e:ThreeEvent<MouseEvent>)=>void}){
-  const templates=useRef<Group>(null),[batches,setBatches]=useState<Batch[]>([]);
+  const quality=useQuality();const templates=useRef<Group>(null),[batches,setBatches]=useState<Batch[]>([]);
   const representatives=useMemo(()=>[...new Map(world.objects.map(o=>[keyOf(o,world.objects),o])).entries()],[world]);
   useLayoutEffect(()=>{
     const root=templates.current;if(!root)return;root.updateWorldMatrix(true,true);
@@ -33,7 +35,7 @@ export default function StaticWorld({world,pick}:{world:World;pick:(id:string,e:
         const local=new Matrix4().copy(template.matrixWorld).invert().multiply(child.matrixWorld);
         let geometry=child.geometry.clone().applyMatrix4(transform.clone().multiply(local));
         if(geometry.index){const indexed=geometry;geometry=geometry.toNonIndexed();indexed.dispose()}
-        geometry.deleteAttribute('uv');
+        planarUV(geometry);
         if(o.asset==='road'){
           const positions=geometry.getAttribute('position');
           for(let i=0;i<positions.count;i++)positions.setY(i,positions.getY(i)+sample(world.geo??emptyGeo,positions.getX(i),positions.getZ(i)).h-base);
@@ -51,7 +53,7 @@ export default function StaticWorld({world,pick}:{world:World;pick:(id:string,e:
       if(geometry){geometry.computeBoundingSphere();next.push({geometry,material:group.material,ranges:group.ranges})}
     }
     setBatches(next);return()=>next.forEach(b=>b.geometry.dispose());
-  },[world,representatives]);
+  },[world,representatives,quality]);
   return <>
     <group ref={templates} visible={false}>{representatives.map(([key,o])=><group name={key} key={key}><Model asset={o.asset} variant={variant(o)} connections={o.asset==='road'?roadConnections(o,world.objects):undefined}/></group>)}</group>
     {batches.map(b=><mesh key={b.material.uuid} geometry={b.geometry} material={b.material} castShadow receiveShadow dispose={null} onClick={e=>{

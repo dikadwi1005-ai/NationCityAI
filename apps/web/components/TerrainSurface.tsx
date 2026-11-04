@@ -1,8 +1,10 @@
 'use client';
 import {useEffect,useMemo,useRef,useState} from 'react';
-import {useFrame} from '@react-three/fiber';
+import {useFrame,useThree} from '@react-three/fiber';
 import * as T from 'three';
 import {chunks,sample,type Geo} from '../../../packages/nation-core/geography';
+import {useQuality} from '../../../packages/world-engine/quality-context';
+import {QUALITY} from '../../../packages/world-engine/visual-config';
 import {visualHeight} from '../../../packages/world-engine/visual-terrain';
 
 function Chunk({cx,cz,geo,step}:{cx:number;cz:number;geo:Geo;step:number}){
@@ -27,12 +29,12 @@ function Chunk({cx,cz,geo,step}:{cx:number;cz:number;geo:Geo;step:number}){
   return <mesh geometry={geometry} receiveShadow><meshStandardMaterial vertexColors roughness={1}/></mesh>;
 }
 export default function TerrainSurface({geo}:{geo:Geo}){
-  const [visible,setVisible]=useState<string[]>([]),[step,setStep]=useState(.5);
+  const quality=useQuality();const {size,controls}=useThree();const [visible,setVisible]=useState<string[]>([]),[step,setStep]=useState(.5);
   const matrix=useMemo(()=>new T.Matrix4(),[]),frustum=useMemo(()=>new T.Frustum(),[]),sphere=useMemo(()=>new T.Sphere(new T.Vector3(),25),[]);
   const last=useRef(''),tick=useRef(-1);
   useFrame(({camera,clock})=>{
     if(clock.elapsedTime-tick.current<.15)return;tick.current=clock.elapsedTime;
-    const zoom=(camera as T.OrthographicCamera).zoom;setStep(zoom<2?2:zoom<5?1:.5);
+    const distance=camera.position.distanceTo((controls as any)?.target??new T.Vector3());const zoom=(camera as T.PerspectiveCamera).isPerspectiveCamera?size.height/(2*Math.tan((camera as T.PerspectiveCamera).fov*Math.PI/360)*distance):(camera as T.OrthographicCamera).zoom;setStep(zoom<2?2:zoom<5?1:QUALITY[quality].terrainStep);
     frustum.setFromProjectionMatrix(matrix.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse));
     const next=[];for(const k of chunks(geo).keys()){const [cx,cz]=k.split(':').map(Number);sphere.center.set(cx*16+8,1,cz*16+8);if(frustum.intersectsSphere(sphere))next.push(k)}
     const sig=next.join(',');if(sig!==last.current){last.current=sig;setVisible(next)}

@@ -1,4 +1,6 @@
 import {BoxGeometry,IcosahedronGeometry,CylinderGeometry,MeshStandardMaterial,BufferGeometry,Float32BufferAttribute,QuadraticBezierCurve3,Vector3,TubeGeometry} from 'three';
+import {surface,type Surface} from './materials';
+import {useQuality} from './quality-context';
 import type {Asset} from '../nation-core/world';
 
 type V=[number,number,number];
@@ -13,7 +15,7 @@ gable.setAttribute('position',new Float32BufferAttribute(faces.flatMap(f=>f.flat
 const cornerMark=new TubeGeometry(new QuadraticBezierCurve3(new Vector3(0,.089,-.95),new Vector3(0,.089,0),new Vector3(.95,.089,0)),16,.013,3,false);
 const materials=new Map<string,MeshStandardMaterial>();
 function material(color:string){let m=materials.get(color);if(!m){m=new MeshStandardMaterial({color,roughness:.83});materials.set(color,m)}return m}
-export function Box({p=[0,0,0],s,c,r=[0,0,0]}:{p?:V;s:V;c:string;r?:V}){return <mesh position={p} scale={s} rotation={r} geometry={cube} material={material(c)} castShadow receiveShadow dispose={null}/>}
+export function Box({p=[0,0,0],s,c,r=[0,0,0],kind='plaster'}:{p?:V;s:V;c:string;r?:V;kind?:Surface}){const quality=useQuality();return <mesh position={p} scale={s} rotation={r} geometry={cube} material={surface(c,kind,quality)} castShadow receiveShadow dispose={null}/>}
 function Window({x,y,z,w=.35,h=.48}:{x:number;y:number;z:number;w?:number;h?:number}){
  return <><Box p={[x,y,z]} s={[w+.09,h+.09,.07]} c="#e9dec7"/><Box p={[x,y,z+.043]} s={[w,h,.035]} c="#365b63"/><Box p={[x,y,z+.067]} s={[.035,h,.025]} c="#e6d4b1"/><Box p={[x,y-h*.1,z+.07]} s={[w,.025,.025]} c="#e6d4b1"/><Box p={[x,y-h/2-.05,z]} s={[w+.15,.06,.16]} c="#c0b49e"/></>;
 }
