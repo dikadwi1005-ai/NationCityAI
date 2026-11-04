@@ -4,7 +4,7 @@ import type {RoadConnections} from './asset-registry';
 import Residential from './assets/Residential';
 import {Government,Healthcare} from './assets/Civic';
 import CityRoad from './assets/CityRoad';
-import {Tree,Park} from './assets/Environment';
+import {Plant,GardenPark} from './assets/Vegetation';
 export {Box} from './assets/primitives';
 export type {RoadConnections} from './asset-registry';
 export function Model({asset,variant=0,connections,mainRoad=false}:{asset:Asset;variant?:number;connections?:RoadConnections;mainRoad?:boolean}){
@@ -12,6 +12,6 @@ export function Model({asset,variant=0,connections,mainRoad=false}:{asset:Asset;
  if(asset==='hall')return <Government/>;
  if(asset==='clinic')return <Healthcare/>;
  if(asset==='road')return <CityRoad connections={connections} main={mainRoad}/>;
- if(asset==='tree')return <Tree variant={variant}/>;
- return <Park/>;
+ if(asset==='tree')return <Plant variant={variant}/>;
+ return <GardenPark/>;
 }

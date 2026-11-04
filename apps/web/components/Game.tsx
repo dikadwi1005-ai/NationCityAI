@@ -10,7 +10,7 @@ import {REGION_ID,applyCommand,inverseCommand,placementError,type Command,type W
 type History={forward:Command;backward:Command};
 async function json(res:Response){const data=await res.json();if(!res.ok)throw Error(data.error??'Permintaan gagal.');return data}
 export default function Game({demo=false}:{demo?:boolean}){
- const [world,setWorld]=useState<World|null>(null),[admin,setAdmin]=useState(false),[busy,setBusy]=useState(false),[status,setStatus]=useState('Memuat dunia…'),[error,setError]=useState(''),[hover,setHover]=useState({x:4,z:8}),[action,setAction]=useState<CameraAction>(demo?{kind:'focus',serial:0,x:6,z:5,span:44}:{kind:'home',serial:0}),[undo,setUndo]=useState<History[]>([]),[redo,setRedo]=useState<History[]>([]);
+ const [world,setWorld]=useState<World|null>(null),[admin,setAdmin]=useState(false),[busy,setBusy]=useState(false),[status,setStatus]=useState('Memuat dunia…'),[error,setError]=useState(''),[hover,setHover]=useState({x:4,z:8}),[action,setAction]=useState<CameraAction>(demo?{kind:'focus',serial:0,x:14,z:6,span:60}:{kind:'home',serial:0}),[undo,setUndo]=useState<History[]>([]),[redo,setRedo]=useState<History[]>([]);
  const [atlas,setAtlas]=useState(false),[preview,setPreview]=useState<World|null>(null),[brushRadius,setBrushRadius]=useState(12),[point,setPoint]=useState({x:72,z:0});
  const previewId=useRef('');
  useEffect(()=>{previewId.current=crypto.randomUUID()},[]);

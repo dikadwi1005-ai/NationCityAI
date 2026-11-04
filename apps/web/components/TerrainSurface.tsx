@@ -5,9 +5,12 @@ import * as T from 'three';
 import {chunks,sample,type Geo} from '../../../packages/nation-core/geography';
 import {useQuality} from '../../../packages/world-engine/quality-context';
 import {QUALITY} from '../../../packages/world-engine/visual-config';
+import {mergeVertices} from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import {surface,planarUV} from '../../../packages/world-engine/materials';
 import {visualHeight} from '../../../packages/world-engine/visual-terrain';
 
 function Chunk({cx,cz,geo,step}:{cx:number;cz:number;geo:Geo;step:number}){
+  const quality=useQuality();const material=useMemo(()=>{const m=surface('#ffffff','grass',quality).clone();m.vertexColors=true;return m},[quality]);useEffect(()=>()=>material.dispose(),[material]);
   const geometry=useMemo(()=>{
     const g=new T.BufferGeometry(),positions:number[]=[],colors:number[]=[],color=new T.Color();
     const sand=new T.Color('#c6ba91'),grass=new T.Color('#81966a'),rock=new T.Color('#8b9177');
@@ -23,10 +26,10 @@ function Chunk({cx,cz,geo,step}:{cx:number;cz:number;geo:Geo;step:number}){
         positions.push(vx,h,vz);colors.push(color.r,color.g,color.b);
       }
     }
-    g.setAttribute('position',new T.Float32BufferAttribute(positions,3));g.setAttribute('color',new T.Float32BufferAttribute(colors,3));g.computeVertexNormals();return g;
+    g.setAttribute('position',new T.Float32BufferAttribute(positions,3));g.setAttribute('color',new T.Float32BufferAttribute(colors,3));const merged=mergeVertices(g);g.dispose();merged.computeVertexNormals();planarUV(merged);return merged;
   },[cx,cz,geo,step]);
   useEffect(()=>()=>geometry.dispose(),[geometry]);
-  return <mesh geometry={geometry} receiveShadow><meshStandardMaterial vertexColors roughness={1}/></mesh>;
+  return <mesh geometry={geometry} material={material} receiveShadow/>;
 }
 export default function TerrainSurface({geo}:{geo:Geo}){
   const quality=useQuality();const {size,controls}=useThree();const [visible,setVisible]=useState<string[]>([]),[step,setStep]=useState(.5);

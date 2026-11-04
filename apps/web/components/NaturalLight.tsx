@@ -16,8 +16,8 @@ export default function NaturalLight(){
   sky.material.uniforms.turbidity.value=3;sky.material.uniforms.rayleigh.value=1.1;
   sky.material.uniforms.mieCoefficient.value=.003;sky.material.uniforms.sunPosition.value=new Vector3(30,48,20);
   environment.add(sky);const generator=new PMREMGenerator(gl),target=generator.fromScene(environment,.04,1,2000);
-  scene.environment=target.texture;scene.environmentIntensity=.17;generator.dispose();
-  return()=>{scene.environment=null;target.dispose();sky.geometry.dispose();sky.material.dispose()};
+  scene.environment=target.texture;scene.environmentIntensity=.17;environment.remove(sky);sky.scale.setScalar(500);scene.add(sky);generator.dispose();
+  return()=>{scene.environment=null;scene.remove(sky);target.dispose();sky.geometry.dispose();sky.material.dispose()};
  },[gl,scene,quality,preset.shadow]);
  return <><ambientLight intensity={.18}/><hemisphereLight args={['#dceaf2','#4a5d3b',.65]}/><directionalLight position={[30,48,20]} intensity={3} castShadow={!!preset.shadow} shadow-mapSize={[preset.shadow||512,preset.shadow||512]} shadow-camera-left={-65} shadow-camera-right={65} shadow-camera-top={65} shadow-camera-bottom={-65} shadow-camera-far={160} shadow-bias={-.00035} shadow-normalBias={.025}/></>;
 }

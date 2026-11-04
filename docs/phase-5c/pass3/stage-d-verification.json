@@ -1,0 +1,232 @@
+{
+  "at": "2026-11-04T05:29:04.632Z",
+  "browser": "156.0.4314.58",
+  "stages": [
+    {
+      "quality": "low",
+      "samples": [
+        {
+          "fps": 90.00195656400868,
+          "drawCalls": 548,
+          "triangles": 163596,
+          "geometries": 177,
+          "textures": 18,
+          "programs": 22,
+          "materialResources": {
+            "materials": 264,
+            "surfaceSets": 9,
+            "textures": 36
+          },
+          "projection": "perspective",
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 172
+        },
+        {
+          "fps": 90.00195656400884,
+          "drawCalls": 548,
+          "triangles": 163596,
+          "geometries": 177,
+          "textures": 18,
+          "programs": 22,
+          "materialResources": {
+            "materials": 264,
+            "surfaceSets": 9,
+            "textures": 36
+          },
+          "projection": "perspective",
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 172
+        },
+        {
+          "fps": 90.01956947162363,
+          "drawCalls": 548,
+          "triangles": 163596,
+          "geometries": 177,
+          "textures": 18,
+          "programs": 22,
+          "materialResources": {
+            "materials": 264,
+            "surfaceSets": 9,
+            "textures": 36
+          },
+          "projection": "perspective",
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 172
+        }
+      ]
+    },
+    {
+      "quality": "medium",
+      "samples": [
+        {
+          "fps": 89.93157380254594,
+          "drawCalls": 564,
+          "triangles": 348780,
+          "geometries": 192,
+          "textures": 19,
+          "programs": 26,
+          "materialResources": {
+            "materials": 264,
+            "surfaceSets": 9,
+            "textures": 36
+          },
+          "projection": "perspective",
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 187
+        },
+        {
+          "fps": 88.72239747647166,
+          "drawCalls": 564,
+          "triangles": 348780,
+          "geometries": 192,
+          "textures": 19,
+          "programs": 26,
+          "materialResources": {
+            "materials": 264,
+            "surfaceSets": 9,
+            "textures": 36
+          },
+          "projection": "perspective",
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 187
+        },
+        {
+          "fps": 91.37862534723219,
+          "drawCalls": 564,
+          "triangles": 348780,
+          "geometries": 192,
+          "textures": 19,
+          "programs": 26,
+          "materialResources": {
+            "materials": 264,
+            "surfaceSets": 9,
+            "textures": 36
+          },
+          "projection": "perspective",
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 187
+        }
+      ]
+    },
+    {
+      "quality": "high",
+      "samples": [
+        {
+          "fps": 75.57677008739824,
+          "drawCalls": 566,
+          "triangles": 497264,
+          "geometries": 196,
+          "textures": 35,
+          "programs": 28,
+          "materialResources": {
+            "materials": 405,
+            "surfaceSets": 9,
+            "textures": 36
+          },
+          "projection": "perspective",
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 189
+        },
+        {
+          "fps": 71.68458781372578,
+          "drawCalls": 566,
+          "triangles": 497264,
+          "geometries": 196,
+          "textures": 35,
+          "programs": 28,
+          "materialResources": {
+            "materials": 405,
+            "surfaceSets": 9,
+            "textures": 36
+          },
+          "projection": "perspective",
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 189
+        },
+        {
+          "fps": 69.94404476439585,
+          "drawCalls": 566,
+          "triangles": 497264,
+          "geometries": 196,
+          "textures": 35,
+          "programs": 28,
+          "materialResources": {
+            "materials": 405,
+            "surfaceSets": 9,
+            "textures": 36
+          },
+          "projection": "perspective",
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 189
+        }
+      ]
+    }
+  ],
+  "warm": {
+    "fps": 80.88380351118502,
+    "drawCalls": 564,
+    "triangles": 348780,
+    "geometries": 194,
+    "textures": 35,
+    "programs": 28,
+    "materialResources": {
+      "materials": 405,
+      "surfaceSets": 9,
+      "textures": 36
+    },
+    "projection": "perspective",
+    "canvasWidth": 1600,
+    "canvasHeight": 1000,
+    "zoom": 1,
+    "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "meshes": 187
+  },
+  "settled": {
+    "fps": 89.58789567973794,
+    "drawCalls": 564,
+    "triangles": 348780,
+    "geometries": 194,
+    "textures": 35,
+    "programs": 28,
+    "materialResources": {
+      "materials": 405,
+      "surfaceSets": 9,
+      "textures": 36
+    },
+    "projection": "perspective",
+    "canvasWidth": 1600,
+    "canvasHeight": 1000,
+    "zoom": 1,
+    "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "meshes": 187
+  },
+  "errors": [],
+  "gpu": []
+}
