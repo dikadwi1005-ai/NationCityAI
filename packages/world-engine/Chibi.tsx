@@ -7,12 +7,12 @@ type Vec=[number,number,number];
 const sphere=new SphereGeometry(1,12,9),jack=new CylinderGeometry(.30,.37,.67,10),tunic=new CylinderGeometry(.30,.49,.67,10),materials=new Map<string,MeshStandardMaterial>();
 function mat(color:string){if(!materials.has(color))materials.set(color,new MeshStandardMaterial({color,flatShading:true}));return materials.get(color)!}
 function Ball({p,size,color}:{p:Vec;size:Vec;color:string}){return <mesh position={p} scale={size} castShadow geometry={sphere} material={mat(color)} dispose={null}/>}
-export function Chibi({look,motion:baseMotion='idle',motionSource,paused=false}:{look:Look;motion?:string;motionSource?:{current:string};paused?:boolean}){
+export function Chibi({look,motion:baseMotion='idle',motionSource,paused=false,phase=0}:{look:Look;motion?:string;motionSource?:{current:string};paused?:boolean;phase?:number}){
  const body=useRef<Group>(null),left=useRef<Group>(null),right=useRef<Group>(null),legA=useRef<Group>(null),legB=useRef<Group>(null);
  const animTime=useRef(0),lod=useRef(0),position=useRef(new Vector3());
- useFrame(({camera},dt)=>{if(paused)return;animTime.current+=Math.min(dt,.1);lod.current+=dt;body.current?.getWorldPosition(position.current);const far=camera.position.distanceTo(position.current)>75;if(far&&lod.current<.12)return;lod.current=0;const t=animTime.current,motion=motionSource?.current??baseMotion,walk=motion==='walk'||motion==='run',stride=walk?Math.sin(t*(motion==='run'?14:9))*.65:0;
+ useFrame(({camera},dt)=>{if(paused)return;animTime.current+=Math.min(dt,.1);lod.current+=dt;body.current?.getWorldPosition(position.current);const far=camera.position.distanceTo(position.current)>75;if(far&&lod.current<.12)return;lod.current=0;const t=animTime.current+phase,motion=motionSource?.current??baseMotion,walk=motion==='walk'||motion==='run',stride=walk?Math.sin(t*(motion==='run'?14:9))*.65:0;
  if(!body.current||!left.current||!right.current||!legA.current||!legB.current)return;
- body.current.position.y=(motion==='celebrate'?Math.abs(Math.sin(t*7))*.25:Math.sin(t*(walk?10:2))*.025);
+ body.current.position.y=(motion==='celebrate'?Math.abs(Math.sin(t*7))*.25:walk?Math.abs(Math.sin(t*9))*.035:Math.sin(t*2)*.018);
  left.current.rotation.set(-stride,0,motion==='celebrate'?-2.3:-.13);
  right.current.rotation.set(motion==='speech'?-.8+.25*Math.sin(t*5):motion==='ceremony'?-1.1:motion==='announcement'?-1.2+.4*Math.sin(t*3):motion==='point'?-1.5:stride,0,motion==='wave'?2.2+.35*Math.sin(t*10):motion==='celebrate'?2.3:.13);
  legA.current.rotation.x=motion==='sit'?-Math.PI/2:stride;legB.current.rotation.x=motion==='sit'?-Math.PI/2:-stride});

@@ -1,4 +1,4 @@
-import {footprint,type World} from '../nation-core/world.ts';
+import {ASSETS,footprint,type World} from '../nation-core/world.ts';
 import {emptyGeo,sample,islands} from '../nation-core/geography.ts';
 
 // Pure, bounded, client-only simulation. No store, citizen identity, socket or fetch.
@@ -21,16 +21,20 @@ export function clearSegment(world:World,a:Point,b:Point,radius=.28){
 }
 export function buildNetwork(world:World,island='island-001'):Network{
  const geo=world.geo??emptyGeo,center=islands(geo).find(i=>i.id===island)??islands(geo)[0],walk=new Map<string,Node>(),roads=new Map<string,Node>(),park=new Set<string>();
- // 53×53 maximum per active island; large countries never create an unbounded grid.
- const cx=Math.round(center.x),cz=Math.round(center.z),local=world.objects.filter(o=>Math.abs(o.x-cx)<28&&Math.abs(o.z-cz)<28);
- for(let x=cx-26;x<=cx+26;x++)for(let z=cz-26;z<=cz+26;z++){
+ // Fit the developed district, bounded at 77×77. Empty islands retain their center.
+ const district=world.objects.filter(o=>sample(geo,o.x,o.z).island===island);
+ const xs=district.map(o=>o.x),zs=district.map(o=>o.z);
+ const cx=district.length?Math.round((Math.min(...xs)+Math.max(...xs))/2):Math.round(center.x),cz=district.length?Math.round((Math.min(...zs)+Math.max(...zs))/2):Math.round(center.z);
+ const radius=district.length?Math.min(38,Math.max(26,Math.ceil(Math.max(Math.max(...xs)-Math.min(...xs),Math.max(...zs)-Math.min(...zs))/2)+3)):26;
+ const local=district.filter(o=>Math.abs(o.x-cx)<radius+2&&Math.abs(o.z-cz)<radius+2),localRoads=local.filter(o=>o.asset==='road');
+ for(let x=cx-radius;x<=cx+radius;x++)for(let z=cz-radius;z<=cz+radius;z++){
   const px=x+.5,pz=z+.5;if(!traversable(world,px,pz))continue;
-  const near=local.filter(o=>o.asset==='road').reduce((d,o)=>Math.min(d,Math.hypot(px-o.x,pz-o.z)),Infinity),onRoad=local.some(o=>o.asset==='road'&&Math.abs(px-o.x)<1&&Math.abs(pz-o.z)<1);
+  const near=localRoads.reduce((d,o)=>Math.min(d,Math.hypot(px-o.x,pz-o.z)),Infinity),onRoad=localRoads.some(o=>Math.abs(px-o.x)<1&&Math.abs(pz-o.z)<1);
   const id=x+':'+z;walk.set(id,{id,x:px,z:pz,y:sample(geo,px,pz).h,edges:[],cost:onRoad?4:near<2.6?.65:1.2});
  }
  for(const n of walk.values())for(const [dx,dz]of [[1,0],[-1,0],[0,1],[0,-1]]){const id=(Math.floor(n.x)+dx)+':'+(Math.floor(n.z)+dz),to=walk.get(id);if(to&&clearSegment(world,n,to))n.edges.push(id)}
  const goals:string[]=[],seats=new Set<string>();
- for(const o of local.filter(o=>['house','hall','clinic','park'].includes(o.asset))){const f=footprint(o),door={x:o.x,z:o.z+f.d/2+.8},nearest=[...walk.values()].sort((a,b)=>distance(a,door)-distance(b,door))[0];if(nearest&&distance(nearest,door)<3){goals.push(nearest.id);if(o.asset==='park')park.add(nearest.id)}}
+ for(const o of local.filter(o=>['house','hall','clinic','park'].includes(o.asset))){const depth=ASSETS[o.asset].depth/2+.8,angle=o.rotation*Math.PI/2,door={x:o.x+Math.sin(angle)*depth,z:o.z+Math.cos(angle)*depth},nearest=[...walk.values()].sort((a,b)=>distance(a,door)-distance(b,door))[0];if(nearest&&distance(nearest,door)<3){goals.push(nearest.id);if(o.asset==='park')park.add(nearest.id)}}
  for(const o of local.filter(o=>o.asset==='park')){const angle=o.rotation*Math.PI/2,x=o.x+Math.cos(angle)+.9*Math.sin(angle),z=o.z-Math.sin(angle)+.9*Math.cos(angle),id='seat:'+o.id,point={x,z};const near=[...walk.values()].filter(n=>distance(n,point)<1.2&&clearSegment(world,n,point));if(near.length){walk.set(id,{...point,id,y:sample(geo,x,z).h,edges:near.map(n=>n.id),cost:1});for(const n of near)n.edges.push(id);goals.push(id);seats.add(id)}}
  for(const o of local.filter(o=>o.asset==='road')){
   // Require the entire driving envelope to be dry and free of solid objects.
@@ -49,6 +53,17 @@ export function route(nodes:Map<string,Node>,start:string,end:string):string[]{
 }
 export type Walker=Point&{id:number;node:string;path:string[];state:'IDLE'|'WALKING'|'ARRIVING'|'ACTIVITY'|'NEXT_DESTINATION';wait:number;angle:number;gesture:string;visits:number};
 export type Vehicle=Point&{id:number;from:string;to:string;previous:string;progress:number;wait:number;angle:number;distance:number;stopped:boolean;parked:boolean};
+/** Cubic lane transition with its tangent. Geometry and heading use the same
+ * curve; a car no longer snaps to the next cardinal heading at a junction. */
+export function trafficPoint(from:Point,to:Point,previous:Point|undefined,t:number){
+ const dx=(to.x-from.x)/2,dz=(to.z-from.z)/2,ix=previous?(from.x-previous.x)/2:dx,iz=previous?(from.z-previous.z)/2:dz;
+ if(t>=.3||!previous||ix===dx&&iz===dz)return {x:from.x+dx*2*t-dz*.32,z:from.z+dz*2*t+dx*.32,angle:Math.atan2(dx,dz)};
+ const u=t/.3,v=1-u,s={x:from.x-iz*.32,z:from.z+ix*.32},e={x:from.x+dx*.6-dz*.32,z:from.z+dz*.6+dx*.32};
+ const a={x:s.x+ix*.2,z:s.z+iz*.2},b={x:e.x-dx*.2,z:e.z-dz*.2};
+ const x=v*v*v*s.x+3*v*v*u*a.x+3*v*u*u*b.x+u*u*u*e.x,z=v*v*v*s.z+3*v*v*u*a.z+3*v*u*u*b.z+u*u*u*e.z;
+ const tx=3*v*v*(a.x-s.x)+6*v*u*(b.x-a.x)+3*u*u*(e.x-b.x),tz=3*v*v*(a.z-s.z)+6*v*u*(b.z-a.z)+3*u*u*(e.z-b.z);
+ return {x,z,angle:Math.atan2(tx,tz)};
+}
 export class LivingSimulation{
  network:Network;walkers:Walker[]=[];vehicles:Vehicle[]=[];random:()=>number;time=0;turns=0;stops=0;
  constructor(network:Network,npc:number,traffic:number){this.network=network;this.random=random(seedOf(network.island));const goals=network.goals;
@@ -67,11 +82,10 @@ export class LivingSimulation{
    if(d<=step){a.x=target.x;a.z=target.z;a.node=target.id;a.path.shift();if(!a.path.length)a.state='ARRIVING'}else{a.x+=(target.x-a.x)/d*step;a.z+=(target.z-a.z)/d*step}
   }
   for(const a of this.vehicles){a.stopped=false;if(a.wait>0){a.wait-=dt;a.stopped=true;continue}a.parked=false;const from=n.roads.get(a.from)!,to=n.roads.get(a.to)!;const dx=(to.x-from.x)/2,dz=(to.z-from.z)/2,step=(a.id%5===2?.95:1.35)*dt;
-   const t=Math.min(1,a.progress+step/2),prev=n.roads.get(a.previous),blend=Math.min(1,t*4),oldDx=prev?(from.x-prev.x)/2:dx,oldDz=prev?(from.z-prev.z)/2:dz;
-   const x=from.x+dx*2*t-(oldDz+(dz-oldDz)*blend)*.32,z=from.z+dz*2*t+(oldDx+(dx-oldDx)*blend)*.32;
+   const t=Math.min(1,a.progress+step/2),point=trafficPoint(from,to,n.roads.get(a.previous),t),{x,z}=point;
    // Same-lane headway and junction occupancy, independent of update order.
    if(this.vehicles.some(b=>b!==a&&distance({x,z},b)<(Math.cos(b.angle-a.angle)>.5?1.25:.52)&&((b.x-a.x)*dx+(b.z-a.z)*dz)>0)){a.stopped=true;this.stops++;continue}
-   a.progress=t;a.distance+=step;a.x=x;a.z=z;a.angle=Math.atan2(dx,dz);
+   a.progress=t;a.distance+=step;a.x=x;a.z=z;a.angle=point.angle;
    if(t>=1){let choices=to.edges.filter(id=>id!==a.from);if(!choices.length)choices=[a.from];const next=choices[Math.floor(this.random()*choices.length)],b=n.roads.get(next)!,angle=Math.atan2(b.x-to.x,b.z-to.z);if(Math.abs(angle-a.angle)>.1)this.turns++;
     a.previous=a.from;a.from=a.to;a.to=next;a.progress=0;a.wait=to.edges.length>2?.65+this.random()*.6:choices[0]===a.previous?1.4:0;
     // A short curbside service stop; parked state remains explicitly simulation-only.

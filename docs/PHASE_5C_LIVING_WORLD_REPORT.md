@@ -69,3 +69,7 @@ Jangan menafsirkan angka ini sebagai jaminan FPS pada perangkat lain. Rendering 
 ## File utama
 
 `packages/world-engine/living-world.ts`, `Vehicles.tsx`, `Chibi.tsx`; `apps/web/components/LivingWorld.tsx`, `world-activity.ts`, `WorldActivityControls.tsx`, `Scene.tsx`, `GameView.tsx`, `Explore.tsx`, `apps/web/app/game.css`; `tests/living-world.test.ts`, `living-world-browser.mjs`, `citizens.mjs`.
+
+## Visual Quality Pass 2
+
+Pass lanjutan mempertahankan HUD, memperkaya bangunan/jalan/pantai/lingkungan 3D, serta menambahkan Demo City terisolasi di `/demo-city`. Geometri dunia dibatch dengan picking ID domain, dan simulasi mendapat perbaikan arah/gerak. [Laporan Pass 2](PHASE_5C_QUALITY_PASS_2_REPORT.md) memuat bukti aktual, pengukuran dua dunia, hasil regresi dan batasan terbaru. Data permanen tetap 25 tabel/32 objek/revisi 0. Tidak ada merge, provisioning berbayar, atau Phase 6.

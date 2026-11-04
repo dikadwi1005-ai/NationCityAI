@@ -95,3 +95,7 @@ Tidak ada provisioning cloud, layanan berbayar atau pembukaan beta publik pada p
 ## Tambahan Living World
 
 Checkpoint berikutnya menambahkan NPC Chibi dan kendaraan bergerak, routing daratan/jalan, kontrol simulasi HUD/Explore, serta bukti browser dan rekaman aktual. Lihat [laporan Living World](PHASE_5C_LIVING_WORLD_REPORT.md). Validasi terbaru: 35 unit tests, build/typecheck, regresi visual, penempatan, citizens/travel, chat, pemerintahan, PostgreSQL dan recovery lulus. Audit runtime permanen tetap 25 tabel sama, 32 objek dan revisi 0. Batasan/art pass pada daftar penutupan di atas tetap berlaku.
+
+## Visual Quality Pass 2
+
+Pass lanjutan mempertahankan HUD, memperkaya bangunan/jalan/pantai/lingkungan 3D, serta menambahkan Demo City terisolasi di `/demo-city`. Geometri dunia dibatch dengan picking ID domain, dan simulasi mendapat perbaikan arah/gerak. [Laporan Pass 2](PHASE_5C_QUALITY_PASS_2_REPORT.md) memuat bukti aktual, pengukuran dua dunia, hasil regresi dan batasan terbaru. Data permanen tetap 25 tabel/32 objek/revisi 0. Tidak ada merge, provisioning berbayar, atau Phase 6.
