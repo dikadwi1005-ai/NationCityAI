@@ -1,0 +1,78 @@
+{
+  "at": "2026-11-04T22:48:57.989Z",
+  "scope": "Fresh mobile viewport/touch emulation on native desktop AMD GPU; not a physical phone.",
+  "browser": "156.0.4314.58",
+  "automaticLow": true,
+  "pinch": true,
+  "oneFingerPan": true,
+  "metrics": [
+    {
+      "fps": 85.7769798523755,
+      "drawCalls": 234,
+      "triangles": 104900,
+      "geometries": 147,
+      "textures": 1,
+      "programs": 8,
+      "materialResources": {
+        "materials": 135,
+        "surfaceSets": 0,
+        "textures": 0
+      },
+      "projection": "perspective",
+      "dpr": 1,
+      "drawingBufferWidth": 390,
+      "drawingBufferHeight": 844,
+      "canvasWidth": 390,
+      "canvasHeight": 844,
+      "zoom": 1,
+      "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "meshes": 153
+    },
+    {
+      "fps": 89.99999999999969,
+      "drawCalls": 234,
+      "triangles": 104900,
+      "geometries": 147,
+      "textures": 1,
+      "programs": 8,
+      "materialResources": {
+        "materials": 135,
+        "surfaceSets": 0,
+        "textures": 0
+      },
+      "projection": "perspective",
+      "dpr": 1,
+      "drawingBufferWidth": 390,
+      "drawingBufferHeight": 844,
+      "canvasWidth": 390,
+      "canvasHeight": 844,
+      "zoom": 1,
+      "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "meshes": 153
+    },
+    {
+      "fps": 89.99999999999952,
+      "drawCalls": 221,
+      "triangles": 102556,
+      "geometries": 147,
+      "textures": 1,
+      "programs": 8,
+      "materialResources": {
+        "materials": 135,
+        "surfaceSets": 0,
+        "textures": 0
+      },
+      "projection": "perspective",
+      "dpr": 1,
+      "drawingBufferWidth": 390,
+      "drawingBufferHeight": 844,
+      "canvasWidth": 390,
+      "canvasHeight": 844,
+      "zoom": 1,
+      "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "meshes": 153
+    }
+  ],
+  "errors": [],
+  "demoApiRequests": []
+}

@@ -6,6 +6,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {once} from 'node:events';
 import {createServer} from 'node:net';
+import {DatabaseSync} from 'node:sqlite';
 import {chromium} from 'playwright-core';
 import {WorldStore} from '../packages/persistence/store.ts';
 const dir=await mkdtemp(join(tmpdir(),'nation-citizens-')),db=new WorldStore(join(dir,'nation.sqlite'));
@@ -21,13 +22,16 @@ let browser;
 try{
  await Promise.all([game.ready,next.ready]);browser=await chromium.launch({channel:'msedge',args:['--enable-unsafe-swiftshader','--disable-background-timer-throttling','--disable-renderer-backgrounding']});
  const errors=[];
- async function player(login,name){const ctx=await browser.newContext({viewport:{width:1024,height:760}}),p=await ctx.newPage();p.on('pageerror',e=>errors.push(e.message));await p.goto(origin+'/warga');
+ async function player(login,name,mobile=false){const ctx=await browser.newContext({viewport:mobile?{width:390,height:844}:{width:1024,height:760},hasTouch:mobile,isMobile:mobile}),p=await ctx.newPage();p.on('pageerror',e=>errors.push(e.message));await p.goto(origin+'/warga');
  await p.getByLabel('Username').fill(login);await p.getByLabel('Kata sandi').fill('sandbox-pass-123');await p.getByRole('button',{name:'Daftar warga'}).click();
- await p.getByLabel('Nama karakter').fill(name);await p.getByLabel('Rambut',{exact:true}).selectOption('kuncir');if(login==='warga_b')await p.getByLabel('Tampilkan nama ke pemain sekitar').uncheck();await p.getByRole('button',{name:'Simpan karakter'}).click();await p.getByRole('heading',{name}).waitFor();
+ await p.getByLabel('Nama karakter').fill(name);await p.getByLabel('Rambut',{exact:true}).selectOption('kuncir');
+ // Exercise repeated live palette replacement before saving a real creator result.
+ for(let i=0;i<12;i++){await p.getByLabel('Warna pakaian',{exact:true}).fill('#'+(0x315040+i*0x030405).toString(16));await p.getByLabel('Warna rambut',{exact:true}).fill('#'+(0x30251c+i*0x010101).toString(16));await p.waitForTimeout(40)}
+ if(login==='warga_b')await p.getByLabel('Tampilkan nama ke pemain sekitar').uncheck();await p.getByRole('button',{name:'Simpan karakter'}).click();await p.getByRole('heading',{name}).waitFor();
  const get=()=>p.request.get(origin+'/api/citizen').then(r=>r.json()),profile=await get();
  await p.reload();await p.getByRole('heading',{name}).waitFor();assert.deepEqual((await get()).look,profile.look);
  await p.getByRole('button',{name:'Jelajahi Negara'}).click();await p.locator('[data-player="'+profile.id+'"]').waitFor();return {p,profile,get,ctx}}
- const a=await player('warga_a','Aruna'),b=await player('warga_b','Bima');
+ const a=await player('warga_a','Aruna'),b=await player('warga_b','Bima',true);
  assert.notEqual(a.profile.id,b.profile.id);
  const aa=a.p.locator('[data-player="'+a.profile.id+'"]'),ba=b.p.locator('[data-player="'+a.profile.id+'"]');
  await ba.waitFor();await a.p.locator('[data-player="'+b.profile.id+'"]').waitFor();
@@ -36,10 +40,19 @@ try{
  await a.p.waitForTimeout(1200);await a.p.keyboard.up('w');const stopped=Number(await aa.getAttribute('data-z'));assert.ok(stopped>=-1.7&&stopped<-.5,'Balai negara blocks northbound movement: '+stopped);
  await b.p.keyboard.down('d');
  try{await a.p.waitForFunction(id=>Number(document.querySelector('[data-player="'+id+'"]')?.getAttribute('data-x'))>3,b.profile.id)}finally{await b.p.keyboard.up('d')}
+ const joystick=b.p.getByRole('group',{name:'Joystick gerak'}),pad=await joystick.boundingBox(),touch=await b.ctx.newCDPSession(b.p);assert.ok(pad);
+ const startX=Number(await b.p.locator('[data-player="'+b.profile.id+'"]').getAttribute('data-x'));
+ await touch.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:pad.x+pad.width/2,y:pad.y+pad.height/2}]});await touch.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:pad.x+pad.width/2+28,y:pad.y+pad.height/2}]});
+ try{await a.p.waitForFunction(({id,x})=>Number(document.querySelector('[data-player="'+id+'"]')?.getAttribute('data-x'))>x+.7,{id:b.profile.id,x:startX})}finally{await touch.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]})}
+ await b.p.screenshot({path:'docs/phase-5c/after-explore-mobile.png'});await a.p.screenshot({path:'docs/phase-5c/after-explore-desktop.png'});
+ console.log('PASS mobile emulation: touch joystick moves the authoritative avatar and releases capture.');
  await b.p.screenshot({path:'docs/phase-3-multiplayer.png'});
  await a.p.getByLabel('Tujuan perjalanan').selectOption(island);
  await b.p.waitForFunction(id=>Number(document.querySelector('[data-player="'+id+'"]')?.getAttribute('data-x'))>60,a.profile.id);
 
+ for(let i=0;i<2;i++){await a.p.waitForTimeout(1300);await a.p.getByLabel('Tujuan perjalanan').selectOption('island-001');await a.p.waitForFunction(()=>window.__nationSimulation?.island==='island-001'&&window.__nationSimulation.npc.length===5);const simulated=await a.p.evaluate(()=>window.__nationSimulation.npc);assert.equal(new Set(simulated.map(p=>p.id)).size,5);assert.equal(await a.p.locator('[data-player]').count(),2);await a.p.waitForTimeout(1300);await a.p.getByLabel('Tujuan perjalanan').selectOption(island);await a.p.waitForFunction(id=>window.__nationSimulation?.island===id&&window.__nationSimulation.npc.length===0,island)}
+ const citizenDb=new DatabaseSync(join(dir,'nation.sqlite'),{readOnly:true});try{assert.equal(citizenDb.prepare('SELECT count(*) AS n FROM citizens').get().n,2)}finally{citizenDb.close()}
+ console.log('PASS repeated island travel cleans up NPCs; only the two real accounts exist.');
  await game.p.kill();await game.exit;game=start();await game.ready;
  await a.p.getByText('Terhubung',{exact:true}).waitFor();await a.p.waitForFunction(id=>document.querySelector('select')?.value===id,island);
  await ba.waitFor();await a.p.getByRole('button',{name:'Profil Warga'}).click();await a.p.getByRole('button',{name:'Keluar warga'}).click();

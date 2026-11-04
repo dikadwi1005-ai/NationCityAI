@@ -2,7 +2,7 @@ import {readdirSync,readFileSync,writeFileSync,mkdirSync,existsSync,copyFileSync
 import {resolve,join,relative,sep,dirname} from 'node:path';
 import {createHash} from 'node:crypto';
 import {parseEnv} from 'node:util';
-const root=process.cwd(),target=resolve('.release/NationCityAI');
+const root=process.cwd(),target=resolve(process.argv[2]||'.release/NationCityAI');
 if(!existsSync(join(target,'.git')))throw Error('Checkout Git tujuan belum tersedia.');
 const privateDocs=new Set(['phase5b-runtime-audit.json','phase5b-live-smoke.json','s3-live-verification.json']);
 const disallowed=name=>['node_modules','.next','.git','.release','data'].includes(name)||name.endsWith('.tsbuildinfo')||/\.(?:sqlite.*|enc|key|partial|log|dump|private\.(?:sql|json))$/i.test(name)||(name.startsWith('.env')&&!name.endsWith('.example'))||privateDocs.has(name);

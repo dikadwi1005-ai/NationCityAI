@@ -25,7 +25,7 @@ try{
  for(const path of ['/api/moderation','/api/recovery'])assert.equal((await context.request.get(origin+path)).status(),200,path);
  await page.goto(origin);await page.locator('canvas').waitFor();await page.getByText('Dunia tersimpan',{exact:true}).waitFor();
  await page.getByRole('button',{name:'Buka atlas negara'}).click();await page.getByRole('button',{name:'Katalog bangunan'}).waitFor();
- await page.getByRole('button',{name:'Panduan'}).click();await page.getByText('PANDUAN NEGARA',{exact:true}).waitFor();
+ await page.getByRole('button',{name:'Tutup panel'}).click();await page.getByRole('button',{name:'Menu utama',exact:true}).click();await page.getByRole('button',{name:'Panduan',exact:true}).click();await page.getByText('PANDUAN NEGARA',{exact:true}).waitFor();
  await page.getByRole('button',{name:'Mulai membangun'}).click();
  for(const path of ['/warga','/pemerintahan','/moderasi','/pemulihan']){await page.goto(origin+path);await page.locator('main').waitFor()}
  assert.equal((await context.request.get('http://127.0.0.1:2567/health')).status(),200);

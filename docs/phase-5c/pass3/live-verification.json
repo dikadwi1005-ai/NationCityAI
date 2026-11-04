@@ -1,0 +1,481 @@
+{
+  "at": "2026-11-04T22:50:13.963Z",
+  "origin": "http://localhost:3000",
+  "scope": "Actual existing permanent SQLite runtime, read-only; not fixture initialization. Same City Overview, 1600x1000, 10 NPC / 4 vehicles, three samples per quality.",
+  "objects": 32,
+  "revision": 0,
+  "tables": 25,
+  "allTableSignaturesUnchanged": true,
+  "apiMatchesPermanentDatabase": true,
+  "demoApiRequests": [],
+  "returnToPermanent": true,
+  "metrics": {
+    "fps": 90.01956947162378,
+    "drawCalls": 230,
+    "triangles": 104328,
+    "geometries": 118,
+    "textures": 21,
+    "programs": 17,
+    "materialResources": {
+      "materials": 107,
+      "surfaceSets": 10,
+      "textures": 40
+    },
+    "projection": "perspective",
+    "dpr": 1,
+    "drawingBufferWidth": 1600,
+    "drawingBufferHeight": 1000,
+    "canvasWidth": 1600,
+    "canvasHeight": 1000,
+    "zoom": 1,
+    "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "meshes": 107
+  },
+  "measurements": [
+    {
+      "world": "permanent",
+      "quality": "low",
+      "npc": 10,
+      "vehicles": 4,
+      "samples": [
+        {
+          "fps": 89.98435054774075,
+          "drawCalls": 295,
+          "triangles": 55728,
+          "geometries": 112,
+          "textures": 20,
+          "programs": 22,
+          "materialResources": {
+            "materials": 203,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 94
+        },
+        {
+          "fps": 90.01956947162566,
+          "drawCalls": 295,
+          "triangles": 55728,
+          "geometries": 112,
+          "textures": 20,
+          "programs": 22,
+          "materialResources": {
+            "materials": 203,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 94
+        },
+        {
+          "fps": 89.98435054773981,
+          "drawCalls": 295,
+          "triangles": 55728,
+          "geometries": 112,
+          "textures": 20,
+          "programs": 22,
+          "materialResources": {
+            "materials": 203,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 94
+        }
+      ]
+    },
+    {
+      "world": "permanent",
+      "quality": "medium",
+      "npc": 10,
+      "vehicles": 4,
+      "samples": [
+        {
+          "fps": 89.9667514179495,
+          "drawCalls": 351,
+          "triangles": 120252,
+          "geometries": 125,
+          "textures": 21,
+          "programs": 27,
+          "materialResources": {
+            "materials": 203,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 107
+        },
+        {
+          "fps": 89.94603238056604,
+          "drawCalls": 351,
+          "triangles": 120252,
+          "geometries": 125,
+          "textures": 21,
+          "programs": 27,
+          "materialResources": {
+            "materials": 203,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 107
+        },
+        {
+          "fps": 89.98200359930703,
+          "drawCalls": 351,
+          "triangles": 120252,
+          "geometries": 125,
+          "textures": 21,
+          "programs": 27,
+          "materialResources": {
+            "materials": 203,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 107
+        }
+      ]
+    },
+    {
+      "world": "permanent",
+      "quality": "high",
+      "npc": 10,
+      "vehicles": 4,
+      "samples": [
+        {
+          "fps": 90.16072128574058,
+          "drawCalls": 353,
+          "triangles": 143340,
+          "geometries": 129,
+          "textures": 39,
+          "programs": 29,
+          "materialResources": {
+            "materials": 315,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1.2,
+          "drawingBufferWidth": 1920,
+          "drawingBufferHeight": 1200,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 109
+        },
+        {
+          "fps": 90.98101265821613,
+          "drawCalls": 353,
+          "triangles": 143340,
+          "geometries": 129,
+          "textures": 39,
+          "programs": 29,
+          "materialResources": {
+            "materials": 315,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1.2,
+          "drawingBufferWidth": 1920,
+          "drawingBufferHeight": 1200,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 109
+        },
+        {
+          "fps": 89.98435054770228,
+          "drawCalls": 353,
+          "triangles": 143340,
+          "geometries": 129,
+          "textures": 39,
+          "programs": 29,
+          "materialResources": {
+            "materials": 315,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1.2,
+          "drawingBufferWidth": 1920,
+          "drawingBufferHeight": 1200,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 109
+        }
+      ]
+    },
+    {
+      "world": "demo",
+      "quality": "low",
+      "npc": 10,
+      "vehicles": 4,
+      "samples": [
+        {
+          "fps": 90.10773751224346,
+          "drawCalls": 375,
+          "triangles": 131724,
+          "geometries": 175,
+          "textures": 20,
+          "programs": 20,
+          "materialResources": {
+            "materials": 295,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 170
+        },
+        {
+          "fps": 90.00195656429959,
+          "drawCalls": 375,
+          "triangles": 131724,
+          "geometries": 175,
+          "textures": 20,
+          "programs": 20,
+          "materialResources": {
+            "materials": 295,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 170
+        },
+        {
+          "fps": 89.98200359930671,
+          "drawCalls": 375,
+          "triangles": 131724,
+          "geometries": 175,
+          "textures": 20,
+          "programs": 20,
+          "materialResources": {
+            "materials": 295,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 170
+        }
+      ]
+    },
+    {
+      "world": "demo",
+      "quality": "medium",
+      "npc": 10,
+      "vehicles": 4,
+      "samples": [
+        {
+          "fps": 78.43137254901609,
+          "drawCalls": 433,
+          "triangles": 306316,
+          "geometries": 193,
+          "textures": 21,
+          "programs": 24,
+          "materialResources": {
+            "materials": 295,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 185
+        },
+        {
+          "fps": 77.3349196906526,
+          "drawCalls": 433,
+          "triangles": 306316,
+          "geometries": 193,
+          "textures": 21,
+          "programs": 24,
+          "materialResources": {
+            "materials": 295,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 185
+        },
+        {
+          "fps": 64.28988895385163,
+          "drawCalls": 433,
+          "triangles": 306316,
+          "geometries": 193,
+          "textures": 21,
+          "programs": 24,
+          "materialResources": {
+            "materials": 295,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 185
+        }
+      ]
+    },
+    {
+      "world": "demo",
+      "quality": "high",
+      "npc": 10,
+      "vehicles": 4,
+      "samples": [
+        {
+          "fps": 71.61328824349164,
+          "drawCalls": 435,
+          "triangles": 452952,
+          "geometries": 197,
+          "textures": 39,
+          "programs": 26,
+          "materialResources": {
+            "materials": 454,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1.2,
+          "drawingBufferWidth": 1920,
+          "drawingBufferHeight": 1200,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 187
+        },
+        {
+          "fps": 68.45296303539493,
+          "drawCalls": 435,
+          "triangles": 452952,
+          "geometries": 197,
+          "textures": 39,
+          "programs": 26,
+          "materialResources": {
+            "materials": 454,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1.2,
+          "drawingBufferWidth": 1920,
+          "drawingBufferHeight": 1200,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 187
+        },
+        {
+          "fps": 69.01991717608713,
+          "drawCalls": 435,
+          "triangles": 452952,
+          "geometries": 197,
+          "textures": 39,
+          "programs": 26,
+          "materialResources": {
+            "materials": 454,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1.2,
+          "drawingBufferWidth": 1920,
+          "drawingBufferHeight": 1200,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 187
+        }
+      ]
+    }
+  ],
+  "errors": []
+}
