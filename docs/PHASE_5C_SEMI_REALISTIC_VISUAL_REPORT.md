@@ -23,3 +23,7 @@ B: modular architecture/asset registry and geometric residential diversity; C: d
 ## Asset provenance
 
 Procedural maps and model geometry authored in this repository are original project assets. No game-reference assets were copied. Three.js/drei/React and other dependency code retain their upstream package licenses. No paid asset packs, cloud services, remote texture downloads or AI-generated fake implementation screenshots are used.
+
+## Stage B — architecture checkpoint
+
+Eight residential envelopes now have real geometry differences: tropical veranda, courtyard, duplex, townhouse, carport, balcony, garden bungalow and split roof. Building modules/primitives/registry replace the monolithic model file. Doors/windows/floors follow the visual-scale adapter; original footprint and server data are retained. Government/healthcare facades, entrance and roof/service details are replaced. Material kinds select plaster, stone, glass, timber, tile and metal surfaces. Low omits detail meshes; High adds trim/mullions. Stage-B typecheck/build and native Edge quality/resource-cycle checks pass with no page/GPU errors; sampled Medium ~90 FPS and High ~64 FPS. This does not complete districts/nature/traffic polish.

@@ -3,6 +3,7 @@ import {useLayoutEffect,useMemo,useRef,useState} from 'react';
 import {BufferGeometry,Group,Matrix4,Mesh,type Material} from 'three';
 import {mergeGeometries} from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import type {ThreeEvent} from '@react-three/fiber';
+import {visualVariant} from '../../../packages/world-engine/asset-registry';
 import {planarUV} from '../../../packages/world-engine/materials';
 import {useQuality} from '../../../packages/world-engine/quality-context';
 import {Model,type RoadConnections} from '../../../packages/world-engine/Models';
@@ -13,7 +14,7 @@ export function roadConnections(o:WorldObject,objects:WorldObject[]):RoadConnect
   const dirs=[[0,-2],[2,0],[0,2],[-2,0]].map(([x,z])=>objects.some(v=>v.asset==='road'&&v.x===o.x+x&&v.z===o.z+z));
   return {n:dirs[(4-o.rotation)%4],e:dirs[(5-o.rotation)%4],s:dirs[(6-o.rotation)%4],w:dirs[(7-o.rotation)%4]};
 }
-const variant=(o:WorldObject)=>parseInt(o.id.slice(-4),16)%3;
+const variant=(o:WorldObject)=>visualVariant(o.id);
 const keyOf=(o:WorldObject,objects:WorldObject[])=>o.asset==='road'?'road:'+Object.values(roadConnections(o,objects)).map(Number).join(''):o.asset+':'+variant(o);
 type Batch={geometry:BufferGeometry;material:Material;ranges:{end:number;id:string}[]};
 

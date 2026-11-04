@@ -5,6 +5,7 @@ import {OrbitControls} from '@react-three/drei';
 import * as THREE from 'three';
 import {CHUNK_SIZE,heightAt,footprint,placementError,type World,type WorldObject} from '../../../packages/nation-core/world';
 import RoadSurface from './RoadSurface';
+import {visualVariant} from '../../../packages/world-engine/asset-registry';
 import LivingWorld from './LivingWorld';
 import NaturalLight from './NaturalLight';
 import {useVisualSettings} from './visual-settings';
@@ -48,7 +49,7 @@ export default function Scene({children,brush,world,draft,selected,grid,layers=f
  {selected&&world.objects.filter(o=>o.id===selected).map(o=><mesh key={o.id} rotation={[-Math.PI/2,0,0]} position={[o.x,sample(geo,o.x,o.z).h+.13,o.z]}><ringGeometry args={[1.8,2,40]}/><meshBasicMaterial color="#fff3bf" side={THREE.DoubleSide}/></mesh>)}
 
  <mesh rotation={[-Math.PI/2,0,0]} position={[0,.85,0]} onPointerMove={ground} onClick={e=>{if(e.delta>5)return;e.stopPropagation();onGround(Math.round(e.point.x/2)*2,Math.round(e.point.z/2)*2)}}><planeGeometry args={[2100000,2100000]}/><meshBasicMaterial transparent opacity={0} depthWrite={false}/></mesh>
- {draft&&<group position={[draft.x,sample(geo,draft.x,draft.z).h+.12,draft.z]}><mesh rotation={[-Math.PI/2,0,0]}><planeGeometry args={[footprint(draft).w,footprint(draft).d]}/><meshBasicMaterial color={placementError(draft,world.objects,geo)?'#ea6b65':'#f8e9a6'} transparent opacity={.75} side={THREE.DoubleSide} depthWrite={false}/></mesh><group rotation={[0,draft.rotation*Math.PI/2,0]}>{draft.asset==='road'?<RoadSurface geo={geo} x={draft.x} z={draft.z} rotation={draft.rotation}><Model asset={draft.asset} variant={parseInt(draft.id.slice(-4),16)%3} connections={roadConnections(draft,[...world.objects.filter(o=>o.id!==draft.id),draft])}/></RoadSurface>:<Model asset={draft.asset} variant={parseInt(draft.id.slice(-4),16)%3}/>}</group></group>}
+ {draft&&<group position={[draft.x,sample(geo,draft.x,draft.z).h+.12,draft.z]}><mesh rotation={[-Math.PI/2,0,0]}><planeGeometry args={[footprint(draft).w,footprint(draft).d]}/><meshBasicMaterial color={placementError(draft,world.objects,geo)?'#ea6b65':'#f8e9a6'} transparent opacity={.75} side={THREE.DoubleSide} depthWrite={false}/></mesh><group rotation={[0,draft.rotation*Math.PI/2,0]}>{draft.asset==='road'?<RoadSurface geo={geo} x={draft.x} z={draft.z} rotation={draft.rotation}><Model asset={draft.asset} variant={visualVariant(draft.id)} connections={roadConnections(draft,[...world.objects.filter(o=>o.id!==draft.id),draft])}/></RoadSurface>:<Model asset={draft.asset} variant={visualVariant(draft.id)}/>}</group></group>}
  <LivingWorld world={world} island={activityIsland}/><Camera action={action}/>{children}
  </QualityContext.Provider></Canvas>
 }
