@@ -1,0 +1,11 @@
+{
+  "Rules": [
+    {
+      "ID": "ExpirePrivateOperationalBackups",
+      "Status": "Enabled",
+      "Filter": {"Prefix": "nation-backups/"},
+      "Expiration": {"Days": 1},
+      "AbortIncompleteMultipartUpload": {"DaysAfterInitiation": 1}
+    }
+  ]
+}

@@ -9,5 +9,5 @@ export function appearance(raw:unknown):Look{
  return Object.fromEntries(Object.keys(defaults).map(k=>[k,k==='name'?a.name.trim():a[k as keyof Look]])) as Look;
 }
 export type Position={x:number;z:number;island:string};
-export type Avatar=Position&{id:string;look:Look;motion:string;y:number;angle:number};
-export type Profile={id:string;joined:string;home:string;look:Look|null;version:number;location:Position|null};
+export type Avatar=Position&{title?:string;office?:string;id:string;look:Look;motion:string;y:number;angle:number};
+export type Profile={title?:string;residence?:string;id:string;joined:string;home:string;look:Look|null;version:number;location:Position|null};

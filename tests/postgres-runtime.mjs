@@ -1,0 +1,16 @@
+import {seal,open,checksum} from '../packages/postgres/vault.mjs';
+﻿import assert from 'node:assert/strict';
+import EmbeddedPostgres from 'embedded-postgres';
+import {randomUUID,randomBytes} from 'node:crypto';import {mkdtempSync,rmSync} from 'node:fs';import {join,resolve} from 'node:path';import {tmpdir} from 'node:os';import {spawn} from 'node:child_process';import {once} from 'node:events';import {createServer} from 'node:net';
+import {WorldStore} from '../packages/persistence/store.ts';import {nativeRows,connection} from '../packages/postgres/connection.mjs';import {importArchive,fromSqlite,fromPg} from '../packages/postgres/archive.mjs';
+async function port(){const s=createServer();s.listen(0,'127.0.0.1');await once(s,'listening');const n=s.address().port;await new Promise(r=>s.close(r));return n}
+const dir=mkdtempSync(join(tmpdir(),'nation-native-pg-')),n=await port(),pw=randomBytes(16).toString('hex'),pg=new EmbeddedPostgres({databaseDir:join(dir,'cluster'),port:n,user:'postgres',password:pw,persistent:true,onLog:()=>{},onError:()=>{}});let db,drill,started=false;
+try{const source=join(dir,'source.sqlite'),w=new WorldStore(source),id=randomUUID();
+ w.mutate({requestId:randomUUID(),expectedRevision:0,command:{id,name:'Pulau Sagara',x:500,z:0,tool:'island',island:'island-001',radius:12,strength:2,level:1,parent:'nation-001',type:'geo',biome:'grass'}});w.close();
+ await pg.initialise();await pg.start();started=true;nativeRows();const url=(user,name)=>'postgresql://'+user+':'+pw+'@127.0.0.1:'+n+'/'+name;
+ db=connection(url('postgres','postgres'));await db.connect();await db.query("CREATE ROLE nation_app LOGIN PASSWORD '"+pw+"'");await db.query('CREATE DATABASE nation_drill');
+ const report=await importArchive(db,fromSqlite(source),'nation_app','postgres');assert.equal(report.world_events,1);
+ const child=spawn(process.execPath,[resolve('tests/staging-flow.mjs')],{env:{...process.env,NATION_PROJECT_ROOT:process.cwd(),NATION_ENV:'integration',NATION_DB:'postgres',DATABASE_URL:url('nation_app','postgres'),CLOSED_BETA:'true',BETA_USERNAMES:'aruna,bima,citra',BETA_INVITE_KEY:randomUUID(),ADMIN_KEY:randomUUID(),MULTIPLAYER_PORT:String(await port()),TEST_WEB_PORT:String(await port()),TEST_ISLAND:id,...(process.argv.includes('--mobile')?{TEST_MOBILE:'1'}:{})},stdio:'inherit'});const [code]=await once(child,'exit');assert.equal(code,0);
+ const logical=await fromPg(db);process.env.BACKUP_KEY=randomBytes(32).toString('base64');const bid=randomUUID(),blob=seal(bid,logical),metadata={id:bid,expires:String(Date.now()+3600000),schema:'51',sha256:checksum(blob)};const frozen=open(bid,blob,metadata);assert.throws(()=>open(bid,Buffer.concat([blob,Buffer.from('x')]),metadata));assert.throws(()=>open(randomUUID(),blob,metadata));drill=connection(url('postgres','nation_drill'));await drill.connect();const verified=await importArchive(drill,frozen,'nation_app','nation_drill');assert.equal(verified.citizens,3);assert.equal(verified.participation,2);
+ console.log('PASS PostgreSQL '+(await db.query('SHOW server_version')).rows[0].server_version+' native TCP: SQLite import, transactional runtime and second-database logical restore. Local test only.');
+}finally{await db?.end().catch(()=>{});await drill?.end().catch(()=>{});if(started)await pg.stop();rmSync(dir,{recursive:true,force:true,maxRetries:4,retryDelay:300})}

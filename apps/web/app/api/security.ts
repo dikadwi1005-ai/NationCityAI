@@ -2,6 +2,7 @@ import {createHmac,timingSafeEqual,randomBytes} from 'node:crypto';
 import {NextRequest,NextResponse} from 'next/server';
 const sessions=globalThis as typeof globalThis & {loginLimits?:Map<string,{count:number;until:number}>};
 export function sameOrigin(req:NextRequest){
+ if(process.env.NATION_ENV==='staging')return !!process.env.WEB_ORIGIN&&req.headers.get('origin')===process.env.WEB_ORIGIN;
  const host=req.headers.get('host');
  return !!host && req.headers.get('origin')===req.nextUrl.protocol+'//'+host;
 }

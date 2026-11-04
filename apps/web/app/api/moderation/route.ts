@@ -10,4 +10,3 @@ export async function POST(req:NextRequest){
  if(!sameOrigin(req)||!authorized(req))return json({error:'Akses administrator diperlukan.'},403);
  try{const raw=await req.text();if(raw.length>512)return json({error:'Input terlalu panjang.'},413);
  const b=JSON.parse(raw);moderate(database(),b.id,b.action);return json({ok:true})}catch{return json({error:'Laporan atau tindakan tidak valid.'},400)}}
-

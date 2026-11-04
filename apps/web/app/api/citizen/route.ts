@@ -13,8 +13,8 @@ export async function POST(r:NextRequest){
  if(b.action==='register'||b.action==='login'){
  if(Date.now()>windowEnd){attempts=0;windowEnd=Date.now()+60000}
  if(++attempts>30)return json({error:'Coba lagi dalam satu menit.'},429);
- const t=await authenticate(b.login,b.password,b.action==='register'),res=json(profile(identify(t)!));
- res.cookies.set(cookie,t,{httpOnly:true,sameSite:'strict',secure:r.nextUrl.protocol==='https:',path:'/',maxAge:28800});return res;
+ const t=await authenticate(b.login,b.password,b.action==='register',b.invite),res=json(profile(identify(t)!));
+ res.cookies.set(cookie,t,{httpOnly:true,sameSite:'strict',secure:process.env.NATION_ENV==='staging'||r.nextUrl.protocol==='https:',path:'/',maxAge:28800});return res;
  }
  const id=identify(token);if(!id)return json({error:'Masuk sebagai warga dahulu.'},401);
  if(b.action==='save'){saveLook(id,b.look);return json(profile(id))}

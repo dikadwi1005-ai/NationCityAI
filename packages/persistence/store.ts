@@ -1,3 +1,6 @@
+import {PgDriver} from '../postgres/driver.mjs';
+import {pgRuntime} from '../postgres/runtime.mjs';
+import {isDeepStrictEqual} from 'node:util';
 import {chunks,emptyGeo} from '../nation-core/geography.ts';
 import {DatabaseSync} from 'node:sqlite';
 import {mkdirSync} from 'node:fs';
@@ -7,7 +10,7 @@ export class Conflict extends Error {}
 /** Single-node durable adapter. SQLite WAL transaction covers state, events and request deduplication. */
 export class WorldStore {
  readonly db:DatabaseSync;
- constructor(path:string){if(path!==':memory:')mkdirSync(resolve(path,'..'),{recursive:true});this.db=new DatabaseSync(path);this.db.exec(`PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000;
+ constructor(path:string,postgres=false){if(postgres){this.db=new PgDriver() as unknown as DatabaseSync;try{if(!this.db.prepare('SELECT version FROM schema_migrations WHERE version=51').get())throw Error('Schema staging belum siap.')}catch(e){this.db.close();throw e}return}if(path!==':memory:')mkdirSync(resolve(path,'..'),{recursive:true});this.db=new DatabaseSync(path);this.db.exec(`PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000;
  CREATE TABLE IF NOT EXISTS schema_migrations(version INTEGER PRIMARY KEY); INSERT OR IGNORE INTO schema_migrations VALUES(1);
  CREATE TABLE IF NOT EXISTS worlds(id TEXT PRIMARY KEY,revision INTEGER NOT NULL,state TEXT NOT NULL);
  CREATE TABLE IF NOT EXISTS world_events(request_id TEXT PRIMARY KEY,revision INTEGER UNIQUE NOT NULL,actor TEXT NOT NULL,command TEXT NOT NULL,snapshot TEXT NOT NULL,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
@@ -22,7 +25,7 @@ export class WorldStore {
  const req=requestSchema.parse(input);this.db.exec('BEGIN IMMEDIATE');
  try {
  const previous=this.db.prepare('SELECT command FROM world_events WHERE request_id=?').get(req.requestId) as {command:string}|undefined;
- if(previous){if(previous.command!==JSON.stringify(req.command))throw new Conflict('Request ID sudah digunakan untuk perintah berbeda.');const current=this.read();this.db.exec('COMMIT');return current;}
+ if(previous){if(!isDeepStrictEqual(JSON.parse(previous.command),req.command))throw new Conflict('Request ID sudah digunakan untuk perintah berbeda.');const current=this.read();this.db.exec('COMMIT');return current;}
  const world=this.read();if(world.revision!==req.expectedRevision)throw new Conflict('Dunia berubah di sesi lain. Muat ulang sebelum mencoba kembali.');
  const next=applyCommand(world,req.command);const json=JSON.stringify(next);
  if(req.command.type==='geo'||req.command.type==='undoGeo'){
@@ -44,4 +47,4 @@ export class WorldStore {
  close(){this.db.close()}
 }
 const shared=globalThis as typeof globalThis & {nationStore?:WorldStore};
-export function store(){return shared.nationStore??=new WorldStore(join(process.env.WORLD_DATA_DIR??join(process.cwd(),'data'),'nation.sqlite'))}
+export function store(){return shared.nationStore??=new WorldStore(join(process.env.WORLD_DATA_DIR??join(process.cwd(),'data'),'nation.sqlite'),pgRuntime())}
