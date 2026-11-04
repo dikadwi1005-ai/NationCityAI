@@ -22,6 +22,7 @@ try{await Promise.all([next.ready,mpserver.ready]);browser=await chromium.launch
  const votes=await Promise.all([c.post('/api/government',ballot),c.post('/api/government',ballot)]);assert.deepEqual(votes.map(r=>r.status()).sort(),[200,400]);
  assert.equal((await outside.post('/api/government',ballot)).status(),400);assert.equal((await outside.post('/api/government',{...ballot,user:c.id})).status(),400);
  await click(admin,'Tutup voting');await click(admin,'Sahkan hasil');await cmd(admin,{action:'stage',id:e,next:'FINALIZED'});
+ await a.page.setViewportSize({width:1440,height:900});await open(a,'Pemilihan');await a.page.waitForTimeout(600);await a.page.screenshot({path:'docs/phase-5c/after-election.png'});
  await open(a,'Pejabat');await a.page.getByRole('heading',{name:'Aruna · Gubernur'}).waitFor();await click(a,'Kenakan pakaian dinas');
  const p=await(await a.get('/api/citizen')).json();assert.equal(p.title,'Gubernur');assert.deepEqual(p.look,a.look);assert.equal((await a.get('/api/recovery')).status(),403);assert.equal((await a.get('/api/moderation')).status(),403);assert.equal((await a.post('/api/world',{})).status(),403);
  await a.page.goto(origin+'/warga');await a.page.getByRole('button',{name:'Jelajahi Negara'}).click();await a.page.getByRole('button',{name:'Pidato'}).click();await a.page.getByRole('link',{name:'Buka layanan kantor'}).waitFor();

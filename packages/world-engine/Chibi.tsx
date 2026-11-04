@@ -1,22 +1,25 @@
 ﻿'use client';
 import {useRef} from 'react';
 import {useFrame} from '@react-three/fiber';
-import type {Group} from 'three';
+import {SphereGeometry,CylinderGeometry,MeshStandardMaterial,Vector3,type Group} from 'three';
 import type {Look} from '../citizens/model';
 type Vec=[number,number,number];
-function Ball({p,size,color}:{p:Vec;size:Vec;color:string}){return <mesh position={p} scale={size} castShadow><sphereGeometry args={[1,12,9]}/><meshStandardMaterial color={color} flatShading/></mesh>}
-export function Chibi({look,motion='idle'}:{look:Look;motion?:string}){
+const sphere=new SphereGeometry(1,12,9),jack=new CylinderGeometry(.30,.37,.67,10),tunic=new CylinderGeometry(.30,.49,.67,10),materials=new Map<string,MeshStandardMaterial>();
+function mat(color:string){if(!materials.has(color))materials.set(color,new MeshStandardMaterial({color,flatShading:true}));return materials.get(color)!}
+function Ball({p,size,color}:{p:Vec;size:Vec;color:string}){return <mesh position={p} scale={size} castShadow geometry={sphere} material={mat(color)} dispose={null}/>}
+export function Chibi({look,motion:baseMotion='idle',motionSource,paused=false}:{look:Look;motion?:string;motionSource?:{current:string};paused?:boolean}){
  const body=useRef<Group>(null),left=useRef<Group>(null),right=useRef<Group>(null),legA=useRef<Group>(null),legB=useRef<Group>(null);
- useFrame(({clock})=>{const t=clock.elapsedTime,walk=motion==='walk'||motion==='run',stride=walk?Math.sin(t*(motion==='run'?14:9))*.65:0;
+ const animTime=useRef(0),lod=useRef(0),position=useRef(new Vector3());
+ useFrame(({camera},dt)=>{if(paused)return;animTime.current+=Math.min(dt,.1);lod.current+=dt;body.current?.getWorldPosition(position.current);const far=camera.position.distanceTo(position.current)>75;if(far&&lod.current<.12)return;lod.current=0;const t=animTime.current,motion=motionSource?.current??baseMotion,walk=motion==='walk'||motion==='run',stride=walk?Math.sin(t*(motion==='run'?14:9))*.65:0;
  if(!body.current||!left.current||!right.current||!legA.current||!legB.current)return;
  body.current.position.y=(motion==='celebrate'?Math.abs(Math.sin(t*7))*.25:Math.sin(t*(walk?10:2))*.025);
  left.current.rotation.set(-stride,0,motion==='celebrate'?-2.3:-.13);
  right.current.rotation.set(motion==='speech'?-.8+.25*Math.sin(t*5):motion==='ceremony'?-1.1:motion==='announcement'?-1.2+.4*Math.sin(t*3):motion==='point'?-1.5:stride,0,motion==='wave'?2.2+.35*Math.sin(t*10):motion==='celebrate'?2.3:.13);
- legA.current.rotation.x=stride;legB.current.rotation.x=-stride});
+ legA.current.rotation.x=motion==='sit'?-Math.PI/2:stride;legB.current.rotation.x=motion==='sit'?-Math.PI/2:-stride});
  const skin='#e7aa83',dark='#283532';
  return <group ref={body}>
  {[-1,1].map((v,i)=><group key={v} ref={i?legB:legA} position={[v*.18,.57,0]}><Ball p={[0,-.22,0]} size={[.15,.27,.16]} color="#354953"/><Ball p={[0,-.45,.06]} size={[.18,.12,.23]} color="#654c40"/></group>)}
- <mesh position={[0,.83,0]} castShadow><cylinderGeometry args={[.30,look.outfit==='tunik'?.49:.37,.67,10]}/><meshStandardMaterial color={look.color} flatShading/></mesh>
+ <mesh position={[0,.83,0]} castShadow geometry={look.outfit==='tunik'?tunic:jack} material={mat(look.color)} dispose={null}/>
  {[.76,.93].map(y=><Ball key={y} p={[0,y,.34]} size={[.035,.035,.025]} color="#f4d992"/>)}
  {[-1,1].map((v,i)=><group key={v} ref={i?left:right} position={[v*.32,1.08,0]}><Ball p={[0,-.15,0]} size={[.14,.21,.16]} color={look.color}/><Ball p={[0,-.37,.03]} size={[.12,.13,.12]} color={skin}/></group>)}
  <group position={[0,1.67,0]} scale={[1,look.face==='oval'?1.12:1,1]}>

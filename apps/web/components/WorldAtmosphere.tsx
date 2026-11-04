@@ -1,0 +1,25 @@
+'use client';
+import {useEffect,useMemo,useRef} from 'react';
+import {useFrame} from '@react-three/fiber';
+import * as T from 'three';
+import {chunks,emptyGeo,sample} from '../../../packages/nation-core/geography';
+import type {World} from '../../../packages/nation-core/world';
+export function Ocean({low}:{low:boolean}){
+ const shader=useRef<T.ShaderMaterial>(null);
+ const uniforms=useMemo(()=>({time:{value:0},deep:{value:new T.Color('#247486')},light:{value:new T.Color('#5ea3a1')}}),[]);
+ useFrame((_,dt)=>{if(shader.current)shader.current.uniforms.time.value+=dt});
+ return <mesh rotation={[-Math.PI/2,0,0]} position={[0,-.25,0]}><planeGeometry args={[2100000,2100000]}/>{low?<meshStandardMaterial color="#33828d" roughness={.58}/>:<shaderMaterial ref={shader} uniforms={uniforms} vertexShader={'varying vec2 water;void main(){vec4 p=modelMatrix*vec4(position,1.);water=p.xz;gl_Position=projectionMatrix*viewMatrix*p;}'} fragmentShader={'uniform float time;uniform vec3 deep;uniform vec3 light;varying vec2 water;void main(){float a=sin(water.x*.57+water.y*.3+time*.5);float b=sin(water.y*.81-water.x*.2-time*.35);float shimmer=pow(max(0.,a*b),8.);float swell=sin(water.x*.026+water.y*.031)*.06;gl_FragColor=vec4(mix(deep,light,.18+swell+shimmer*.16),1.);\n#include <tonemapping_fragment>\n#include <colorspace_fragment>\n}'}/>}</mesh>
+}
+export function WorldDressing({world}:{world:World}){
+ const branches=useRef<T.InstancedMesh>(null),leaves=useRef<T.InstancedMesh>(null),rocks=useRef<T.InstancedMesh>(null);
+ const geometry=useMemo(()=>({trunk:new T.CylinderGeometry(.1,.16,1,5),leaf:new T.IcosahedronGeometry(1,0),rock:new T.IcosahedronGeometry(1,0)}),[]);
+ const entries=useMemo(()=>{const trees:T.Vector3[]=[],stones:T.Vector3[]=[],geo=world.geo??emptyGeo;for(const key of chunks(geo).keys()){const [cx,cz]=key.split(':').map(Number);for(let a=1;a<16;a+=4)for(let b=1;b<16;b+=4){const x=cx*16+a+Math.sin(cx*7+b)*.8,z=cz*16+b+Math.cos(cz*8+a)*.8,g=sample(geo,x,z);if(world.objects.some(o=>Math.hypot(o.x-x,o.z-z)<4))continue;if(g.h>.1&&g.h<.4&&Math.sin(x*3+z)>0&&stones.length<160)stones.push(new T.Vector3(x,g.h,z));if((g.h>2&&g.h<5.5||g.biome==='forest'&&g.h>.5)&&trees.length<240)trees.push(new T.Vector3(x,g.h,z));}}return {trees,stones}},[world]);
+ useEffect(()=>{const dummy=new T.Object3D(),color=new T.Color();entries.trees.forEach((p,i)=>{const scale=.75+(Math.sin(p.x*2+p.z)+1)*.22;dummy.position.copy(p).add(new T.Vector3(0,.7*scale,0));dummy.scale.set(scale,1.4*scale,scale);dummy.updateMatrix();branches.current?.setMatrixAt(i,dummy.matrix);dummy.position.copy(p).add(new T.Vector3(0,1.65*scale,0));dummy.scale.set(.9*scale,1.12*scale,.9*scale);dummy.rotation.y=i;dummy.updateMatrix();leaves.current?.setMatrixAt(i,dummy.matrix);leaves.current?.setColorAt(i,color.set(['#2d7151','#4d8957','#397d58'][i%3]));});entries.stones.forEach((p,i)=>{dummy.position.copy(p).add(new T.Vector3(0,.16,0));dummy.scale.set(.35+(i%3)*.13,.2+(i%4)*.04,.3);dummy.rotation.set(i,.5*i,0);dummy.updateMatrix();rocks.current?.setMatrixAt(i,dummy.matrix)});for(const mesh of [branches.current,leaves.current,rocks.current])if(mesh){mesh.instanceMatrix.needsUpdate=true;if(mesh.instanceColor)mesh.instanceColor.needsUpdate=true;mesh.computeBoundingSphere()}},[entries]);
+ useEffect(()=>()=>Object.values(geometry).forEach(g=>g.dispose()),[geometry]);
+ return <group name="visual-only-environment"><instancedMesh ref={branches} args={[geometry.trunk,undefined,entries.trees.length]} castShadow><meshStandardMaterial color="#78634c"/></instancedMesh><instancedMesh ref={leaves} args={[geometry.leaf,undefined,entries.trees.length]} castShadow><meshStandardMaterial roughness={.95}/></instancedMesh><instancedMesh ref={rocks} args={[geometry.rock,undefined,entries.stones.length]} receiveShadow><meshStandardMaterial color="#c1c3ac" flatShading/></instancedMesh></group>
+}
+export function RenderMetrics(){
+ const sample=useRef({at:0,frames:0});
+ useFrame(({gl,scene,camera,size,clock})=>{const tick=sample.current;tick.frames++;if(clock.elapsedTime-tick.at<.5)return;const context=gl.getContext(),extension=context.getExtension('WEBGL_debug_renderer_info');const debug=globalThis as typeof globalThis&{__nationMetrics?:unknown;__nationProject?:(x:number,y:number,z:number)=>{x:number;y:number}};debug.__nationMetrics={fps:tick.frames/(clock.elapsedTime-tick.at),drawCalls:gl.info.render.calls,triangles:gl.info.render.triangles,geometries:gl.info.memory.geometries,textures:gl.info.memory.textures,canvasWidth:size.width,canvasHeight:size.height,zoom:(camera as T.OrthographicCamera).zoom,renderer:extension?context.getParameter(extension.UNMASKED_RENDERER_WEBGL):'unavailable',meshes:scene.children.length};debug.__nationProject=(x,y,z)=>{const v=new T.Vector3(x,y,z).project(camera);return {x:(v.x+1)*size.width/2,y:(1-v.y)*size.height/2}};tick.at=clock.elapsedTime;tick.frames=0});
+ useEffect(()=>()=>{const debug=globalThis as typeof globalThis&{__nationMetrics?:unknown;__nationProject?:unknown};delete debug.__nationMetrics;delete debug.__nationProject},[]);return null;
+}

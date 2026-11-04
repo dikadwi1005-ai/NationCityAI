@@ -50,9 +50,11 @@ try {
   const canvas = page.locator('canvas');
   const box = await canvas.boundingBox();
   assert.ok(box);
-  // Orthographic home camera faces the origin along (1,1,1), at 10 pixels per metre.
-  const x = box.x + box.width / 2 + (18 - 12) * 10 / Math.sqrt(2);
-  const y = box.y + box.height / 2 + (18 + 12 - 2 * .85) * 10 / Math.sqrt(6);
+  // Derive screen coordinates from the live camera rather than a fixed zoom.
+  await page.waitForFunction(()=>typeof window.__nationProject==='function');
+  await page.waitForTimeout(700);
+  const point=await page.evaluate(()=>window.__nationProject(18,.85,12));
+  const x=box.x+point.x,y=box.y+point.y;
   await page.mouse.click(x, y);
   await page.getByText('Tersimpan di server', { exact: true }).waitFor();
   const saved = await world();
@@ -64,8 +66,11 @@ try {
   assert.deepEqual((await world()).objects.find(o => o.id === house.id), house);
   await canvas.waitFor();
   const selectHouse = async () => {
-    await page.mouse.click(x, y - 8);
-    await page.getByText('ID: ' + house.id.slice(0,8), { exact: false }).waitFor({timeout: 1500});
+    await page.waitForFunction(()=>typeof window.__nationProject==='function');
+    await page.waitForTimeout(750);
+    const selectedPoint=await page.evaluate(o=>window.__nationProject(o.x,2,o.z),house);
+    await page.mouse.click(selectedPoint.x,selectedPoint.y);
+    await page.locator('[data-object-id="'+house.id+'"]').waitFor({timeout:1500});
   };
   for (let i = 0; ; i++) {
     try { await selectHouse(); break; } catch (error) { if (i >= 4) throw error; }
@@ -101,7 +106,7 @@ try {
   console.log('PASS: preview tanpa commit, pulau baru, sculpt, undo/redo, refresh, ikhtisar, restart produksi. Revisi', final.revision);
   assert.deepEqual(errors, []);
   console.log('PASS: penempatan melalui viewport, ACK server, refresh, pemilihan mesh dengan ID sama, validasi API', house.x, house.z);
-} finally {
+} catch(e){if(browser){const pages=browser.contexts().flatMap(c=>c.pages());await pages[0]?.screenshot({path:'docs/phase-5c/placement-failure.png'});}throw e;} finally {
   await browser?.close();
   server.kill();
   await exited;
