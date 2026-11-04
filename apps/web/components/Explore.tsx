@@ -11,6 +11,7 @@ import Scene from './Scene';
 import LocalChat from './LocalChat';
 import TouchJoystick from './TouchJoystick';
 import QualityControls from './QualityControls';
+import {useVisualSettings} from './visual-settings';
 import {CITIZEN_SCALE} from '../../../packages/world-engine/visual-config';
 import WorldActivityControls,{ActivityStatus} from './WorldActivityControls';
 import type {Neighbor,LocalMessage,Preference} from '../../../packages/chat/policy';
@@ -60,6 +61,6 @@ export default function Explore({profile,onExit}:{profile:Profile;onExit?:()=>vo
  {notice&&<p className="travel-notice" role="status">{notice}</p>}
  <div className="explore-movement"><TouchJoystick change={(x,z)=>{joystick.current={x,z}}}/><div className="touch-directions">{['w','a','s','d'].map((k,i)=><button key={k} style={{touchAction:'none'}} aria-label={['↑','←','↓','→'][i]} onPointerDown={e=>{e.currentTarget.setPointerCapture(e.pointerId);keys.current.add(k)}} onLostPointerCapture={()=>keys.current.delete(k)}>{['↑','←','↓','→'][i]}</button>)}</div></div>
  <div className="explore-gestures">{['wave','point','celebrate'].map((v,i)=><button key={v} onClick={()=>socket.current?.send('gesture',v)}>{['Sapa','Tunjuk','Rayakan'][i]}</button>)}{me?.title&&<><strong>{me.title}</strong>{['ceremony','speech','announcement'].map((v,i)=><button key={v} onClick={()=>socket.current?.send('gesture',v)}>{['Upacara','Pidato','Pengumuman'][i]}</button>)}{world?.objects.some(o=>o.id===me.office&&Math.hypot(o.x-me.x,o.z-me.z)<8)&&<a href="/pemerintahan">Buka layanan kantor</a>}</>}</div>
- <details className="explore-activity" open={activity} onToggle={e=>setActivity(e.currentTarget.open)}><summary>World Activity · NPC simulasi</summary><QualityControls onChange={q=>setLow(q==='low')}/><WorldActivityControls/></details><footer className="explore-status"><span>WASD / panah · Shift untuk berlari</span><label><input type="checkbox" checked={low} onChange={e=>setLow(e.target.checked)}/> Grafis ringan</label></footer>
+ <details className="explore-activity" open={activity} onToggle={e=>setActivity(e.currentTarget.open)}><summary>World Activity · NPC simulasi</summary><QualityControls onChange={q=>setLow(q==='low')}/><WorldActivityControls/></details><footer className="explore-status"><span>WASD / panah · Shift untuk berlari</span><label><input type="checkbox" checked={low} onChange={e=>{setLow(e.target.checked);useVisualSettings.getState().setQuality(e.target.checked?'low':'medium')}}/> Grafis ringan</label></footer>
  </div>;
 }

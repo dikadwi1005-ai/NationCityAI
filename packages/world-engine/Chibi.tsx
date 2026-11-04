@@ -5,12 +5,12 @@ import {SphereGeometry,CylinderGeometry,MeshStandardMaterial,Vector3,type Group}
 import type {Look} from '../citizens/model';
 type Vec=[number,number,number];
 const sphere=new SphereGeometry(1,12,9),jack=new CylinderGeometry(.30,.37,.67,10),tunic=new CylinderGeometry(.30,.49,.67,10),materials=new Map<string,MeshStandardMaterial>();
-function mat(color:string){if(!materials.has(color))materials.set(color,new MeshStandardMaterial({color,flatShading:true}));return materials.get(color)!}
+function mat(color:string){if(!materials.has(color))materials.set(color,new MeshStandardMaterial({color,roughness:.87,metalness:0,envMapIntensity:.13}));return materials.get(color)!}
 function Ball({p,size,color}:{p:Vec;size:Vec;color:string}){return <mesh position={p} scale={size} castShadow geometry={sphere} material={mat(color)} dispose={null}/>}
 export function Chibi({look,motion:baseMotion='idle',motionSource,paused=false,phase=0}:{look:Look;motion?:string;motionSource?:{current:string};paused?:boolean;phase?:number}){
  const body=useRef<Group>(null),left=useRef<Group>(null),right=useRef<Group>(null),legA=useRef<Group>(null),legB=useRef<Group>(null);
- const animTime=useRef(0),lod=useRef(0),position=useRef(new Vector3());
- useFrame(({camera},dt)=>{if(paused)return;animTime.current+=Math.min(dt,.1);lod.current+=dt;body.current?.getWorldPosition(position.current);const far=camera.position.distanceTo(position.current)>75;if(far&&lod.current<.12)return;lod.current=0;const t=animTime.current+phase,motion=motionSource?.current??baseMotion,walk=motion==='walk'||motion==='run',stride=walk?Math.sin(t*(motion==='run'?14:9))*.65:0;
+ const strideState=useRef(0),animTime=useRef(0),lod=useRef(0),position=useRef(new Vector3());
+ useFrame(({camera},dt)=>{if(paused)return;animTime.current+=Math.min(dt,.1);lod.current+=dt;body.current?.getWorldPosition(position.current);const far=camera.position.distanceTo(position.current)>75;if(far&&lod.current<.12)return;lod.current=0;const t=animTime.current+phase,motion=motionSource?.current??baseMotion,walk=motion==='walk'||motion==='run',targetStride=walk?Math.sin(t*(motion==='run'?14:9))*.56:0;strideState.current+=(targetStride-strideState.current)*(1-Math.exp(-18*Math.min(dt,.1)));const stride=strideState.current;
  if(!body.current||!left.current||!right.current||!legA.current||!legB.current)return;
  body.current.position.y=(motion==='celebrate'?Math.abs(Math.sin(t*7))*.25:walk?Math.abs(Math.sin(t*9))*.035:Math.sin(t*2)*.018);
  left.current.rotation.set(-stride,0,motion==='celebrate'?-2.3:-.13);

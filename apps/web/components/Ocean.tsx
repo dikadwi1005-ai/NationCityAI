@@ -7,7 +7,7 @@ import {coastalField} from '../../../packages/world-engine/coastal-field';
 import {visualHeight} from '../../../packages/world-engine/visual-terrain';
 
 export default function Ocean({low,geo=emptyGeo}:{low:boolean;geo?:Geo}){
-  const shader=useRef<T.ShaderMaterial>(null);
+  const shader=useRef<T.ShaderMaterial>(null),water=useRef<T.Mesh>(null);
   const field=useMemo(()=>{
     const {data,w,h,minX,minZ,width,height}=coastalField(geo,low?128:384);
     const texture=new T.DataTexture(data,w,h,T.RGBAFormat);texture.minFilter=texture.magFilter=T.LinearFilter;texture.needsUpdate=true;
@@ -15,8 +15,8 @@ export default function Ocean({low,geo=emptyGeo}:{low:boolean;geo?:Geo}){
   },[geo,low]);
   useEffect(()=>()=>field.texture.dispose(),[field]);
   const uniforms=useMemo(()=>({time:{value:0},viewer:{value:new T.Vector3()},depthMap:{value:field.texture},bounds:{value:field.bounds},deep:{value:new T.Color('#234f62')},shallow:{value:new T.Color('#528e8a')},detail:{value:low?.45:1}}),[field,low]);
-  useFrame(({camera},dt)=>{if(shader.current){shader.current.uniforms.time.value+=Math.min(dt,.1);shader.current.uniforms.viewer.value.copy(camera.position)}});
-  return <mesh rotation={[-Math.PI/2,0,0]} position={[0,-.25,0]}>
+  useFrame(({camera,controls},dt)=>{const target=(controls as any)?.target??camera.position;if(water.current){water.current.position.x=Math.round(target.x/512)*512;water.current.position.z=Math.round(target.z/512)*512}if(shader.current){shader.current.uniforms.time.value+=Math.min(dt,.1);shader.current.uniforms.viewer.value.copy(camera.position)}});
+  return <mesh ref={water} rotation={[-Math.PI/2,0,0]} position={[0,-.25,0]}>
     <planeGeometry args={[4096,4096]}/><shaderMaterial ref={shader} uniforms={uniforms}
       vertexShader={'varying vec2 water;void main(){vec4 p=modelMatrix*vec4(position,1.);water=p.xz;gl_Position=projectionMatrix*viewMatrix*p;}'}
       fragmentShader={`uniform float time;uniform vec3 viewer;uniform float detail;uniform sampler2D depthMap;uniform vec4 bounds;uniform vec3 deep;uniform vec3 shallow;varying vec2 water;varying float waterDistance;

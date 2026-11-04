@@ -1,3 +1,5 @@
+import {VEHICLE_DIMENSIONS} from './vehicle-dimensions.ts';
+import {avenue} from './demo-presentation.ts';
 import {demoPresentation} from './demo-presentation.ts';
 import {ASSETS,footprint,type World} from '../nation-core/world.ts';
 import {emptyGeo,sample,islands} from '../nation-core/geography.ts';
@@ -55,23 +57,23 @@ export function route(nodes:Map<string,Node>,start:string,end:string):string[]{
  }return [];
 }
 export type Walker=Point&{id:number;node:string;path:string[];state:'IDLE'|'WALKING'|'ARRIVING'|'ACTIVITY'|'NEXT_DESTINATION';wait:number;angle:number;gesture:string;visits:number};
-export type Vehicle=Point&{id:number;from:string;to:string;previous:string;progress:number;wait:number;angle:number;distance:number;stopped:boolean;parked:boolean};
+export type Vehicle=Point&{id:number;from:string;to:string;previous:string;progress:number;wait:number;angle:number;distance:number;stopped:boolean;parked:boolean;speed:number;braking:boolean};
 /** Cubic lane transition with its tangent. Geometry and heading use the same
  * curve; a car no longer snaps to the next cardinal heading at a junction. */
-export function trafficPoint(from:Point,to:Point,previous:Point|undefined,t:number){
+export function trafficPoint(from:Point,to:Point,previous:Point|undefined,t:number,lane=.4,previousLane=lane){
  const dx=(to.x-from.x)/2,dz=(to.z-from.z)/2,ix=previous?(from.x-previous.x)/2:dx,iz=previous?(from.z-previous.z)/2:dz;
- if(t>=.3||!previous||ix===dx&&iz===dz)return {x:from.x+dx*2*t-dz*.32,z:from.z+dz*2*t+dx*.32,angle:Math.atan2(dx,dz)};
- const u=t/.3,v=1-u,s={x:from.x-iz*.32,z:from.z+ix*.32},e={x:from.x+dx*.6-dz*.32,z:from.z+dz*.6+dx*.32};
+ if(t>=.3||!previous||ix===dx&&iz===dz&&previousLane===lane)return {x:from.x+dx*2*t-dz*lane,z:from.z+dz*2*t+dx*lane,angle:Math.atan2(dx,dz)};
+ const u=t/.3,v=1-u,s={x:from.x-iz*previousLane,z:from.z+ix*previousLane},e={x:from.x+dx*.6-dz*lane,z:from.z+dz*.6+dx*lane};
  const a={x:s.x+ix*.2,z:s.z+iz*.2},b={x:e.x-dx*.2,z:e.z-dz*.2};
  const x=v*v*v*s.x+3*v*v*u*a.x+3*v*u*u*b.x+u*u*u*e.x,z=v*v*v*s.z+3*v*v*u*a.z+3*v*u*u*b.z+u*u*u*e.z;
  const tx=3*v*v*(a.x-s.x)+6*v*u*(b.x-a.x)+3*u*u*(e.x-b.x),tz=3*v*v*(a.z-s.z)+6*v*u*(b.z-a.z)+3*u*u*(e.z-b.z);
  return {x,z,angle:Math.atan2(tx,tz)};
 }
 export class LivingSimulation{
- network:Network;walkers:Walker[]=[];vehicles:Vehicle[]=[];random:()=>number;time=0;turns=0;stops=0;
+ network:Network;walkers:Walker[]=[];vehicles:Vehicle[]=[];random:()=>number;locks=new Map<string,number>();time=0;turns=0;stops=0;
  constructor(network:Network,npc:number,traffic:number){this.network=network;this.random=random(seedOf(network.island));const goals=network.goals;
   const occupied=new Set<string>();for(let i=0;i<npc&&goals.length;i++){const goal=network.walk.get(goals[i%goals.length])!,node=[goal,...goal.edges.map(id=>network.walk.get(id)!)].find(n=>!occupied.has(n.id))??goal;occupied.add(node.id);this.walkers.push({id:i,x:node.x,z:node.z,node:node.id,path:[],state:'IDLE',wait:.25+this.random()*4,angle:this.random()*6.28,gesture:'idle',visits:0})}
-  const roads=[...network.roads.values()].filter(n=>n.edges.length);for(let i=0;i<Math.min(traffic,Math.ceil(roads.length/3));i++){const n=roads[Math.floor(i*roads.length/Math.min(traffic,Math.ceil(roads.length/3)))],to=n.edges[i%n.edges.length],b=network.roads.get(to)!,dx=(b.x-n.x)/2,dz=(b.z-n.z)/2;this.vehicles.push({id:i,x:n.x-dz*.32,z:n.z+dx*.32,from:n.id,to,previous:'',progress:0,wait:this.random()*1.5,angle:Math.atan2(dx,dz),distance:0,stopped:false,parked:false})}
+  const roads=[...network.roads.values()].filter(n=>n.edges.length);for(let i=0;i<Math.min(traffic,Math.ceil(roads.length/3));i++){const n=roads[Math.floor(i*roads.length/Math.min(traffic,Math.ceil(roads.length/3)))],to=n.edges[i%n.edges.length],b=network.roads.get(to)!,dx=(b.x-n.x)/2,dz=(b.z-n.z)/2,sourceRoad=network.world.objects.find(o=>o.asset==='road'&&o.x===n.x&&o.z===n.z),lane=sourceRoad&&avenue(network.world,sourceRoad)?.48:.4;this.vehicles.push({id:i,x:n.x-dz*lane,z:n.z+dx*lane,from:n.id,to,previous:'',progress:0,wait:this.random()*1.5,angle:Math.atan2(dx,dz),distance:0,stopped:false,parked:false,speed:0,braking:false})}
  }
  step(dt:number){dt=Math.min(.05,Math.max(0,dt));this.time+=dt;const {network:n}=this;
   for(const a of this.walkers){if(a.wait>0){a.wait-=dt;if(a.gesture==='idle')a.angle+=Math.sin(this.time*.9+a.id)*dt*.2;continue}
@@ -84,10 +86,26 @@ export class LivingSimulation{
    const target=n.walk.get(a.path[0]);if(!target){a.state='ARRIVING';continue}const d=distance(a,target),step=(.6+(a.id%3)*.08)*dt;a.angle=Math.atan2(target.x-a.x,target.z-a.z);
    if(d<=step){a.x=target.x;a.z=target.z;a.node=target.id;a.path.shift();if(!a.path.length)a.state='ARRIVING'}else{a.x+=(target.x-a.x)/d*step;a.z+=(target.z-a.z)/d*step}
   }
-  for(const a of this.vehicles){a.stopped=false;if(a.wait>0){a.wait-=dt;a.stopped=true;continue}a.parked=false;const from=n.roads.get(a.from)!,to=n.roads.get(a.to)!;const dx=(to.x-from.x)/2,dz=(to.z-from.z)/2,step=(a.id%5===2?.95:1.35)*dt;
-   const t=Math.min(1,a.progress+step/2),point=trafficPoint(from,to,n.roads.get(a.previous),t),{x,z}=point;
-   // Same-lane headway and junction occupancy, independent of update order.
-   if(this.vehicles.some(b=>b!==a&&distance({x,z},b)<(Math.cos(b.angle-a.angle)>.5?1.25:.52)&&((b.x-a.x)*dx+(b.z-a.z)*dz)>0)){a.stopped=true;this.stops++;continue}
+  for(const a of this.vehicles){
+   a.stopped=false;a.braking=false;
+   for(const [id,owner]of this.locks)if(owner===a.id&&distance(a,n.roads.get(id)!)>1.35)this.locks.delete(id);
+   if(a.wait>0){a.wait-=dt;a.stopped=true;a.braking=true;a.speed=0;continue}a.parked=false;
+   const from=n.roads.get(a.from)!,to=n.roads.get(a.to)!,dimension=VEHICLE_DIMENSIONS[a.id%5],dx=(to.x-from.x)/2,dz=(to.z-from.z)/2;
+   let target:number=dimension.speed;
+   if(to.edges.length>=3){
+    const owner=this.locks.get(to.id),occupied=this.vehicles.some(b=>b!==a&&distance(b,to)<1.15);
+    if(owner===undefined&&!occupied)this.locks.set(to.id,a.id);
+    if(this.locks.get(to.id)!==a.id)target=Math.min(target,Math.max(0,(1-a.progress)*2-1.15)*1.5);
+    else target=Math.min(target,Math.sqrt(3*Math.max(.002,(1-a.progress)*2)));
+   }
+   for(const b of this.vehicles){if(b===a)continue;const forward=(b.x-a.x)*Math.sin(a.angle)+(b.z-a.z)*Math.cos(a.angle),lateral=Math.abs((b.x-a.x)*Math.cos(a.angle)-(b.z-a.z)*Math.sin(a.angle));
+    if(forward>0&&lateral<.65&&Math.cos(b.angle-a.angle)>.35){const gap=distance(a,b)-(dimension.length+VEHICLE_DIMENSIONS[b.id%5].length)/2;target=Math.min(target,Math.max(0,gap-.2)*1.5)}
+   }
+   a.braking=target<a.speed-.02;a.speed+=Math.max(-3.5*dt,Math.min(1.3*dt,target-a.speed));
+   if(a.speed<.015){a.stopped=true;this.stops++;continue}
+   const step=a.speed*dt,t=Math.min(1,a.progress+step/2),road=n.world.objects.find(o=>o.asset==='road'&&o.x===from.x&&o.z===from.z),prev=n.roads.get(a.previous);
+   const lane=road&&avenue(n.world,road)?.48:.4,previousRoad=prev?n.world.objects.find(o=>o.asset==='road'&&o.x===prev.x&&o.z===prev.z):road,previousLane=previousRoad&&avenue(n.world,previousRoad)?.48:.4,point=trafficPoint(from,to,prev,t,lane,previousLane),{x,z}=point;
+   if(this.vehicles.some(b=>b!==a&&distance({x,z},b)<(Math.cos(b.angle-a.angle)>.35?(dimension.length+VEHICLE_DIMENSIONS[b.id%5].length)/2+.1:.52)&&((b.x-a.x)*dx+(b.z-a.z)*dz)>0)){a.stopped=true;a.braking=true;a.speed=0;this.stops++;continue}
    a.progress=t;a.distance+=step;a.x=x;a.z=z;a.angle=point.angle;
    if(t>=1){let choices=to.edges.filter(id=>id!==a.from);if(!choices.length)choices=[a.from];const next=choices[Math.floor(this.random()*choices.length)],b=n.roads.get(next)!,angle=Math.atan2(b.x-to.x,b.z-to.z);if(Math.abs(angle-a.angle)>.1)this.turns++;
     a.previous=a.from;a.from=a.to;a.to=next;a.progress=0;a.wait=to.edges.length>2?.65+this.random()*.6:choices[0]===a.previous?1.4:0;
