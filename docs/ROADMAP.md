@@ -16,6 +16,8 @@ Cross-cutting: domain commands, stable identifiers, versioned assets/world snaps
 
 Status Phase 3: lulus penerimaan lokal dua akun. Lihat [laporan Phase 3](PHASE_3_REPORT.md).
 
-Phase 4 tersedia untuk pengujian lokal. Bukti penerimaan tiga akun serta batas operasional ada di [laporan Phase 4](PHASE_4_REPORT.md). Phase 5 masih dalam roadmap.
+Phase 4 lulus pengujian lokal. Bukti penerimaan tiga akun serta batas operasional ada di [laporan Phase 4](PHASE_4_REPORT.md).
 
 Phase 5 lulus penerimaan lokal pemilu, penetapan jabatan dan pemulihan database uji. Lihat [laporan Phase 5](PHASE_5_REPORT.md). Kesiapan produksi memerlukan latihan restore off-site nyata dan uji konkurensi di lingkungan target. Phase 6 menggunakan antrean proposal APPROVED.
+
+Phase 5B: persiapan deployment dan audit runtime lokal tersedia. Lihat [audit 4 November 2026](PHASE_5B_RUNTIME_AUDIT.md). Database aktif merupakan starter baru; migrasi cloud memerlukan pilihan sumber dari pemilik. HTTPS/WSS internet dan S3 nyata belum terverifikasi. Phase 6 belum dimulai.

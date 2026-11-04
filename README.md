@@ -1,4 +1,6 @@
-# AI Nation Builder ? Phase 5
+# AI Nation Builder — Phase 5B
+
+Status terbaru 4 November 2026: runtime lokal dan persiapan deployment diaudit ulang. Database aktif berisi dunia awal tanpa riwayat pengguna; jangan menganggapnya database lama. Lihat [audit runtime](docs/PHASE_5B_RUNTIME_AUDIT.md) dan [langkah menghubungkan Railway/AWS](deploy/railway/README.md). Panduan ini menggantikan instruksi TOML untuk layanan Railway baru. Belum ada deployment internet atau verifikasi S3 nyata dari audit ini.
 
 Phase 1 terverifikasi pada Windows, Node 26.13.0 dan Microsoft Edge. Klik pada viewport menempatkan rumah pada X 18, Z 12. Server mengakui penyimpanan. Setelah refresh, pengujian mencocokkan rekaman lengkap dan memilih mesh rumah dengan ID yang sama.
 

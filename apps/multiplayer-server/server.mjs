@@ -1,8 +1,10 @@
+import {createServer} from 'node:http';
+import {webOrigin,pgRuntime} from '../../packages/postgres/runtime.mjs';
 import {currentRole,maintain} from '../../packages/government/service.mjs';
 import {purge} from '../../packages/chat/storage.ts';
 import {database} from '../../packages/citizens/db.ts';
 import {LocalChat} from './chat.mjs';
-﻿import {Room,Server} from '@colyseus/core';
+﻿import {Room,Server,matchMaker} from '@colyseus/core';
 import {WebSocketTransport} from '@colyseus/ws-transport';
 import {store} from '../../packages/persistence/store.ts';
 import {profile,redeem,savePosition,sessionId} from '../../packages/citizens/db.ts';
@@ -47,7 +49,18 @@ class Nation extends Room{
  }
  onLeave(c){const p=this.people.get(c.sessionId);if(!p)return;if(active.get(p.id)===p){savePosition(p.id,p);active.delete(p.id)}this.people.delete(c.sessionId)}
 }
-const server=new Server({transport:new WebSocketTransport({maxPayload:4096}),greet:false});
+const staging=process.env.NATION_ENV==='staging',origin=webOrigin();
+if(staging&&!origin)throw Error('WEB_ORIGIN wajib.');
+const http=createServer((req,res)=>{if(req.url!=='/health'){res.writeHead(404).end();return}try{const backend=pgRuntime()?'postgres':'sqlite',db=store().db;if(!db.prepare('SELECT id FROM worlds LIMIT 1').get())throw Error();const schemaVersion=db.prepare('SELECT max(version) AS version FROM schema_migrations').get().version;res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'}).end(JSON.stringify({status:'ready',backend,schemaVersion,release:process.env.RAILWAY_GIT_COMMIT_SHA??null}))}catch{res.writeHead(503).end('unavailable')}});
+let reservations=0,resetAt=0;
+class NationServer extends Server{
+ handleMatchMakeRequest(req,res){if(staging){if(req.headers.origin!==origin){res.writeHead(403).end();return}
+ if(req.method==='POST'){const size=Number(req.headers['content-length']);if(!Number.isFinite(size)||size<1||size>4096||req.headers['transfer-encoding']){res.writeHead(413).end();return}
+ if(Date.now()>resetAt){reservations=0;resetAt=Date.now()+60000}if(++reservations>150){res.writeHead(429).end();return}}}
+ return super.handleMatchMakeRequest(req,res)}
+}
+if(staging){matchMaker.controller.getCorsHeaders=()=>({'Access-Control-Allow-Origin':origin,'Vary':'Origin'});matchMaker.controller.exposedMethods=['joinOrCreate']}
+const server=new NationServer({transport:new WebSocketTransport({server:http,maxPayload:4096,...(staging?{verifyClient:info=>info.origin===origin}:{})}),greet:false});
 server.define('nation',Nation);
 await server.listen(Number(process.env.MULTIPLAYER_PORT)||2567,process.env.MULTIPLAYER_HOST||'127.0.0.1');
 console.log('Nation multiplayer ready');

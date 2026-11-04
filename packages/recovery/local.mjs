@@ -55,4 +55,3 @@ export function retain(dir,now=Date.now()){
  for(const r of rows)if(!keep.has(r.id)){for(const ext of ['enc','json']){const f=join(/*turbopackIgnore: true*/ dir,r.id+'.'+ext);if(existsSync(/*turbopackIgnore: true*/ f))unlinkSync(/*turbopackIgnore: true*/ f)}}
 }
 export function due(dir,now=Date.now()){const hours=Number(process.env.BACKUP_INTERVAL_HOURS??24);if(!Number.isFinite(hours)||hours<=0)throw Error('Interval backup tidak valid.');return !history(dir).some(r=>r.reason==='scheduled'&&now-r.at<hours*3600000&&r.expires>now)}
-

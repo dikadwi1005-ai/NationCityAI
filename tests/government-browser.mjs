@@ -28,4 +28,3 @@ try{await Promise.all([next.ready,mpserver.ready]);browser=await chromium.launch
  await admin.page.goto(origin+'/pemulihan');const ack=admin.page.waitForResponse(r=>r.url().endsWith('/api/recovery')&&r.request().method()==='POST');await admin.page.getByRole('button',{name:'Buat backup privat'}).click();const backup=await ack;assert.equal(backup.status(),200,await backup.text());assert.ok((await backup.json()).rows.some(r=>r.reason==='manual'&&r.integrity==='ok'&&r.remote==='belum aktif'));
  assert.deepEqual(db.read(),world);assert.deepEqual(errors,[]);console.log('PASS Edge: governor nominations, reviews, voting, concurrent HTTP 200/400, outsider denied, finalization 2:1, Chibi official in game, original look, platform denial, backup panel with verified local snapshot.');
 }finally{await browser?.close();next.p.kill();mpserver.p.kill();await Promise.all([next.exit,mpserver.exit]);db.close();await rm(dir,{recursive:true,force:true})}
-

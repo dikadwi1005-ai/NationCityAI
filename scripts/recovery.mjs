@@ -1,6 +1,7 @@
 ﻿import {config,snapshot,history,writeMeta,restore,retain,due} from '../packages/recovery/local.mjs';
 import {upload,restoreRemote} from '../packages/recovery/remote.mjs';
 import {existsSync,appendFileSync} from 'node:fs';import {join} from 'node:path';
+if(process.env.NATION_ENV==='staging'||process.env.NATION_DB==='postgres')throw Error('Gunakan staging-backup.mjs untuk runtime PostgreSQL.');
 const {dir,source}=config();const action=process.argv[2]??'backup';
 async function run(reason){const meta=snapshot(source,reason);try{meta.remote=await upload(dir,meta)}catch{meta.remote='gagal';writeMeta(dir,meta);appendFileSync(join(dir,'recovery.log'),JSON.stringify({at:Date.now(),action:'remote',ok:false,id:meta.id})+'\n');throw Error('Backup lokal tersimpan; verifikasi remote gagal.')}writeMeta(dir,meta);if(meta.remote==='terverifikasi')appendFileSync(join(dir,'recovery.log'),JSON.stringify({at:Date.now(),action:'remote',ok:true,id:meta.id})+'\n');retain(dir);console.log(JSON.stringify({id:meta.id,remote:meta.remote}))}
 if(action==='restore'||action==='restore-remote'){if(process.argv[5]!=='--confirm-new-file')throw Error('Wajib --confirm-new-file');if(action==='restore-remote')await restoreRemote(source,process.argv[3],process.argv[4]);else restore(source,process.argv[3],process.argv[4])}

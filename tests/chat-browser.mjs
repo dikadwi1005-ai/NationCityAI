@@ -43,7 +43,8 @@ try{
  assert.equal((await admin.request.post(origin+'/api/session',{headers:{Origin:origin},data:{key:env.ADMIN_KEY}})).status(),200);
  await mod.goto(origin+'/moderasi');await mod.getByText(leave,{exact:true}).waitFor();
  await c.p.getByText('Keamanan percakapan').click();await c.p.getByRole('button',{name:'Blokir',exact:true}).click();await a.p.getByText('Tidak ada warga di sekitar').waitFor();await c.p.getByRole('button',{name:/Pulihkan blokir/}).click();
- await b.p.getByLabel('Tujuan perjalanan').selectOption('island-001');await b.p.getByLabel('Pesan lokal').waitFor();
+ // Respect the server's 1200 ms travel cooldown before the return trip.
+ await b.p.waitForTimeout(1300);await b.p.getByLabel('Tujuan perjalanan').selectOption('island-001');await b.p.getByLabel('Pesan lokal').waitFor();
  const safety=c.p.locator('.spatial-chat details');if(!(await safety.evaluate(el=>el.open)))await safety.locator('summary').click();
  const target=c.p.locator('.spatial-chat details div').filter({hasText:'Aruna'});
  await target.getByRole('button',{name:'Bisukan'}).click();await c.p.getByRole('button',{name:/Pulihkan suara/}).waitFor();

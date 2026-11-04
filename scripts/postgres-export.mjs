@@ -4,14 +4,14 @@ import {writeFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 // Destination schema must be new. The source is opened read-only and live tokens never leave SQLite.
-const tables={
+export const tables={
  schema_migrations:'version integer PRIMARY KEY',
  worlds:'id text PRIMARY KEY, revision bigint NOT NULL, state jsonb NOT NULL',
- world_events:'request_id text PRIMARY KEY, revision bigint UNIQUE NOT NULL, actor text NOT NULL, command jsonb NOT NULL, snapshot jsonb NOT NULL, created_at timestamp NOT NULL',
+ world_events:'request_id text PRIMARY KEY, revision bigint UNIQUE NOT NULL, actor text NOT NULL, command jsonb NOT NULL, snapshot jsonb NOT NULL, created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP',
  terrain_chunks:'id text PRIMARY KEY, cx integer NOT NULL, cz integer NOT NULL, version bigint NOT NULL, generator text NOT NULL, UNIQUE(cx,cz)',
- citizens:"id text PRIMARY KEY, login text UNIQUE NOT NULL, secret text NOT NULL, joined timestamp NOT NULL, home text NOT NULL, location jsonb",
+ citizens:"id text PRIMARY KEY, login text UNIQUE NOT NULL, secret text NOT NULL, joined timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, home text NOT NULL DEFAULT 'island-001', location jsonb",
  chat_preferences:'owner text REFERENCES nation_import.citizens(id), target text REFERENCES nation_import.citizens(id), kind text NOT NULL, PRIMARY KEY(owner,target)',
- chat_reports:'id text PRIMARY KEY, reporter text NOT NULL, sender text NOT NULL, message_id text NOT NULL, reason text NOT NULL, evidence jsonb NOT NULL, created bigint NOT NULL, resolved integer NOT NULL, UNIQUE(reporter,message_id)',
+ chat_reports:'id text PRIMARY KEY, reporter text NOT NULL, sender text NOT NULL, message_id text NOT NULL, reason text NOT NULL, evidence jsonb NOT NULL, created bigint NOT NULL, resolved integer NOT NULL DEFAULT 0, UNIQUE(reporter,message_id)',
  chat_sanctions:'target text NOT NULL, kind text NOT NULL, until bigint NOT NULL, PRIMARY KEY(target,kind)',
  moderation_audit:'id text PRIMARY KEY, report text NOT NULL, target text NOT NULL, action text NOT NULL, actor text NOT NULL, created bigint NOT NULL',
  appearances:'id text REFERENCES nation_import.citizens(id), version integer, look jsonb NOT NULL, PRIMARY KEY(id,version)'

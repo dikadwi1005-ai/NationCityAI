@@ -16,6 +16,7 @@ const house={...w.read().objects.find(o=>o.asset==='house'),id:randomUUID(),x:18
 const world=w.read(),day=86400000;let now=Date.now(),pg;
 try{
  const people=[];for(const login of ['Aruna','Bima','Citra','Luar']){const id=identify(await authenticate(login,'test-password-123',true));saveLook(id,{...defaults,name:login});people.push(id)}
+ now=Date.now(); // Freeze the election clock after all fixture registrations exist.
  const [a,b,c,out]=people;
  const op=(user,action,body,admin=false)=>change(db,world,user,admin,{action,...body},now),adm=(action,body)=>op(null,action,body,true);
  for(const u of [a,b,c])op(u,'reside',{region});
@@ -44,4 +45,3 @@ try{
  pg=new PGlite();await pg.exec(exportSql(source));assert.deepEqual((await pg.query('SELECT votes FROM nation_import.election_results ORDER BY votes')).rows.map(r=>r.votes),[1,2]);assert.equal((await pg.query('SELECT count(*)::int AS n FROM nation_import.gov_events')).rows[0].n,db.prepare('SELECT count(*) n FROM gov_events').get().n);
  assert.deepEqual(w.read(),world);console.log('PASS governance stages, candidate eligibility, frozen residence, private votes, rollback, deadline, 2:1 tally, idempotent term, expiration, proposal, PostgreSQL staging. PASS encrypted WAL backup, pre-migration, scheduled deduplication, restore contents and IDs, main unchanged, corruption and wrong-key rejection.');
 }finally{await pg?.close();w.close();rmSync(dir,{recursive:true,force:true})}
-

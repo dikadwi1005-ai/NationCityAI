@@ -18,3 +18,12 @@ recovery.log
 *.recovery.key
 *.sql.gz
 *.private.sql
+
+*.env
+!*.env.example
+.railway/
+/.release/
+/docs/phase5b-runtime-audit.json
+/docs/phase5b-live-smoke.json
+/docs/s3-live-verification.json
+*.private.json

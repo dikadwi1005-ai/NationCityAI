@@ -11,4 +11,3 @@ export async function POST(r){if(!sameOrigin(r))return json({error:'Origin ditol
  const now=Date.now();if(now-sweep>60000){for(const [k,v] of limits)if(v.until<=now)limits.delete(k);sweep=now}
  const key=user||'admin',v=limits.get(key);if(!v||v.until<=now)limits.set(key,{count:1,until:now+60000});else if(++v.count>60)return json({error:'Tunggu satu menit.'},429);
  try{const raw=await r.text();if(raw.length>2048)return json({error:'Permintaan terlalu panjang.'},413);const id=change(database(),store().read(),user,admin,JSON.parse(raw));return json({id})}catch(e){const msg=e.message;return json({error:/SQLITE|constraint|syntax|JSON|database|ENOENT|EPERM/i.test(msg)?'Perintah bertentangan atau tidak dapat disimpan.':msg},msg==='Akses ditolak.'?403:400)}}
-
