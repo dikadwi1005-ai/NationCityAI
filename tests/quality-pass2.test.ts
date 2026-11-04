@@ -7,7 +7,7 @@ import {trafficPoint,buildNetwork,LivingSimulation} from '../packages/world-engi
 
 test('Demo City is a deterministic valid fixture with blocks, T/four-way junctions, and no mutation of the starter',()=>{
   const source=starterWorld(),before=JSON.stringify(source),world=demoCity();assert.deepEqual(world,demoCity());
-  assert.ok(world.objects.filter(o=>o.asset==='house').length>=40);
+  assert.ok(world.objects.filter(o=>o.asset==='house').length>=20);
   for(const o of world.objects)assert.equal(placementError(o,world.objects,world.geo),null,o.id);
   const roads=buildNetwork(world).roads;assert.ok([...roads.values()].some(n=>n.edges.length===4));assert.ok([...roads.values()].some(n=>n.edges.length===3));
   assert.equal(JSON.stringify(source),before);assert.equal(source.objects.length,32);assert.equal(source.revision,0);

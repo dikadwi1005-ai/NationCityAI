@@ -1,4 +1,8 @@
 'use client';
+import {Html} from '@react-three/drei';
+import {demoPresentation,avenue} from '../../../packages/world-engine/demo-presentation';
+import PublicFacility from '../../../packages/world-engine/assets/PublicFacilities';
+import type {FixtureAsset} from '../../../packages/world-engine/asset-registry';
 import {useLayoutEffect,useMemo,useRef,useState} from 'react';
 import {BufferGeometry,Group,Matrix4,Mesh,type Material} from 'three';
 import {mergeGeometries} from 'three/examples/jsm/utils/BufferGeometryUtils.js';
@@ -14,21 +18,23 @@ export function roadConnections(o:WorldObject,objects:WorldObject[]):RoadConnect
   const dirs=[[0,-2],[2,0],[0,2],[-2,0]].map(([x,z])=>objects.some(v=>v.asset==='road'&&v.x===o.x+x&&v.z===o.z+z));
   return {n:dirs[(4-o.rotation)%4],e:dirs[(5-o.rotation)%4],s:dirs[(6-o.rotation)%4],w:dirs[(7-o.rotation)%4]};
 }
+type RenderItem=WorldObject&{fixture?:FixtureAsset;label?:string};
 const variant=(o:WorldObject)=>visualVariant(o.id);
-const keyOf=(o:WorldObject,objects:WorldObject[])=>o.asset==='road'?'road:'+Object.values(roadConnections(o,objects)).map(Number).join(''):o.asset+':'+variant(o);
+const keyOf=(o:RenderItem,objects:WorldObject[],world:World)=>o.fixture?'fixture:'+o.fixture:o.asset==='road'?'road:'+Object.values(roadConnections(o,objects)).map(Number).join('')+':'+Number(avenue(world,o)):o.asset+':'+variant(o);
 type Batch={geometry:BufferGeometry;material:Material;ranges:{end:number;id:string}[]};
 
 /** Shared models compiled into material batches. Triangle spans retain object IDs
  * for picking. Road vertices still conform to the authoritative terrain sampler. */
 export default function StaticWorld({world,pick}:{world:World;pick:(id:string,e:ThreeEvent<MouseEvent>)=>void}){
-  const quality=useQuality();const templates=useRef<Group>(null),[batches,setBatches]=useState<Batch[]>([]);
-  const representatives=useMemo(()=>[...new Map(world.objects.map(o=>[keyOf(o,world.objects),o])).entries()],[world]);
+  const quality=useQuality();const [fixtureInfo,setFixtureInfo]=useState<RenderItem|null>(null);const templates=useRef<Group>(null),[batches,setBatches]=useState<Batch[]>([]);
+  const items=useMemo<RenderItem[]>(()=>[...world.objects,...(demoPresentation(world)?.buildings??[]).map(b=>({id:b.id,asset:'house' as const,x:b.x,z:b.z,rotation:b.rotation,assetVersion:1 as const,regionId:'region-001' as const,ownerId:'administrator' as const,fixture:b.kind,label:b.name}))],[world]);
+  const representatives=useMemo(()=>[...new Map(items.map(o=>[keyOf(o,world.objects,world),o])).entries()],[world,items]);
   useLayoutEffect(()=>{
     const root=templates.current;if(!root)return;root.updateWorldMatrix(true,true);
     const byKey=new Map(root.children.map(g=>[g.name,g]));
     const groups=new Map<string,{material:Material;geometries:BufferGeometry[];ranges:Batch['ranges'];faces:number}>();
-    for(const o of world.objects){
-      const template=byKey.get(keyOf(o,world.objects));if(!template)continue;
+    for(const o of items){
+      const template=byKey.get(keyOf(o,world.objects,world));if(!template)continue;
       const base=sample(world.geo??emptyGeo,o.x,o.z).h;
       const transform=new Matrix4().makeRotationY(o.rotation*Math.PI/2);transform.setPosition(o.x,base,o.z);
       template.traverse(child=>{
@@ -54,11 +60,12 @@ export default function StaticWorld({world,pick}:{world:World;pick:(id:string,e:
       if(geometry){geometry.computeBoundingSphere();next.push({geometry,material:group.material,ranges:group.ranges})}
     }
     setBatches(next);return()=>next.forEach(b=>b.geometry.dispose());
-  },[world,representatives,quality]);
+  },[world,representatives,quality,items]);
   return <>
-    <group ref={templates} visible={false}>{representatives.map(([key,o])=><group name={key} key={key}><Model asset={o.asset} variant={variant(o)} connections={o.asset==='road'?roadConnections(o,world.objects):undefined}/></group>)}</group>
+    <group ref={templates} visible={false}>{representatives.map(([key,o])=><group name={key} key={key}>{o.fixture?<PublicFacility kind={o.fixture}/>:<Model asset={o.asset} variant={variant(o)} mainRoad={avenue(world,o)} connections={o.asset==='road'?roadConnections(o,world.objects):undefined}/>}</group>)}</group>
     {batches.map(b=><mesh key={b.material.uuid} geometry={b.geometry} material={b.material} castShadow receiveShadow dispose={null} onClick={e=>{
-      if(e.delta>5)return;const range=b.ranges.find(r=>(e.faceIndex??-1)<r.end);if(range){e.stopPropagation();pick(range.id,e)}
+      if(e.delta>5)return;const range=b.ranges.find(r=>(e.faceIndex??-1)<r.end);if(range){e.stopPropagation();const fixture=items.find(o=>o.id===range.id&&o.fixture);if(fixture)setFixtureInfo(fixture);else{setFixtureInfo(null);pick(range.id,e)}}
     }}/>) }
+  {fixtureInfo&&<Html position={[fixtureInfo.x,sample(world.geo??emptyGeo,fixtureInfo.x,fixtureInfo.z).h+3,fixtureInfo.z]} center zIndexRange={[15,0]}><div className="fixture-info"><strong>{fixtureInfo.label}</strong><p>Aset fixture demo · belum tersedia di katalog pembangunan.</p><button onClick={()=>setFixtureInfo(null)}>Tutup</button></div></Html>}
   </>;
 }

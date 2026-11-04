@@ -8,6 +8,7 @@ import RoadSurface from './RoadSurface';
 import {visualVariant} from '../../../packages/world-engine/asset-registry';
 import LivingWorld from './LivingWorld';
 import NaturalLight from './NaturalLight';
+import DemoLandscape from './DemoLandscape';
 import {useVisualSettings} from './visual-settings';
 import {QualityContext} from '../../../packages/world-engine/quality-context';
 import {QUALITY} from '../../../packages/world-engine/visual-config';
@@ -45,7 +46,7 @@ export default function Scene({children,brush,world,draft,selected,grid,layers=f
  <Terrain geo={geo}/>{brush&&<mesh rotation={[-Math.PI/2,0,0]} position={[brush.x,sample(geo,brush.x,brush.z).h+.35,brush.z]} renderOrder={5}><ringGeometry args={[brush.radius-.2,brush.radius,64]}/><meshBasicMaterial color="#fff7ba" depthTest={false}/></mesh>}
  {(grid||layers)&&regions(geo).map(r=><mesh key={r.id} position={[r.x,sample(geo,r.x,r.z).h+.2,r.z]} rotation={[-Math.PI/2,0,0]}><ringGeometry args={[r.radius-.25,r.radius,64]}/><meshBasicMaterial color="#ffca64" depthTest={false} transparent opacity={.8}/></mesh>)}
  {grid&&<gridHelper args={[80,40,'#668c7b','#9db398']} position={[0,.83,0]}/>}
- <StaticWorld world={world} pick={(id)=>{const o=world.objects.find(o=>o.id===id);if(o){if(draft)onGround(o.x,o.z);else onSelect(id)}}}/><UrbanEnvironment world={world}/>
+ <StaticWorld world={world} pick={(id)=>{const o=world.objects.find(o=>o.id===id);if(o){if(draft)onGround(o.x,o.z);else onSelect(id)}}}/><UrbanEnvironment world={world}/><DemoLandscape world={world}/>
  {selected&&world.objects.filter(o=>o.id===selected).map(o=><mesh key={o.id} rotation={[-Math.PI/2,0,0]} position={[o.x,sample(geo,o.x,o.z).h+.13,o.z]}><ringGeometry args={[1.8,2,40]}/><meshBasicMaterial color="#fff3bf" side={THREE.DoubleSide}/></mesh>)}
 
  <mesh rotation={[-Math.PI/2,0,0]} position={[0,.85,0]} onPointerMove={ground} onClick={e=>{if(e.delta>5)return;e.stopPropagation();onGround(Math.round(e.point.x/2)*2,Math.round(e.point.z/2)*2)}}><planeGeometry args={[2100000,2100000]}/><meshBasicMaterial transparent opacity={0} depthWrite={false}/></mesh>

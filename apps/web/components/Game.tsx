@@ -2,6 +2,7 @@
 import {useEffect,useRef,useState} from 'react';
 import Scene,{type CameraAction} from './Scene';
 import GameView from './GameView';
+import {fixturePlacementConflict} from '../../../packages/world-engine/demo-presentation';
 import {demoCity} from '../../../packages/world-engine/demo-city';
 import {useActivity} from './world-activity';
 import {useEditor} from './editor';
@@ -28,7 +29,7 @@ export default function Game({demo=false}:{demo?:boolean}){
  return true;
  }catch(e){setError(e instanceof Error?e.message:String(e));setStatus('Belum tersimpan — coba lagi');return false}finally{lock.current=false;setBusy(false)}
  }
- function place(x:number,z:number){if(!draft||!world)return;const object={...draft,x,z};const issue=placementError(object,world.objects,world.geo);if(issue){setError(issue);return}if(editor.tool==='move'){void send({type:'transform',id:object.id,x,z,rotation:object.rotation});editor.set({tool:'select'})}else void send({type:'place',object:{...object,id:previewId.current}}).then(ok=>{if(ok){previewId.current=crypto.randomUUID();setHover(v=>({...v}))}})}
+ function place(x:number,z:number){if(!draft||!world)return;const object={...draft,x,z};const issue=demo&&fixturePlacementConflict(world,object)?'Area digunakan aset fixture demo.':placementError(object,world.objects,world.geo);if(issue){setError(issue);return}if(editor.tool==='move'){void send({type:'transform',id:object.id,x,z,rotation:object.rotation});editor.set({tool:'select'})}else void send({type:'place',object:{...object,id:previewId.current}}).then(ok=>{if(ok){previewId.current=crypto.randomUUID();setHover(v=>({...v}))}})}
  useEffect(()=>{const handle=(e:KeyboardEvent)=>{if((e.target as HTMLElement).matches('input,textarea'))return;if(e.key==='Escape')editor.set({tool:'select'});if(e.key.toLowerCase()==='r')editor.set({rotation:(useEditor.getState().rotation+1)%4})};window.addEventListener('keydown',handle);return()=>window.removeEventListener('keydown',handle)},[editor.set]);
  return <GameView demo={demo} world={world} admin={admin} busy={busy} status={status} error={error} clearError={()=>setError('')} setAdmin={setAdmin} reload={load} editor={editor} chosen={chosen} draft={draft} hover={hover} place={place} send={send} undo={undo} redo={redo} action={action} setAction={setAction} atlas={atlas} setAtlas={setAtlas} preview={preview} setPreview={setPreview} point={point} setPoint={setPoint} brushRadius={brushRadius} setBrushRadius={setBrushRadius} beginMove={()=>{if(chosen){setHover({x:chosen.x,z:chosen.z});editor.set({tool:'move',rotation:chosen.rotation})}}}>
  {world?<Scene brush={atlas&&admin?{...point,radius:brushRadius}:undefined} world={preview??world} draft={draft} selected={editor.selected} grid={editor.grid&&admin} layers={editor.layers} low={editor.low} action={action} onGround={atlas?(x,z)=>{if(!preview)setPoint({x,z})}:place} onHover={(x,z)=>{if(!atlas)setHover({x,z})}} onSelect={id=>{if(atlas){const o=world.objects.find(o=>o.id===id);if(o&&!preview)setPoint({x:o.x,z:o.z})}else editor.set({selected:id,tool:'select'})}}/>:<div className="loading">Memuat kepulauan…</div>}

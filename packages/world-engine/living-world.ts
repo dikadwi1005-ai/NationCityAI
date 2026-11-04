@@ -1,3 +1,4 @@
+import {demoPresentation} from './demo-presentation.ts';
 import {ASSETS,footprint,type World} from '../nation-core/world.ts';
 import {emptyGeo,sample,islands} from '../nation-core/geography.ts';
 
@@ -13,6 +14,7 @@ export function seedOf(text:string){let n=2166136261;for(const c of text)n=Math.
 const distance=(a:Point,b:Point)=>Math.hypot(a.x-b.x,a.z-b.z);
 export function traversable(world:World,x:number,z:number,radius=.28){
  if(sample(world.geo??emptyGeo,x,z).h<.5)return false;
+ if(demoPresentation(world)?.buildings.some(b=>b.kind!=='parking'&&Math.abs(x-b.x)<b.w/2+radius&&Math.abs(z-b.z)<b.d/2+radius))return false;
  return !world.objects.some(o=>{if(o.asset==='road'||o.asset==='park')return false;const f=footprint(o);return Math.abs(x-o.x)<f.w/2+radius&&Math.abs(z-o.z)<f.d/2+radius});
 }
 export function clearSegment(world:World,a:Point,b:Point,radius=.28){
@@ -35,6 +37,7 @@ export function buildNetwork(world:World,island='island-001'):Network{
  for(const n of walk.values())for(const [dx,dz]of [[1,0],[-1,0],[0,1],[0,-1]]){const id=(Math.floor(n.x)+dx)+':'+(Math.floor(n.z)+dz),to=walk.get(id);if(to&&clearSegment(world,n,to))n.edges.push(id)}
  const goals:string[]=[],seats=new Set<string>();
  for(const o of local.filter(o=>['house','hall','clinic','park'].includes(o.asset))){const depth=ASSETS[o.asset].depth/2+.8,angle=o.rotation*Math.PI/2,door={x:o.x+Math.sin(angle)*depth,z:o.z+Math.cos(angle)*depth},nearest=[...walk.values()].sort((a,b)=>distance(a,door)-distance(b,door))[0];if(nearest&&distance(nearest,door)<3){goals.push(nearest.id);if(o.asset==='park')park.add(nearest.id)}}
+ for(const b of demoPresentation(world)?.buildings??[]){const door={x:b.x,z:b.z+b.d/2+.5},near=[...walk.values()].sort((a,b)=>distance(a,door)-distance(b,door))[0];if(near&&distance(near,door)<2.5)goals.push(near.id)}
  for(const o of local.filter(o=>o.asset==='park')){const angle=o.rotation*Math.PI/2,x=o.x+Math.cos(angle)+.9*Math.sin(angle),z=o.z-Math.sin(angle)+.9*Math.cos(angle),id='seat:'+o.id,point={x,z};const near=[...walk.values()].filter(n=>distance(n,point)<1.2&&clearSegment(world,n,point));if(near.length){walk.set(id,{...point,id,y:sample(geo,x,z).h,edges:near.map(n=>n.id),cost:1});for(const n of near)n.edges.push(id);goals.push(id);seats.add(id)}}
  for(const o of local.filter(o=>o.asset==='road')){
   // Require the entire driving envelope to be dry and free of solid objects.

@@ -1,4 +1,5 @@
 import {placementError,REGION_ID,type World,type WorldObject,type Asset} from '../nation-core/world.ts';
+import type {DemoWorld,DemoPresentation} from './demo-presentation.ts';
 import type {Stroke} from '../nation-core/geography.ts';
 
 /** In-memory visual fixture. Never import this module into persistence/server code. */
@@ -31,5 +32,26 @@ export function demoCity():World {
     add('house',x,z,z===-2||z===10||z===22?2:0);
   }
   for(const x of [-24,-10,2,14,26,38])for(const z of [-18,32])add('tree',x,z);
-  return world;
+  world.objects=world.objects.filter(o=>!(o.asset==='house'&&(o.x>12&&o.z<6||o.x>24&&o.z>18||o.x< -12&&o.z>8&&o.z<18))&&!(o.asset==='park'&&(o.x===18||o.x===-18)));
+  add('park',18,12);add('park',-18,10);add('park',-18,14);
+  for(let x=38;x<=50;x+=2)add('road',x,28);
+  for(let z=14;z<=26;z+=2)add('road',50,z);
+  for(let z=-18;z>=-22;z-=2)add('road',12,z);
+  add('park',46,18);add('park',46,22);
+  const presentation:DemoPresentation={kind:'visual-fixture',districts:[
+   {id:'residential',name:'Kampung Cendana',x:2,z:2,span:25},
+   {id:'government',name:'Kawasan Pemerintahan',x:6,z:-12,span:22},
+   {id:'commercial',name:'Koridor Niaga',x:25,z:0,span:25},
+   {id:'waterfront',name:'Pesisir Nusa',x:49,z:22,span:22},
+   {id:'green',name:'Taman Rimba',x:-18,z:12,span:21},
+  ],buildings:[
+   {id:'fixture-shop',kind:'shop',name:'Toko Cendana',x:18,z:-1,rotation:0,w:3.5,d:2.6},
+   {id:'fixture-shophouse',kind:'shophouse',name:'Ruko Niaga',x:18,z:3,rotation:0,w:3.5,d:2.6},
+   {id:'fixture-cafe',kind:'cafe',name:'Kafe Teras',x:30,z:0,rotation:0,w:3.5,d:3.9},
+   {id:'fixture-parking',kind:'parking',name:'Parkir Niaga',x:30,z:-3.5,rotation:0,w:4,d:3},
+   {id:'fixture-service',kind:'service',name:'Gedung Layanan',x:6,z:-20,rotation:0,w:4,d:2.5},
+   {id:'fixture-recreation',kind:'recreation',name:'Paviliun Pesisir',x:46,z:26,rotation:0,w:3.4,d:2.8},
+   {id:'fixture-coast-cafe',kind:'cafe',name:'Kafe Pesisir',x:52,z:20,rotation:0,w:3.5,d:3.9},
+  ]};
+  return {...world,presentation} as DemoWorld;
 }
