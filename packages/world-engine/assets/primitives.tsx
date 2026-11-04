@@ -20,7 +20,7 @@ export function Window({p,w=.42,h=.43,r=0}:{p:V;w?:number;h?:number;r?:number}){
   <Part p={[0,0,.041]} s={[.018,h,.015]} c="#343e3e" kind="metal" detail={2}/>
  </group>;
 }
-export function Door({x=0,z=.78,y=.43,w=.34}:{x?:number;z?:number;y?:number;w?:number}){return <>
+export function Door({x=0,z=.69,y=.43,w=.34}:{x?:number;z?:number;y?:number;w?:number}){return <>
  <Part p={[x,y,z]} s={[w+.075,.84,.06]} c="#50544d" kind="metal"/>
  <Part p={[x,y,z+.035]} s={[w,.78,.03]} c="#78614c" kind="timber"/>
  <Part p={[x+w*.31,y,.067+z]} s={[.012,.06,.015]} c="#b2b4af" kind="metal" detail={1}/>

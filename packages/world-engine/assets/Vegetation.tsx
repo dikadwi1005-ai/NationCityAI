@@ -10,12 +10,13 @@ export function leafGeometry(quality:Quality,palm=false){
  const positions:number[]=[],colors:number[]=[],color=new Color();
  const count=palm?8:quality==='high'?130:72;
  for(let i=0;i<count;i++){
-  const a=i*2.39996,vertical=1-2*(i+.5)/count,r=Math.sqrt(1-vertical*vertical),radius=.66+.25*(.5+.5*Math.sin(i*17));
+  const a=i*2.39996,vertical=1-2*(i+.5)/count,r=Math.sqrt(1-vertical*vertical),radius=(.6+.3*(.5+.5*Math.sin(i*17)))*(i%3===0?.62:1);
   const cx=palm?0:Math.cos(a)*r*radius,cy=palm?0:vertical*radius*.8,cz=palm?0:Math.sin(a)*r*radius;
   const length=palm?.95:.24+.065*Math.sin(i*3.1),width=palm?.17:.14;
   const points=[[-length,0,0],[-length*.45,0,width],[length*.5,.025,width*.72],[length,.045,0],[length*.5,.025,-width*.72],[-length*.45,0,-width],[0,.05,0]];
   for(let j=0;j<6;j++)for(const k of [6,j,(j+1)%6]){
    let [x,y,z]=points[k];if(palm){x=(x+length)/2;y=-Math.pow(x,2)*.45;}
+   if(!palm){const tilt=Math.sin(i*2.7)*.85,roll=Math.cos(i*1.3)*.65,yy=y*Math.cos(tilt)-z*Math.sin(tilt),zz=y*Math.sin(tilt)+z*Math.cos(tilt),xx=x*Math.cos(roll)-yy*Math.sin(roll);y=x*Math.sin(roll)+yy*Math.cos(roll);x=xx;z=zz;}
    positions.push(cx+x*Math.cos(a)-z*Math.sin(a),cy+y,cz+x*Math.sin(a)+z*Math.cos(a));
    color.set(palm?'#8ba67a':i%3===0?'#819872':i%3===1?'#a7b490':'#6f8f62');colors.push(color.r,color.g,color.b);
   }

@@ -26,13 +26,14 @@ function Person({a,follow}:{a:Avatar;follow:boolean}){
  useFrame(({camera},dt)=>{const g=ref.current;if(!g)return;target.current.set(a.x,a.y,a.z);
  if(!prev.current||g.position.distanceTo(target.current)>8){g.position.copy(target.current);prev.current=true}else g.position.lerp(target.current,1-Math.exp(-18*dt));
  g.rotation.y=a.angle;
- if(follow&&controls){target.current.copy(g.position);target.current.y+=1;camera.position.add(target.current.clone().sub(controls.target));controls.target.copy(target.current);controls.update()}});
+ if(follow&&controls){target.current.copy(g.position);target.current.y+=.35;camera.position.add(target.current.clone().sub(controls.target));controls.target.copy(target.current);controls.update()}});
  return <group ref={ref}><group scale={CITIZEN_SCALE}><Chibi look={a.look} motion={a.motion}/></group>{a.look.name&&<Nameplate name={a.title&&!a.id.startsWith('office-')?a.title+' ? '+a.look.name:a.look.name}/>}</group>
 }
 export default function Explore({profile,onExit}:{profile:Profile;onExit?:()=>void}){
  const [world,setWorld]=useState<World|null>(null),[players,setPlayers]=useState<Avatar[]>([]),[dest,setDest]=useState<{id:string;name:string}[]>([]),[status,setStatus]=useState('Menghubungkan'),[notice,setNotice]=useState('');
  const [officials,setOfficials]=useState<Avatar[]>([]);
- const [low,setLow]=useState(true),[activity,setActivity]=useState(false);
+ const [low,setLow]=useState(()=>typeof window!=='undefined'&&window.innerWidth<650),[activity,setActivity]=useState(false);
+ useEffect(()=>{useVisualSettings.getState().setQuality(low?'low':'medium')},[]);
  const joystick=useRef({x:0,z:0});
  const [peers,setPeers]=useState<Neighbor[]>([]),[messages,setMessages]=useState<LocalMessage[]>([]),[prefs,setPrefs]=useState<Preference[]>([]),[chatNotice,setChatNotice]=useState('');
  const socket=useRef<Room|null>(null),keys=useRef(new Set<string>());

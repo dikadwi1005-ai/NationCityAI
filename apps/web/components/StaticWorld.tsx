@@ -4,7 +4,7 @@ import {demoPresentation,avenue} from '../../../packages/world-engine/demo-prese
 import PublicFacility from '../../../packages/world-engine/assets/PublicFacilities';
 import type {FixtureAsset} from '../../../packages/world-engine/asset-registry';
 import {useLayoutEffect,useMemo,useRef,useState} from 'react';
-import {BufferGeometry,Group,Matrix4,Mesh,type Material} from 'three';
+import {Box3,BufferGeometry,Group,Matrix4,Mesh,type Material} from 'three';
 import {mergeGeometries} from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import type {ThreeEvent} from '@react-three/fiber';
 import {visualVariant} from '../../../packages/world-engine/asset-registry';
@@ -33,7 +33,9 @@ export default function StaticWorld({world,pick}:{world:World;pick:(id:string,e:
     const root=templates.current;if(!root)return;root.updateWorldMatrix(true,true);
     const byKey=new Map(root.children.map(g=>[g.name,g]));
     const groups=new Map<string,{material:Material;geometries:BufferGeometry[];ranges:Batch['ranges'];faces:number}>();
+    const bounds:any[]=[];
     for(const o of items){
+      const box=new Box3();
       const template=byKey.get(keyOf(o,world.objects,world));if(!template)continue;
       const base=sample(world.geo??emptyGeo,o.x,o.z).h;
       const transform=new Matrix4().makeRotationY(o.rotation*Math.PI/2);transform.setPosition(o.x,base,o.z);
@@ -48,18 +50,20 @@ export default function StaticWorld({world,pick}:{world:World;pick:(id:string,e:
           for(let i=0;i<positions.count;i++)positions.setY(i,positions.getY(i)+sample(world.geo??emptyGeo,positions.getX(i),positions.getZ(i)).h-base);
           geometry.computeVertexNormals();
         }
+        geometry.computeBoundingBox();box.union(geometry.boundingBox!);
         const material=child.material;let group=groups.get(material.uuid);
         if(!group){group={material,geometries:[],ranges:[],faces:0};groups.set(material.uuid,group)}
         group.geometries.push(geometry);group.faces+=(geometry.index?.count??geometry.getAttribute('position').count)/3;
         group.ranges.push({end:group.faces,id:o.id});
       });
+      bounds.push({id:o.id,asset:o.asset,fixture:o.fixture,variant:variant(o),x:o.x,y:base,z:o.z,width:box.max.x-box.min.x,depth:box.max.z-box.min.z,height:box.max.y-box.min.y});
     }
     const next:Batch[]=[];
     for(const group of groups.values()){
       const geometry=mergeGeometries(group.geometries);group.geometries.forEach(g=>g.dispose());
       if(geometry){geometry.computeBoundingSphere();next.push({geometry,material:group.material,ranges:group.ranges})}
     }
-    setBatches(next);return()=>next.forEach(b=>b.geometry.dispose());
+    (window as any).__nationAssetBounds=bounds;setBatches(next);return()=>{next.forEach(b=>b.geometry.dispose());delete (window as any).__nationAssetBounds};
   },[world,representatives,quality,items]);
   return <>
     <group ref={templates} visible={false}>{representatives.map(([key,o])=><group name={key} key={key}>{o.fixture?<PublicFacility kind={o.fixture}/>:<Model asset={o.asset} variant={variant(o)} mainRoad={avenue(world,o)} connections={o.asset==='road'?roadConnections(o,world.objects):undefined}/>}</group>)}</group>

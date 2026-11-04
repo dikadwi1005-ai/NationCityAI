@@ -5,6 +5,7 @@ import GameView from './GameView';
 import {fixturePlacementConflict} from '../../../packages/world-engine/demo-presentation';
 import {demoCity} from '../../../packages/world-engine/demo-city';
 import {useActivity} from './world-activity';
+import {useVisualSettings} from './visual-settings';
 import {useEditor} from './editor';
 import {REGION_ID,applyCommand,inverseCommand,placementError,type Command,type World,type WorldObject} from '../../../packages/nation-core/world';
 type History={forward:Command;backward:Command};
@@ -16,7 +17,7 @@ export default function Game({demo=false}:{demo?:boolean}){
  useEffect(()=>{previewId.current=crypto.randomUUID()},[]);
  const lock=useRef(false);const editor=useEditor();
  async function load(){if(demo){setWorld(demoCity());setAdmin(true);setStatus('Demo lokal · tidak disimpan ke server');setUndo([]);setRedo([]);useActivity.getState().set({npc:'medium',traffic:'medium'});return}try{const [w,s]=await Promise.all([fetch('/api/world',{cache:'no-store'}).then(json),fetch('/api/session',{cache:'no-store'}).then(json)]);setPreview(null);setWorld(w);setAdmin(s.admin);setStatus('Dunia tersimpan');setError('');setUndo([]);setRedo([])}catch(e){setError(String(e));setStatus('Gagal memuat')}}
- useEffect(()=>{void load()},[]);
+ useEffect(()=>{const low=window.innerWidth<650;useVisualSettings.getState().setQuality(low?'low':'medium');useEditor.getState().set({low});void load()},[]);
  const chosen=world?.objects.find(o=>o.id===editor.selected);
  const draft:WorldObject|null=admin&&editor.tool!=='select'?editor.tool==='move'&&chosen?{...chosen,...hover,rotation:editor.rotation}:{id:previewId.current,asset:editor.asset,...hover,rotation:editor.rotation,regionId:REGION_ID,ownerId:'administrator',assetVersion:1}:null;
  async function send(command:Command,mode:'normal'|'undo'|'redo'='normal'){

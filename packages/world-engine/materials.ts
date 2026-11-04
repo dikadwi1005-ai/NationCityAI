@@ -1,5 +1,5 @@
 import {DataTexture,RepeatWrapping,SRGBColorSpace,RGBAFormat,MeshStandardMaterial,Vector2,Float32BufferAttribute,type BufferGeometry} from 'three';
-import {QUALITY,type Quality} from './visual-config';
+import {QUALITY,type Quality} from './visual-config.ts';
 
 export type Surface='plaster'|'concrete'|'asphalt'|'glass'|'timber'|'tile'|'metal'|'soil'|'grass'|'sand'|'stone';
 const cache=new Map<string,MeshStandardMaterial>();

@@ -27,9 +27,9 @@ export default function Residential({variant}:{variant:number}){
  <Window p={[v===4?-.3:-.4,.65,.681]} w={v===4?.45:.48} h={.39}/>
  {Array.from({length:floors-1},(_,i)=><group key={i}>
   <Part p={[0,1.03+i*.9,-.08]} s={[1.77,.065,1.57]} c="#9eaa9f" kind="concrete"/>
-  <Window p={[-.4,1.52+i*.9,.681]} w={.46} h={.46}/><Window p={[.4,1.52+i*.9,.681]} w={.46} h={.46}/>
+  <Window p={[-.4,1.52+i*.9,.681]} w={.46} h={.46}/><Window p={[.4,(i===0&&(v===2||v===5))?1.49:(v===3&&i===1)?2.38:1.52+i*.9,.681]} w={.46} h={(i===0&&(v===2||v===5))||(v===3&&i===1)?.78:.46}/>
  </group>)}
- {[-1,1].map(side=><group key={side}><Window p={[side*(v===4?.22:.87),.67,-.14]} r={side*Math.PI/2} w={.43} h={.38}/>{tall&&<Window p={[side*.87,1.54,-.14]} r={side*Math.PI/2} w={.43} h={.42}/>}</group>)}
+ {[-1,1].map(side=><group key={side}><Window p={[v===4?(side===1?.23:-.83):side*.87,.67,-.14]} r={side*Math.PI/2} w={.43} h={.38}/>{tall&&<Window p={[side*.87,1.54,-.14]} r={side*Math.PI/2} w={.43} h={.42}/>}</group>)}
  <Part p={[.33,.12,.86]} s={[.65,.11,.23]} c="#b8b09b" kind="stone"/>
  {v===0&&<>
   <Part p={[0,.95,.77]} s={[1.86,.06,.35]} c="#6b5b4b" kind="timber"/>
@@ -44,7 +44,7 @@ export default function Residential({variant}:{variant:number}){
  {v===7&&<><Part p={[-.58,1.29,-.1]} s={[.43,.39,1.5]} c={wall}/><Part p={[-.58,1.5,-.08]} s={[.55,.055,1.72]} c="#586662" kind="metal"/></>}
  <Part p={[-.39,.28,.9]} s={[.46,.2,.14]} c="#8b785e" kind="stone" detail={1}/>
  <Part p={[-.39,.4,.91]} s={[.43,.18,.17]} shape="sphere" c="#496b42" kind="grass" detail={1}/>
- <Part p={[.67,.78,.755]} s={[.06,.09,.04]} c="#d0be88" kind="metal" detail={1}/>
+ <Part p={[.67,.78,.685]} s={[.06,.09,.04]} c="#d0be88" kind="metal" detail={1}/>
  {[-.94,.94].map(x=><Part key={x} p={[x,.24,-.35]} s={[.035,.35,1.15]} c="#797e70" kind="metal" detail={1}/>)}
  <Part p={[0,.24,-.94]} s={[1.9,.35,.035]} c="#797e70" kind="metal" detail={1}/>
  </>;

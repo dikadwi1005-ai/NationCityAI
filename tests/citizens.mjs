@@ -24,7 +24,10 @@ try{
  const errors=[];
  async function player(login,name,mobile=false){const ctx=await browser.newContext({viewport:mobile?{width:390,height:844}:{width:1024,height:760},hasTouch:mobile,isMobile:mobile}),p=await ctx.newPage();p.on('pageerror',e=>errors.push(e.message));await p.goto(origin+'/warga');
  await p.getByLabel('Username').fill(login);await p.getByLabel('Kata sandi').fill('sandbox-pass-123');await p.getByRole('button',{name:'Daftar warga'}).click();
- await p.getByLabel('Nama karakter').fill(name);await p.getByLabel('Rambut',{exact:true}).selectOption('kuncir');if(login==='warga_b')await p.getByLabel('Tampilkan nama ke pemain sekitar').uncheck();await p.getByRole('button',{name:'Simpan karakter'}).click();await p.getByRole('heading',{name}).waitFor();
+ await p.getByLabel('Nama karakter').fill(name);await p.getByLabel('Rambut',{exact:true}).selectOption('kuncir');
+ // Exercise repeated live palette replacement before saving a real creator result.
+ for(let i=0;i<12;i++){await p.getByLabel('Warna pakaian',{exact:true}).fill('#'+(0x315040+i*0x030405).toString(16));await p.getByLabel('Warna rambut',{exact:true}).fill('#'+(0x30251c+i*0x010101).toString(16));await p.waitForTimeout(40)}
+ if(login==='warga_b')await p.getByLabel('Tampilkan nama ke pemain sekitar').uncheck();await p.getByRole('button',{name:'Simpan karakter'}).click();await p.getByRole('heading',{name}).waitFor();
  const get=()=>p.request.get(origin+'/api/citizen').then(r=>r.json()),profile=await get();
  await p.reload();await p.getByRole('heading',{name}).waitFor();assert.deepEqual((await get()).look,profile.look);
  await p.getByRole('button',{name:'Jelajahi Negara'}).click();await p.locator('[data-player="'+profile.id+'"]').waitFor();return {p,profile,get,ctx}}

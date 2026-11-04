@@ -1,0 +1,55 @@
+{
+  "at": "2026-11-04T23:00:55.193Z",
+  "unit": {
+    "passed": 42,
+    "failed": 0
+  },
+  "typecheck": "PASS",
+  "productionBuild": "PASS",
+  "isolatedSuites": [
+    {
+      "suite": "placement",
+      "code": 0
+    },
+    {
+      "suite": "visual-overhaul",
+      "code": 0
+    },
+    {
+      "suite": "living-world-browser",
+      "code": 0
+    },
+    {
+      "suite": "citizens",
+      "code": 0
+    },
+    {
+      "suite": "chat-browser",
+      "code": 0
+    },
+    {
+      "suite": "government-browser",
+      "code": 0
+    },
+    {
+      "suite": "postgres-runtime",
+      "code": 0
+    },
+    {
+      "suite": "government-recovery",
+      "code": 0
+    },
+    {
+      "suite": "recovery-remote",
+      "code": 0
+    },
+    {
+      "suite": "postgres-migration",
+      "code": 0
+    }
+  ],
+  "dependencyRepair": "Local asn1-x509 2.11.1 restored from a package-lock SHA512 verified archive; affected suites rerun and passed. Lockfile unchanged.",
+  "cloudS3": "Stub protocol contract only; no actual bucket.",
+  "postgres": "Native PostgreSQL 18.6 TCP and local HTTPS/WSS; not Railway.",
+  "source": "Existing permanent SQLite verified read-only separately."
+}

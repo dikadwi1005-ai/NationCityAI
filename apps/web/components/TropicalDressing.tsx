@@ -20,7 +20,7 @@ export default function TropicalDressing({world}:{world:World}){
   for(const key of chunks(geo).keys()){
    const[cx,cz]=key.split(':').map(Number);
    for(let a=1;a<16;a+=3.5)for(let b=1;b<16;b+=3.5){
-    const x=cx*16+a+Math.sin(cx*7+b)*.6,z=cz*16+b+Math.cos(cz*8+a)*.6,g=sample(geo,x,z),noise=.5+.5*Math.sin(x*14.37+z*5.7);
+    const x=cx*16+a+Math.sin(cx*7+b)*1.3,z=cz*16+b+Math.cos(cz*8+a)*1.3,g=sample(geo,x,z),noise=.5+.5*Math.sin(x*14.37+z*5.7);
     if(g.h>.5&&free(x,z,1.4)&&noise>.4&&treePoints.length<limit&&(g.h>1.2||g.biome==='forest'||Math.hypot(x,z)>21)){
      const coast=[[2,0],[-2,0],[0,2],[0,-2]].some(([dx,dz])=>sample(geo,x+dx,z+dz).h<.5);
      treePoints.push({x,y:g.h,z,palm:coast,scale:.85+noise*.22});

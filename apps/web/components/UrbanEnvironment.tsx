@@ -41,7 +41,7 @@ export default function UrbanEnvironment({world}:{world:World}){
             add(o,x,2.24,z,[.25,.08,.25],'#f0deb0');
           }
           if((Math.abs(o.x)+Math.abs(o.z))%12===4&&(Math.abs(o.x)+Math.abs(o.z))%8!==0&&i===(sides[0]?0:sides[2]?2:1)){
-            const tx=Math.sin(a)*1.65,tz=-Math.cos(a)*1.65;
+            const tx=Math.sin(a)*1.9,tz=-Math.cos(a)*1.9;
             add(o,tx,.65,tz,[.1,1.3,.1],'#77664c','pole');
             add(o,tx,1.6,tz,[.68,.65,.68],'#668759','shade');
           }
