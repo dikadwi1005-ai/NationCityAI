@@ -27,7 +27,7 @@ type Batch={geometry:BufferGeometry;material:Material;ranges:{end:number;id:stri
  * for picking. Road vertices still conform to the authoritative terrain sampler. */
 export default function StaticWorld({world,pick}:{world:World;pick:(id:string,e:ThreeEvent<MouseEvent>)=>void}){
   const quality=useQuality();const [fixtureInfo,setFixtureInfo]=useState<RenderItem|null>(null);const templates=useRef<Group>(null),[batches,setBatches]=useState<Batch[]>([]);
-  const items=useMemo<RenderItem[]>(()=>[...world.objects,...(demoPresentation(world)?.buildings??[]).map(b=>({id:b.id,asset:'house' as const,x:b.x,z:b.z,rotation:b.rotation,assetVersion:1 as const,regionId:'region-001' as const,ownerId:'administrator' as const,fixture:b.kind,label:b.name}))],[world]);
+  const items=useMemo<RenderItem[]>(()=>[...world.objects.filter(o=>!('nation'in world)||o.asset!=='road'),...(demoPresentation(world)?.buildings??[]).map(b=>({id:b.id,asset:'house' as const,x:b.x,z:b.z,rotation:b.rotation,assetVersion:1 as const,regionId:'region-001' as const,ownerId:'administrator' as const,fixture:b.kind,label:b.name}))],[world]);
   const representatives=useMemo(()=>[...new Map(items.map(o=>[keyOf(o,world.objects,world),o])).entries()],[world,items]);
   useLayoutEffect(()=>{
     const root=templates.current;if(!root)return;root.updateWorldMatrix(true,true);

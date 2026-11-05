@@ -1,0 +1,18 @@
+{
+  "ruleBased": true,
+  "previewBeforeApproval": true,
+  "constructionFrameVisible": true,
+  "stagesObserved": [
+    "queued",
+    "frame",
+    "finish",
+    "foundation",
+    "complete",
+    "marking",
+    "survey"
+  ],
+  "complete": true,
+  "saveRoadsAndBuildings": true,
+  "undoRestoredOriginalSandboxIds": true,
+  "errors": []
+}

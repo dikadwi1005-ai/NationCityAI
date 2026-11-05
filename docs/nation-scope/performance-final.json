@@ -1,0 +1,296 @@
+{
+  "desktop": {
+    "viewport": [
+      1440,
+      900
+    ],
+    "method": "Five 0.5-second renderer sampling windows per scene after 1.8s warmup, native Edge AMD GPU; no video recorder",
+    "results": [
+      {
+        "label": "Pulau Harapan",
+        "quality": "medium",
+        "fps": 89.82620582022206,
+        "minFps": 81.02766798419012,
+        "drawCalls": 247,
+        "triangles": 112136,
+        "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "canvas": [
+          1440,
+          900
+        ],
+        "shadow": {
+          "quality": "medium",
+          "cascades": 1,
+          "mapSize": 1536,
+          "active": true
+        }
+      },
+      {
+        "label": "capital",
+        "quality": "medium",
+        "fps": 89.19722497522045,
+        "minFps": 67.90493309326436,
+        "drawCalls": 200,
+        "triangles": 201766,
+        "chunks": 64,
+        "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "canvas": [
+          1440,
+          900
+        ],
+        "shadow": {
+          "quality": "medium",
+          "cascades": 1,
+          "mapSize": 1536,
+          "active": true
+        }
+      },
+      {
+        "label": "province",
+        "quality": "medium",
+        "fps": 89.99999999999744,
+        "minFps": 88.86255924327358,
+        "drawCalls": 196,
+        "triangles": 141472,
+        "chunks": 64,
+        "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "canvas": [
+          1440,
+          900
+        ],
+        "shadow": {
+          "quality": "medium",
+          "cascades": 1,
+          "mapSize": 1536,
+          "active": true
+        }
+      },
+      {
+        "label": "metropolis",
+        "quality": "medium",
+        "fps": 84.34680266573748,
+        "minFps": 72.85665876121347,
+        "drawCalls": 197,
+        "triangles": 215192,
+        "chunks": 64,
+        "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "canvas": [
+          1440,
+          900
+        ],
+        "shadow": {
+          "quality": "medium",
+          "cascades": 1,
+          "mapSize": 1536,
+          "active": true
+        }
+      },
+      {
+        "label": "city",
+        "quality": "medium",
+        "fps": 89.98200360035378,
+        "minFps": 89.94603238110575,
+        "drawCalls": 196,
+        "triangles": 148622,
+        "chunks": 64,
+        "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "canvas": [
+          1440,
+          900
+        ],
+        "shadow": {
+          "quality": "medium",
+          "cascades": 1,
+          "mapSize": 1536,
+          "active": true
+        }
+      },
+      {
+        "label": "regency",
+        "quality": "medium",
+        "fps": 90.00195656532435,
+        "minFps": 89.96401439370725,
+        "drawCalls": 196,
+        "triangles": 138246,
+        "chunks": 64,
+        "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "canvas": [
+          1440,
+          900
+        ],
+        "shadow": {
+          "quality": "medium",
+          "cascades": 1,
+          "mapSize": 1536,
+          "active": true
+        }
+      },
+      {
+        "label": "subdistrict",
+        "quality": "medium",
+        "fps": 87.9765395894407,
+        "minFps": 80.23483365949242,
+        "drawCalls": 274,
+        "triangles": 272388,
+        "chunks": 64,
+        "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "canvas": [
+          1440,
+          900
+        ],
+        "shadow": {
+          "quality": "medium",
+          "cascades": 1,
+          "mapSize": 1536,
+          "active": true
+        }
+      },
+      {
+        "label": "village",
+        "quality": "medium",
+        "fps": 87.9824035177258,
+        "minFps": 68.90299184043508,
+        "drawCalls": 212,
+        "triangles": 109486,
+        "chunks": 64,
+        "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "canvas": [
+          1440,
+          900
+        ],
+        "shadow": {
+          "quality": "medium",
+          "cascades": 1,
+          "mapSize": 1536,
+          "active": true
+        }
+      },
+      {
+        "label": "coast",
+        "quality": "medium",
+        "fps": 89.98200360035091,
+        "minFps": 74.34944238005029,
+        "drawCalls": 200,
+        "triangles": 148352,
+        "chunks": 64,
+        "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "canvas": [
+          1440,
+          900
+        ],
+        "shadow": {
+          "quality": "medium",
+          "cascades": 1,
+          "mapSize": 1536,
+          "active": true
+        }
+      },
+      {
+        "label": "capital",
+        "quality": "low",
+        "fps": 89.93157380253751,
+        "minFps": 77.66622466288308,
+        "drawCalls": 133,
+        "triangles": 137058,
+        "chunks": 40,
+        "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "canvas": [
+          1440,
+          900
+        ],
+        "shadow": {
+          "quality": "low",
+          "cascades": 0,
+          "mapSize": 0,
+          "active": false
+        }
+      },
+      {
+        "label": "capital",
+        "quality": "high",
+        "fps": 56.5522620891689,
+        "minFps": 56.04947816100055,
+        "drawCalls": 232,
+        "triangles": 337138,
+        "chunks": 96,
+        "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "canvas": [
+          1440,
+          900
+        ],
+        "shadow": {
+          "quality": "high",
+          "cascades": 3,
+          "mapSize": 2048,
+          "active": true
+        }
+      }
+    ]
+  },
+  "mobileEmulation": {
+    "viewport": [
+      390,
+      844
+    ],
+    "realPhone": false,
+    "metrics": {
+      "fps": 89.94603237842871,
+      "drawCalls": 93,
+      "triangles": 39386,
+      "geometries": 67,
+      "textures": 1,
+      "programs": 10,
+      "materialResources": {
+        "materials": 12,
+        "surfaceSets": 0,
+        "textures": 0
+      },
+      "projection": "perspective",
+      "dpr": 1,
+      "drawingBufferWidth": 390,
+      "drawingBufferHeight": 844,
+      "canvasWidth": 390,
+      "canvasHeight": 844,
+      "zoom": 1,
+      "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "meshes": 57
+    },
+    "stream": {
+      "active": "village",
+      "loadedRegions": 1,
+      "totalRegions": 8,
+      "renderedTerrainChunks": 40
+    },
+    "time": {
+      "hour": 10.067593333333239,
+      "elevation": 0.8747372965855503,
+      "day": 1,
+      "night": 0,
+      "twilight": 0,
+      "sun": [
+        72.68961338561078,
+        148.70534041954355,
+        50.68904680600811
+      ],
+      "paused": false,
+      "minutesPerSecond": 2,
+      "shadow": {
+        "quality": "low",
+        "cascades": 0,
+        "mapSize": 0,
+        "active": false
+      },
+      "backendClockUnaffected": true
+    },
+    "bannerOverTitle": false,
+    "populationOverNavigation": false,
+    "pageOverflow": false
+  },
+  "source": {
+    "tables": 25,
+    "objects": 32,
+    "revision": 0,
+    "consistentCopyVerified": true
+  },
+  "errors": []
+}

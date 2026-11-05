@@ -1,0 +1,45 @@
+{
+  "results": [
+    {
+      "scene": "village",
+      "model": "Goat",
+      "bones": 13,
+      "clip": "graze",
+      "realBoneAnimation": true,
+      "cap": 7
+    },
+    {
+      "scene": "village",
+      "model": "Chicken",
+      "bones": 7,
+      "clip": "peck",
+      "realBoneAnimation": true,
+      "cap": 7
+    },
+    {
+      "scene": "capital",
+      "model": "Shiba",
+      "bones": 46,
+      "clip": "idle",
+      "realBoneAnimation": true,
+      "cap": 7
+    },
+    {
+      "scene": "capital",
+      "model": "Pigeon",
+      "bones": 8,
+      "clip": "peck",
+      "realBoneAnimation": true,
+      "cap": 7
+    },
+    {
+      "scene": "coast",
+      "model": "Seagull",
+      "bones": 8,
+      "clip": "fly",
+      "realBoneAnimation": true,
+      "cap": 7
+    }
+  ],
+  "errors": []
+}

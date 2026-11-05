@@ -7,10 +7,11 @@ import {CHUNK_SIZE,heightAt,footprint,placementError,type World,type WorldObject
 import RoadSurface from './RoadSurface';
 import {visualVariant} from '../../../packages/world-engine/asset-registry';
 import LivingWorld from './LivingWorld';
-import NaturalLight from './NaturalLight';
+import WorldDayNight from './WorldDayNight';
 import DemoLandscape from './DemoLandscape';
 import CloudLayer from './CloudLayer';
 import EcologyScene from './EcologyScene';
+import RegionalBackdrop from './RegionalBackdrop';
 import {useVisualSettings} from './visual-settings';
 import {QualityContext} from '../../../packages/world-engine/quality-context';
 import {QUALITY} from '../../../packages/world-engine/visual-config';
@@ -20,14 +21,14 @@ import Terrain from './TerrainSurface';
 import {Ocean,WorldDressing,RenderMetrics} from './WorldAtmosphere';
 import {Model} from '../../../packages/world-engine/Models';
 import {chunks,emptyGeo,sample,regions,type Geo} from '../../../packages/nation-core/geography';
-export type CameraAction={kind:string;serial:number;x?:number;z?:number;span?:number};
+export type CameraAction={kind:string;serial:number;x?:number;z?:number;span?:number;y?:number};
 function Camera({action,world}:{action:CameraAction;world:World}){
  const ref=useRef<ComponentRef<typeof OrbitControls>>(null),goal=useRef<{position:THREE.Vector3;target:THREE.Vector3;fov:number}|null>(null);const {size}=useThree();
  useEffect(()=>{const c=ref.current;if(!c)return;const cam=c.object as THREE.PerspectiveCamera;let position=cam.position.clone(),target=c.target.clone(),fov=cam.fov;cam.zoom=1;
  if(action.kind==='home'||action.kind==='neighborhood'){target.set(2,1,3);position.set(34,29,40)}
  if(action.kind==='city'){target.set(6,1,6);position.set(47,42,57)}
  if(action.kind==='street'){const x=action.x??c.target.x,z=action.z??c.target.z;target.set(x,sample(world.geo??emptyGeo,x,z).h+.45,z);position.copy(target).add(new THREE.Vector3(2,.25,3));fov=50}else if(['home','city','neighborhood','focus','follow'].includes(action.kind))fov=42;
- if(action.kind==='focus'){const x=action.x??0,z=action.z??0,span=action.span??20;target.set(x,sample(world.geo??emptyGeo,x,z).h+.8,z);const offset=Math.max(4,span*(span<=14?.43:.85));position.set(x+offset,target.y+offset*.72,z+offset*1.15);cam.far=Math.max(800,offset*8)}
+ if(action.kind==='focus'){const x=action.x??0,z=action.z??0,span=action.span??20;target.set(x,sample(world.geo??emptyGeo,x,z).h+(action.y??.8),z);const offset=Math.max(span<=4?1.6:4,span*(span<=14?.43:.85));position.set(x+offset,target.y+offset*.72,z+offset*1.15);cam.far=Math.max(800,offset*8)}
  if(action.kind==='follow'){cam.position.copy(c.target).add(new THREE.Vector3(3,1.8,4));cam.fov=42;cam.updateProjectionMatrix();c.update();goal.current=null;return;}
  const offset=position.clone().sub(target);
  if(action.kind==='in')position.copy(target).add(offset.multiplyScalar(.8));
@@ -44,9 +45,9 @@ export default function Scene({children,brush,world,draft,selected,grid,layers=f
  const geo=world.geo??emptyGeo;
  const ground=(e:ThreeEvent<PointerEvent>)=>{onHover(Math.round(e.point.x/2)*2,Math.round(e.point.z/2)*2)};
  return <Canvas shadows={!!preset.shadow} dpr={preset.dpr} camera={{position:[34,29,40],fov:42,near:.08,far:800}} gl={{antialias:!low}} onCreated={({gl})=>{gl.setClearColor('#387f87');gl.toneMapping=THREE.ACESFilmicToneMapping;gl.toneMappingExposure=1.08;gl.shadowMap.type=THREE.PCFSoftShadowMap}}>
- <QualityContext.Provider value={quality}><NaturalLight/><CloudLayer/><EcologyScene world={world}/>
+ <QualityContext.Provider value={quality}><WorldDayNight/><CloudLayer/><EcologyScene world={world}/>
  <Ocean low={quality==='low'} geo={geo}/><WorldDressing world={world}/><RenderMetrics/>
- <Terrain geo={geo}/>{brush&&<mesh rotation={[-Math.PI/2,0,0]} position={[brush.x,sample(geo,brush.x,brush.z).h+.35,brush.z]} renderOrder={5}><ringGeometry args={[brush.radius-.2,brush.radius,64]}/><meshBasicMaterial color="#fff7ba" depthTest={false}/></mesh>}
+ {'nation'in world&&<RegionalBackdrop geo={geo}/>}<Terrain geo={geo} regional={'nation'in world}/>{brush&&<mesh rotation={[-Math.PI/2,0,0]} position={[brush.x,sample(geo,brush.x,brush.z).h+.35,brush.z]} renderOrder={5}><ringGeometry args={[brush.radius-.2,brush.radius,64]}/><meshBasicMaterial color="#fff7ba" depthTest={false}/></mesh>}
  {(grid||layers)&&regions(geo).map(r=><mesh key={r.id} position={[r.x,sample(geo,r.x,r.z).h+.2,r.z]} rotation={[-Math.PI/2,0,0]}><ringGeometry args={[r.radius-.25,r.radius,64]}/><meshBasicMaterial color="#ffca64" depthTest={false} transparent opacity={.8}/></mesh>)}
  {grid&&<gridHelper args={[80,40,'#668c7b','#9db398']} position={[0,.83,0]}/>}
  <StaticWorld world={world} pick={(id)=>{const o=world.objects.find(o=>o.id===id);if(o){if(draft)onGround(o.x,o.z);else onSelect(id)}}}/><UrbanEnvironment world={world}/><DemoLandscape world={world}/>

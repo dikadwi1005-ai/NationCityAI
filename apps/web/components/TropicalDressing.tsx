@@ -1,5 +1,6 @@
 'use client';
 import{useMemo,useEffect}from'react';
+import{dimensions,type NationBuilding}from'../../../packages/nation-sim/catalog';
 import{BoxGeometry,BufferGeometry,Float32BufferAttribute,CylinderGeometry,SphereGeometry,InstancedMesh,MeshStandardMaterial,Object3D}from'three';
 import{chunks,sample,emptyGeo}from'../../../packages/nation-core/geography';
 import{footprint,type World}from'../../../packages/nation-core/world';
@@ -16,17 +17,20 @@ export default function TropicalDressing({world}:{world:World}){
  const quality=useQuality(),limit=QUALITY[quality].vegetation;
  const batches=useMemo(()=>{
   const geo=world.geo??emptyGeo,treePoints:{x:number;y:number;z:number;palm:boolean;scale:number}[]=[],stones:{x:number;y:number;z:number}[]=[],tufts:{x:number;y:number;z:number}[]=[];
-  const free=(x:number,z:number,padding:number)=>!world.objects.some(o=>{const f=footprint(o);return Math.abs(x-o.x)<f.w/2+padding&&Math.abs(z-o.z)<f.d/2+padding})&&!demoPresentation(world)?.buildings.some(b=>Math.abs(x-b.x)<b.w/2+padding&&Math.abs(z-b.z)<b.d/2+padding)&&!demoPresentation(world)?.reservedSites?.some(b=>Math.abs(x-b.x)<b.w/2+padding&&Math.abs(z-b.z)<b.d/2+padding);
-  for(const key of chunks(geo).keys()){
+  const nation=(world as World&{nation?:{buildings:NationBuilding[]}}).nation;
+  const free=(x:number,z:number,padding:number)=>!nation?.buildings.some(b=>{const d=dimensions(b);return Math.abs(x-b.x)<d.w/2+padding&&Math.abs(z-b.z)<d.d/2+padding})&&!world.objects.some(o=>{const f=footprint(o);return Math.abs(x-o.x)<f.w/2+padding&&Math.abs(z-o.z)<f.d/2+padding})&&!demoPresentation(world)?.buildings.some(b=>Math.abs(x-b.x)<b.w/2+padding&&Math.abs(z-b.z)<b.d/2+padding)&&!demoPresentation(world)?.reservedSites?.some(b=>Math.abs(x-b.x)<b.w/2+padding&&Math.abs(z-b.z)<b.d/2+padding);
+  const ordered=[...chunks(geo).keys()];if(nation)ordered.sort((a,b)=>{const [ax,az]=a.split(':').map(Number),[bx,bz]=b.split(':').map(Number);return Math.hypot(ax,az)-Math.hypot(bx,bz)});
+  for(const key of ordered){
    const[cx,cz]=key.split(':').map(Number);
+   const extent=(world as World&{nation?:{extent:number}}).nation?.extent;if(extent&&(Math.abs(cx*16)>extent*.8||Math.abs(cz*16)>extent*.8))continue;
    for(let a=1;a<16;a+=3.5)for(let b=1;b<16;b+=3.5){
     const x=cx*16+a+Math.sin(cx*7+b)*1.3,z=cz*16+b+Math.cos(cz*8+a)*1.3,g=sample(geo,x,z),noise=.5+.5*Math.sin(x*14.37+z*5.7);
-    if(g.h>.5&&free(x,z,1.4)&&noise>.4&&treePoints.length<limit&&(g.h>1.2||g.biome==='forest'||Math.hypot(x,z)>21)){
+    if(treePoints.length<limit&&g.h>.5&&noise>.4&&(g.h>1.2||g.biome==='forest'||Math.hypot(x,z)>21)&&free(x,z,1.4)){
      const coast=[[2,0],[-2,0],[0,2],[0,-2]].some(([dx,dz])=>sample(geo,x+dx,z+dz).h<.5);
      treePoints.push({x,y:g.h,z,palm:coast,scale:.85+noise*.22});
     }
     if(g.h>.05&&g.h<.4&&noise>.45&&free(x,z,.4)&&stones.length<limit)stones.push({x,y:visualHeight(geo,x,z),z});
-    if(quality!=='low'&&g.h>.5&&free(x,z,1)&&tufts.length<(quality==='high'?600:260))for(let j=0;j<3;j++)tufts.push({x:x+j*.18,y:g.h,z:z+.1*j});
+    if(quality!=='low'&&tufts.length<(quality==='high'?600:260)&&g.h>.5&&free(x,z,1))for(let j=0;j<3;j++)tufts.push({x:x+j*.18,y:g.h,z:z+.1*j});
    }
   }
   const dummy=new Object3D(),meshes:InstancedMesh[]=[];

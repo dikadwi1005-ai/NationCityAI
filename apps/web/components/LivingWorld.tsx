@@ -2,6 +2,7 @@
 import {useEffect,useMemo,useRef} from 'react';
 import {useFrame,useThree} from '@react-three/fiber';
 import {BufferGeometry,Float32BufferAttribute,Vector3,type Group} from 'three';
+import {localWorldClock} from '../../../packages/nation-sim/world-clock';
 import {CITIZEN_SCALE} from '../../../packages/world-engine/visual-config';
 import {Chibi} from '../../../packages/world-engine/Chibi';
 import VehicleModel from '../../../packages/world-engine/Vehicles';
@@ -22,14 +23,15 @@ function Traffic({agent,world}:{agent:Vehicle;world:World}){const ref=useRef<Gro
 function Paths({simulation}:{simulation:LivingSimulation}){const last=useRef(-1);const g=useMemo(()=>{const g=new BufferGeometry();g.setAttribute('position',new Float32BufferAttribute(new Float32Array(18000),3));g.setDrawRange(0,0);return g},[]);useFrame(()=>{if(simulation.time-last.current<.5)return;last.current=simulation.time;const attr=g.getAttribute('position');let i=0;for(const a of simulation.walkers){let previous={x:a.x,z:a.z};for(const id of a.path){const to=simulation.network.walk.get(id)!;if(i+2>attr.count)break;attr.setXYZ(i++,previous.x,sample(simulation.network.world.geo??emptyGeo,previous.x,previous.z).h+.08,previous.z);attr.setXYZ(i++,to.x,to.y+.08,to.z);previous=to}}attr.needsUpdate=true;g.setDrawRange(0,i);g.computeBoundingSphere()});useEffect(()=>()=>g.dispose(),[g]);return <lineSegments geometry={g} raycast={()=>null}><lineBasicMaterial color="#ffe19b"/></lineSegments>}
 export default function LivingWorld({world,island='island-001'}:{world:World;island?:string}){
  const settings=useActivity(),size=useThree(s=>s.size),mobile=size.width<650,npc=Math.min(populations[settings.npc],mobile?5:18),traffic=Math.min(trafficCounts[settings.traffic],mobile?2:7);
- const topology=[world.revision,world.terrainVersion,...world.objects.map(o=>o.id+':'+o.x+':'+o.z+':'+o.rotation)].join('/');
+ const nation=(world as World&{nation?:{buildings:{id:string;x:number;z:number;rotation:number}[]}}).nation;
+ const topology=[nation?.buildings.map(b=>b.id+':'+b.x+':'+b.z+':'+b.rotation).join(','),world.revision,world.terrainVersion,...world.objects.map(o=>o.id+':'+o.x+':'+o.z+':'+o.rotation)].join('/');
  const network=useMemo(()=>buildNetwork(world,island),[topology,island]);
  const simulation=useMemo(()=>new LivingSimulation(network,npc,traffic),[network,npc,traffic]);
  const accumulator=useRef(0),reportTick=useRef(0),root=useRef<Group>(null);
  useEffect(()=>{accumulator.current=0;root.current?.traverse(o=>{o.raycast=()=>{}});return()=>{delete (window as any).__nationSimulation}},[simulation]);
- useFrame(({clock})=>{const now=clock.elapsedTime,dt=Math.min(.1,now-reportTick.current);reportTick.current=now;if(!settings.paused&&!document.hidden){accumulator.current+=dt*settings.speed;while(accumulator.current>=1/30){simulation.step(1/30);accumulator.current-=1/30}}
+ useFrame(({clock})=>{simulation.night=localWorldClock.sample().night>.5;const now=clock.elapsedTime,dt=Math.min(.1,now-reportTick.current);reportTick.current=now;if(!settings.paused&&!document.hidden){accumulator.current+=dt*settings.speed;while(accumulator.current>=1/30){simulation.step(1/30);accumulator.current-=1/30}}
   if(root.current)root.current.visible=true;
-  (window as any).__nationSimulation={island,time:simulation.time,paused:settings.paused,speed:settings.speed,npc:simulation.walkers.map(a=>({id:a.id,x:a.x,z:a.z,state:a.state,visits:a.visits,angle:a.angle})),vehicles:simulation.vehicles.map(a=>({id:a.id,x:a.x,z:a.z,angle:a.angle,distance:a.distance,stopped:a.stopped,parked:a.parked,speed:a.speed,braking:a.braking})),turns:simulation.turns,stops:simulation.stops,nodes:network.walk.size,roads:network.roads.size,localOnly:true};
+  (window as any).__nationSimulation={island,nightActivity:simulation.night,time:simulation.time,paused:settings.paused,speed:settings.speed,npc:simulation.walkers.map(a=>({id:a.id,x:a.x,z:a.z,state:a.state,visits:a.visits,angle:a.angle})),vehicles:simulation.vehicles.map(a=>({id:a.id,x:a.x,z:a.z,angle:a.angle,distance:a.distance,stopped:a.stopped,parked:a.parked,speed:a.speed,braking:a.braking})),turns:simulation.turns,stops:simulation.stops,nodes:network.walk.size,roads:network.roads.size,localOnly:true};
  });
  return <group ref={root} raycast={()=>null}>{simulation.walkers.map(a=><Pedestrian key={a.id} agent={a} world={world}/>)}{simulation.vehicles.map(a=><Traffic key={a.id} agent={a} world={world}/>)}{settings.paths&&<Paths simulation={simulation}/>}</group>
 }

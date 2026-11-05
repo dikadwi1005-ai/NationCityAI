@@ -1,0 +1,20 @@
+'use client';
+import{useMemo,useEffect}from'react';import*as T from'three';import{RoundedBoxGeometry}from'three/examples/jsm/geometries/RoundedBoxGeometry.js';import{sample}from'../../../packages/nation-core/geography';import{BUILDINGS}from'../../../packages/nation-sim/catalog';import type{NationWorld}from'../../../packages/nation-sim/regions';
+const box=new T.BoxGeometry(1,1,1),round=new RoundedBoxGeometry(1,1,1,1,.07),pole=new T.CylinderGeometry(.5,.5,1,8);const wheel=new T.CylinderGeometry(.5,.5,1,8);wheel.rotateZ(Math.PI/2);const shapes={box,round,pole,wheel};
+export default function NationPublicRealm({world}:{world:NationWorld}){
+ const batches=useMemo(()=>{const groups=new Map<string,{shape:keyof typeof shapes;color:string;parts:{x:number;y:number;z:number;w:number;h:number;d:number;angle:number}[]}>(),geo=world.geo!;let active:typeof world.nation.buildings[number]|null=null;
+ const add=(x:number,y:number,z:number,w:number,h:number,d:number,color:string,shape:keyof typeof shapes='box')=>{const angle=active?active.rotation*Math.PI/2:0;if(active){const dx=x-active.x,dz=z-active.z;x=active.x+dx*Math.cos(angle)+dz*Math.sin(angle);z=active.z-dx*Math.sin(angle)+dz*Math.cos(angle)}if(sample(geo,x,z).h<.5)return;const key=shape+color;if(!groups.has(key))groups.set(key,{shape,color,parts:[]});groups.get(key)!.parts.push({x,y:sample(geo,x,z).h+y,z,w,h,d,angle})};
+ for(const b of world.nation.buildings){active=b;const a=BUILDINGS[b.asset],[w,d]=a.body,[lw,ld]=a.lot,front=(d+ld)/4;
+  if(a.governmentLevel!==undefined){add(b.x,.085,b.z+front,w*.8,.08,(ld-d)/2-.3,'#c9c5ae');for(const side of[-1,1]){add(b.x+side*w*.36,.34,b.z+front,1,.65,1,'#a6aa8e');add(b.x+side*w*.36,.73,b.z+front,1.2,.2,1.2,'#688264')}
+   if(b.asset==='palace'){add(b.x,.22,b.z+front,2.3,.25,1.7,'#a0afa4');add(b.x,.38,b.z+front,1.8,.06,1.2,'#57848b');add(b.x,.7,b.z+front,.2,.6,.2,'#c7c0a6','pole')}
+  }else if(ld-d>=5){const count=Math.min(4,Math.max(1,Math.floor(lw/5)));for(let i=0;i<count;i++){const x=b.x+1.2+i*.9;if(x>b.x+lw/2-1)break;const z=b.z+front;add(x,.065,z,.85,.08,1.65,'#9eaa9e');for(const side of[-1,1])add(x+side*.4,.11,z,.035,.015,1.5,'#ddd6b8');const c=['#8b9a91','#b3a38a','#647c82','#b8b8a7'][(b.variant+i)%4];add(x,.28,z,.58,.28,1.25,c,'round');add(x,.52,z-.08,.49,.25,.66,'#486369','round');for(const side of[-1,1])for(const end of[-1,1])add(x+side*.30,.14,z+end*.38,.09,.20,.20,'#414a40','wheel')}}
+ }
+ active=null;
+ if(world.nation.scene==='village'){
+  for(const[x,z]of[[-50,-50],[50,-50],[50,50]]){add(x,.025,z,18,.05,18,'#8b8462');for(let k=-7;k<=7;k+=2){add(x+k,.10,z,.32,.15,17,'#a29a72');for(let v=-7;v<=7;v+=1.5)add(x+k,.23,z+v,.24,.3,.5,'#6e8b50')}for(const side of[-1,1]){add(x+side*9,.13,z,.24,.22,18.3,'#b0a58a');add(x,.13,z+side*9,18.3,.22,.24,'#b0a58a')}}
+  for(const side of[-1,1]){add(-12+side*10,.48,48,.055,.96,16,'#a39a7e');add(-12,.45,48+side*8,20,.08,.06,'#a39a7e');for(let n=-10;n<=10;n+=4)add(-12+n,.42,48+side*8,.08,.84,.08,'#8b816a')}
+ }
+ if(world.nation.scene==='coast')for(let i=0;i<=48;i++){const a=Math.PI*.72+i/48*Math.PI*1.65,x=52+Math.cos(a)*28,z=41+Math.sin(a)*28;if(Math.abs(x)>72||Math.abs(z)>72||world.nation.buildings.some(b=>Math.abs(b.x-x)<BUILDINGS[b.asset].lot[0]/2+2&&Math.abs(b.z-z)<BUILDINGS[b.asset].lot[1]/2+2))continue;add(x,.09,z,1.7,.16,1.7,'#b9aa89');if(i%3===0)add(x,.55,z,.06,1,.06,'#8e8c74')}
+ const dummy=new T.Object3D();return [...groups.values()].map(g=>{const material=new T.MeshStandardMaterial({color:g.color,roughness:.85}),mesh=new T.InstancedMesh(shapes[g.shape],material,g.parts.length);g.parts.forEach((p,i)=>{dummy.position.set(p.x,p.y,p.z);dummy.scale.set(p.w,p.h,p.d);dummy.rotation.set(0,p.angle,0);dummy.updateMatrix();mesh.setMatrixAt(i,dummy.matrix)});mesh.computeBoundingSphere();mesh.castShadow=true;mesh.receiveShadow=true;mesh.raycast=()=>{};return{mesh,material}});
+ },[world.nation.buildings,world.nation.scene,world.geo]);useEffect(()=>()=>batches.forEach(b=>{b.mesh.dispose();b.material.dispose()}),[batches]);return <group name="regional-public-realm" dispose={null}>{batches.map(b=><primitive key={b.mesh.uuid} object={b.mesh}/>)}</group>;
+}

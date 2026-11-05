@@ -19,6 +19,7 @@ function material(color:string){if(!materials.has(color))materials.set(color,new
  * new placement always wins and suppresses conflicting decorative parts. */
 export default function UrbanEnvironment({world}:{world:World}){
   const quality=useQuality();const batches=useMemo(()=>{
+    if('nation'in world)return [];
     const parts:Part[]=[],geo=world.geo??emptyGeo;
     function add(o:WorldObject,x:number,y:number,z:number,size:V,color:string,shape:Part['shape']='box'){
       const a=o.rotation*Math.PI/2,px=o.x+x*Math.cos(a)+z*Math.sin(a),pz=o.z-x*Math.sin(a)+z*Math.cos(a),h=sample(geo,px,pz).h;
