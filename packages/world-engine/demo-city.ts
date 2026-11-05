@@ -11,6 +11,9 @@ export function demoCity():World {
     radius:38,strength:1,biome:'grass',level:1,parent:'nation-001',
   }));
   strokes.unshift({type:'geo',id:id(),tool:'lower',island:'island-001',name:'Demo graded district',x:-15,z:-12,radius:12,strength:7,biome:'grass',level:1,parent:'nation-001'});
+  strokes.push({type:'geo',id:id(),tool:'raise',island:'island-001',name:'Perbukitan Rimba · fixture',x:-42,z:-28,radius:12,strength:5,biome:'forest',level:1,parent:'nation-001'});
+  strokes.push({type:'geo',id:id(),tool:'paint',island:'island-001',name:'Sabuk hutan · fixture',x:-42,z:-28,radius:14,strength:1,biome:'forest',level:1,parent:'nation-001'});
+  strokes.push({type:'geo',id:id(),tool:'paint',island:'island-001',name:'Pasir pesisir · fixture',x:53,z:24,radius:7,strength:1,biome:'sand',level:1,parent:'nation-001'});
   const world:World={id:'nation-001',revision:0,terrainVersion:1,geo:{strokes},objects:[]};
   const add=(asset:Asset,x:number,z:number,rotation=0)=>{
     const object:WorldObject={id:id(),asset,x,z,rotation,regionId:REGION_ID,ownerId:'administrator',assetVersion:1};
@@ -39,11 +42,13 @@ export function demoCity():World {
   for(let z=-18;z>=-22;z-=2)add('road',12,z);
   add('park',46,18);add('park',46,22);
   const presentation:DemoPresentation={kind:'visual-fixture',districts:[
-   {id:'residential',name:'Kampung Cendana',x:2,z:2,span:25},
-   {id:'government',name:'Kawasan Pemerintahan',x:6,z:-12,span:22},
-   {id:'commercial',name:'Koridor Niaga',x:25,z:0,span:25},
-   {id:'waterfront',name:'Pesisir Nusa',x:49,z:22,span:22},
-   {id:'green',name:'Taman Rimba',x:-18,z:12,span:21},
+   {id:'residential',name:'Blok Cendana · inti kota',x:2,z:2,span:25,role:'capital',level:'city',parentId:'province'},
+   {id:'government',name:'Ibu kota · Plaza Negara',x:6,z:-12,span:22,role:'capital',level:'national'},
+   {id:'province',name:'Pusat Provinsi Rimba',x:-23,z:-16,span:27,role:'province',level:'province',parentId:'government'},
+   {id:'commercial',name:'Kota Niaga',x:25,z:0,span:25,role:'city',level:'city',parentId:'province'},
+   {id:'village',name:'Desa Tanjung',x:-34,z:18,span:28,role:'village',level:'village',parentId:'commercial'},
+   {id:'waterfront',name:'Pesisir Nusa',x:49,z:22,span:22,role:'coastal',level:'landscape',parentId:'commercial'},
+   {id:'green',name:'Taman Rimba',x:-18,z:12,span:21,role:'green',level:'landscape',parentId:'government'},
   ],buildings:[
    {id:'fixture-shop',kind:'shop',name:'Toko Cendana',x:18,z:-1,rotation:0,w:3.5,d:2.6},
    {id:'fixture-shophouse',kind:'shophouse',name:'Ruko Niaga',x:18,z:3,rotation:0,w:3.5,d:2.6},
@@ -53,5 +58,19 @@ export function demoCity():World {
    {id:'fixture-recreation',kind:'recreation',name:'Paviliun Pesisir',x:46,z:26,rotation:0,w:3.4,d:2.8},
    {id:'fixture-coast-cafe',kind:'cafe',name:'Kafe Pesisir',x:52,z:20,rotation:0,w:3.5,d:3.9},
   ]};
+  // A finer street grain in the urban core; sparse frontage in the rural branch.
+  for(let x=-12;x<=12;x+=2)add('road',x,0);
+  for(const z of [-4,-2,2,4])for(let x=-10;x<=10;x+=2){if(x===0)continue;add('house',x,z,z===-4||z===2?2:0)}
+  world.objects=world.objects.map(o=>o.asset==='house'&&Math.abs(o.x)<=10&&[-4,-2,2,4].includes(o.z)?{...o,rotation:o.z===-4||o.z===2?2:0}:o);
+  for(let x=-30;x<=-14;x+=2)add('road',x,-14);
+  add('clinic',-28,-20);add('park',-28,-8);
+  for(const z of [-18,-10])for(const x of [-24,-20,-16])add('house',x,z,z< -14?0:2);
+  presentation.buildings.push({id:'fixture-provincial-office',kind:'service',name:'Kantor daerah · fixture',x:-22,z:-22,rotation:0,w:4,d:2.5});
+  for(let x=-40;x<=-24;x+=2)add('road',x,18);
+  for(let z=6;z<=28;z+=2)add('road',-34,z);
+  for(const x of [-38,-30])for(const z of [8,14,22,26])add('house',x,z,x< -34?1:3);
+  for(const z of [4,30])for(const x of [-40,-28])add('tree',x,z);
+  world.objects=world.objects.filter(o=>!(o.asset==='house'&&o.z===10&&(o.x===28||o.x===32)));
+  presentation.buildings.push({id:'fixture-city-market',kind:'shophouse',name:'Pasar Kota · fixture',x:30,z:10,rotation:0,w:3.5,d:2.6});
   return {...world,presentation} as DemoWorld;
 }

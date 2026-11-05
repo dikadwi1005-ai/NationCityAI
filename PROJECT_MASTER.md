@@ -1475,3 +1475,7 @@ After Phase 1, provide a clear implementation report including:
 The long-term goal is a living nation where citizens can enter the 3D world, watch construction happening around them, communicate only with nearby players, elect their government, expand national territory, and generate consistent cinematic episodes automatically.
 
 Build the technical foundation for that vision.
+
+
+## Active local foundation — 5 November 2026
+Owner authorizes Phase 6 AI Builder locally/offline from Phase 5C Pass 3 (0f39194). Keep all 25 permanent table signatures, 32 objects and revision 0. Refinement fixture: /demo-city. Isolated planning/construction: /demo-construction; no database/API writes. Reports: docs/PHASE_5C_REFINEMENT_REPORT.md and docs/PHASE_6_AI_BUILDER_FOUNDATION_REPORT.md. New work is reviewed on review/phase6-local-foundation-20261105. No paid Railway/AWS, merge or full video-generator activation.

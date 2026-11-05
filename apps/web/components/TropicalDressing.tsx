@@ -16,7 +16,7 @@ export default function TropicalDressing({world}:{world:World}){
  const quality=useQuality(),limit=QUALITY[quality].vegetation;
  const batches=useMemo(()=>{
   const geo=world.geo??emptyGeo,treePoints:{x:number;y:number;z:number;palm:boolean;scale:number}[]=[],stones:{x:number;y:number;z:number}[]=[],tufts:{x:number;y:number;z:number}[]=[];
-  const free=(x:number,z:number,padding:number)=>!world.objects.some(o=>{const f=footprint(o);return Math.abs(x-o.x)<f.w/2+padding&&Math.abs(z-o.z)<f.d/2+padding})&&!demoPresentation(world)?.buildings.some(b=>Math.abs(x-b.x)<b.w/2+padding&&Math.abs(z-b.z)<b.d/2+padding);
+  const free=(x:number,z:number,padding:number)=>!world.objects.some(o=>{const f=footprint(o);return Math.abs(x-o.x)<f.w/2+padding&&Math.abs(z-o.z)<f.d/2+padding})&&!demoPresentation(world)?.buildings.some(b=>Math.abs(x-b.x)<b.w/2+padding&&Math.abs(z-b.z)<b.d/2+padding)&&!demoPresentation(world)?.reservedSites?.some(b=>Math.abs(x-b.x)<b.w/2+padding&&Math.abs(z-b.z)<b.d/2+padding);
   for(const key of chunks(geo).keys()){
    const[cx,cz]=key.split(':').map(Number);
    for(let a=1;a<16;a+=3.5)for(let b=1;b<16;b+=3.5){

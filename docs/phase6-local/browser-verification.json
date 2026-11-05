@@ -1,0 +1,845 @@
+{
+  "at": "2026-11-05T00:13:43.603Z",
+  "scope": "Actual permanent localhost runtime, read-only; demos entirely in memory. Native Edge/AMD desktop; mobile touch emulation, not physical phone.",
+  "browser": "156.0.4314.58",
+  "measurements": [
+    {
+      "world": "permanent",
+      "quality": "low",
+      "samples": [
+        {
+          "fps": 90.00195656417446,
+          "drawCalls": 303,
+          "triangles": 57480,
+          "geometries": 116,
+          "textures": 20,
+          "programs": 25,
+          "materialResources": {
+            "materials": 203,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 96
+        },
+        {
+          "fps": 90,
+          "drawCalls": 303,
+          "triangles": 57480,
+          "geometries": 116,
+          "textures": 20,
+          "programs": 25,
+          "materialResources": {
+            "materials": 203,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 96
+        },
+        {
+          "fps": 89.99999999999905,
+          "drawCalls": 303,
+          "triangles": 57480,
+          "geometries": 116,
+          "textures": 20,
+          "programs": 25,
+          "materialResources": {
+            "materials": 203,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 96
+        }
+      ],
+      "ecology": {
+        "birds": 3,
+        "ground": [
+          {
+            "species": "cat",
+            "x": -6.631190920877152,
+            "y": 0.8,
+            "z": 5.205015805224777
+          },
+          {
+            "species": "dog",
+            "x": -10.692840730903155,
+            "y": 0.8,
+            "z": 5.2571954925099895
+          }
+        ],
+        "cap": 5,
+        "localOnly": true
+      }
+    },
+    {
+      "world": "permanent",
+      "quality": "medium",
+      "samples": [
+        {
+          "fps": 90,
+          "drawCalls": 359,
+          "triangles": 122964,
+          "geometries": 129,
+          "textures": 21,
+          "programs": 30,
+          "materialResources": {
+            "materials": 203,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 109
+        },
+        {
+          "fps": 89.98435054769728,
+          "drawCalls": 359,
+          "triangles": 122964,
+          "geometries": 129,
+          "textures": 21,
+          "programs": 30,
+          "materialResources": {
+            "materials": 203,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 109
+        },
+        {
+          "fps": 89.98200359917982,
+          "drawCalls": 359,
+          "triangles": 122964,
+          "geometries": 129,
+          "textures": 21,
+          "programs": 30,
+          "materialResources": {
+            "materials": 203,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 109
+        }
+      ],
+      "ecology": {
+        "birds": 3,
+        "ground": [
+          {
+            "species": "cat",
+            "x": -6.447066894089246,
+            "y": 0.8,
+            "z": 5.386781646118729
+          },
+          {
+            "species": "dog",
+            "x": -10.23806196894473,
+            "y": 0.8,
+            "z": 5.56078432281802
+          },
+          {
+            "species": "cat",
+            "x": -9.323911892150125,
+            "y": 0.8,
+            "z": 9.586962634613318
+          },
+          {
+            "species": "dog",
+            "x": -10.417626179053963,
+            "y": 0.8,
+            "z": 9.441248362367498
+          },
+          {
+            "species": "cat",
+            "x": 9.358895192363937,
+            "y": 0.8,
+            "z": 5.257610535987569
+          },
+          {
+            "species": "dog",
+            "x": 13.311117442597459,
+            "y": 0.8,
+            "z": 5.204884926158012
+          }
+        ],
+        "cap": 12,
+        "localOnly": true
+      }
+    },
+    {
+      "world": "permanent",
+      "quality": "high",
+      "samples": [
+        {
+          "fps": 89.98200359934731,
+          "drawCalls": 361,
+          "triangles": 146156,
+          "geometries": 133,
+          "textures": 39,
+          "programs": 32,
+          "materialResources": {
+            "materials": 315,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1.2,
+          "drawingBufferWidth": 1920,
+          "drawingBufferHeight": 1200,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 111
+        },
+        {
+          "fps": 90.00195656417446,
+          "drawCalls": 361,
+          "triangles": 146156,
+          "geometries": 133,
+          "textures": 39,
+          "programs": 32,
+          "materialResources": {
+            "materials": 315,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1.2,
+          "drawingBufferWidth": 1920,
+          "drawingBufferHeight": 1200,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 111
+        },
+        {
+          "fps": 89.99999999999872,
+          "drawCalls": 361,
+          "triangles": 146156,
+          "geometries": 133,
+          "textures": 39,
+          "programs": 32,
+          "materialResources": {
+            "materials": 315,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1.2,
+          "drawingBufferWidth": 1920,
+          "drawingBufferHeight": 1200,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 111
+        }
+      ],
+      "ecology": {
+        "birds": 4,
+        "ground": [
+          {
+            "species": "cat",
+            "x": -6.27046462694391,
+            "y": 0.8,
+            "z": 5.599329782482113
+          },
+          {
+            "species": "dog",
+            "x": -10.49939093199882,
+            "y": 0.8,
+            "z": 5.4939321788575795
+          },
+          {
+            "species": "cat",
+            "x": -9.782907441951968,
+            "y": 0.8,
+            "z": 9.302173763181825
+          },
+          {
+            "species": "dog",
+            "x": -10.652289923882176,
+            "y": 0.8,
+            "z": 9.200356338487895
+          },
+          {
+            "species": "cat",
+            "x": 9.564312017297107,
+            "y": 0.8,
+            "z": 5.2820903754842785
+          },
+          {
+            "species": "dog",
+            "x": 13.76775555577668,
+            "y": 0.8,
+            "z": 5.472229977492323
+          }
+        ],
+        "cap": 16,
+        "localOnly": true
+      }
+    },
+    {
+      "world": "demo",
+      "quality": "low",
+      "samples": [
+        {
+          "fps": 89.98200359917902,
+          "drawCalls": 383,
+          "triangles": 164120,
+          "geometries": 179,
+          "textures": 20,
+          "programs": 23,
+          "materialResources": {
+            "materials": 295,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 172
+        },
+        {
+          "fps": 90.03718927392826,
+          "drawCalls": 383,
+          "triangles": 164120,
+          "geometries": 179,
+          "textures": 20,
+          "programs": 23,
+          "materialResources": {
+            "materials": 295,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 172
+        },
+        {
+          "fps": 90.01956947162378,
+          "drawCalls": 383,
+          "triangles": 164120,
+          "geometries": 179,
+          "textures": 20,
+          "programs": 23,
+          "materialResources": {
+            "materials": 295,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 172
+        }
+      ],
+      "ecology": {
+        "birds": 3,
+        "ground": [
+          {
+            "species": "goat",
+            "x": -36.65467154456734,
+            "y": 0.8,
+            "z": 9.201318213930131
+          },
+          {
+            "species": "cat",
+            "x": -21.781386331882405,
+            "y": 0.8,
+            "z": -0.7266388074071468
+          }
+        ],
+        "cap": 5,
+        "localOnly": true
+      }
+    },
+    {
+      "world": "demo",
+      "quality": "medium",
+      "samples": [
+        {
+          "fps": 90.03718927392951,
+          "drawCalls": 441,
+          "triangles": 356372,
+          "geometries": 197,
+          "textures": 21,
+          "programs": 27,
+          "materialResources": {
+            "materials": 295,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 187
+        },
+        {
+          "fps": 89.98200359918015,
+          "drawCalls": 441,
+          "triangles": 356372,
+          "geometries": 197,
+          "textures": 21,
+          "programs": 27,
+          "materialResources": {
+            "materials": 295,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 187
+        },
+        {
+          "fps": 89.99999999999969,
+          "drawCalls": 441,
+          "triangles": 356372,
+          "geometries": 197,
+          "textures": 21,
+          "programs": 27,
+          "materialResources": {
+            "materials": 295,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1,
+          "drawingBufferWidth": 1600,
+          "drawingBufferHeight": 1000,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 187
+        }
+      ],
+      "ecology": {
+        "birds": 3,
+        "ground": [
+          {
+            "species": "goat",
+            "x": -36.383926771638116,
+            "y": 0.8,
+            "z": 9.42446239580786
+          },
+          {
+            "species": "cat",
+            "x": -21.311412896008093,
+            "y": 0.8,
+            "z": -0.4197523170533089
+          },
+          {
+            "species": "chicken",
+            "x": -36.258254903487426,
+            "y": 0.8,
+            "z": 15.570314081639115
+          },
+          {
+            "species": "dog",
+            "x": -14.4813864684226,
+            "y": 0.8,
+            "z": -0.5962055008838355
+          },
+          {
+            "species": "goat",
+            "x": -36.67566145903616,
+            "y": 0.8,
+            "z": 23.23378627160504
+          },
+          {
+            "species": "chicken",
+            "x": -36.66246434490301,
+            "y": 0.8,
+            "z": 27.21659417944636
+          },
+          {
+            "species": "goat",
+            "x": -28.453928491895557,
+            "y": 0.8,
+            "z": 9.368024552885421
+          },
+          {
+            "species": "chicken",
+            "x": -28.24178080155651,
+            "y": 0.8,
+            "z": 15.548853004939293
+          },
+          {
+            "species": "goat",
+            "x": -28.22106888201437,
+            "y": 0.8,
+            "z": 23.59282669072278
+          }
+        ],
+        "cap": 12,
+        "localOnly": true
+      }
+    },
+    {
+      "world": "demo",
+      "quality": "high",
+      "samples": [
+        {
+          "fps": 68.41282251764204,
+          "drawCalls": 443,
+          "triangles": 504864,
+          "geometries": 201,
+          "textures": 39,
+          "programs": 29,
+          "materialResources": {
+            "materials": 454,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1.2,
+          "drawingBufferWidth": 1920,
+          "drawingBufferHeight": 1200,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 189
+        },
+        {
+          "fps": 63.9488409273305,
+          "drawCalls": 443,
+          "triangles": 504864,
+          "geometries": 201,
+          "textures": 39,
+          "programs": 29,
+          "materialResources": {
+            "materials": 454,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1.2,
+          "drawingBufferWidth": 1920,
+          "drawingBufferHeight": 1200,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 189
+        },
+        {
+          "fps": 63.49206349206377,
+          "drawCalls": 443,
+          "triangles": 504864,
+          "geometries": 201,
+          "textures": 39,
+          "programs": 29,
+          "materialResources": {
+            "materials": 454,
+            "surfaceSets": 10,
+            "textures": 40
+          },
+          "projection": "perspective",
+          "dpr": 1.2,
+          "drawingBufferWidth": 1920,
+          "drawingBufferHeight": 1200,
+          "canvasWidth": 1600,
+          "canvasHeight": 1000,
+          "zoom": 1,
+          "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "meshes": 189
+        }
+      ],
+      "ecology": {
+        "birds": 4,
+        "ground": [
+          {
+            "species": "goat",
+            "x": -36.343047162085355,
+            "y": 0.8,
+            "z": 9.588085645041879
+          },
+          {
+            "species": "cat",
+            "x": -21.682357819083833,
+            "y": 0.8,
+            "z": -0.5555956207044559
+          },
+          {
+            "species": "chicken",
+            "x": -36.699979307616,
+            "y": 0.8,
+            "z": 15.259897932006172
+          },
+          {
+            "species": "dog",
+            "x": -14.587770973564654,
+            "y": 0.8,
+            "z": -0.7957993200834641
+          },
+          {
+            "species": "goat",
+            "x": -36.34889664178137,
+            "y": 0.8,
+            "z": 23.328520419736808
+          },
+          {
+            "species": "chicken",
+            "x": -36.20297627128227,
+            "y": 0.8,
+            "z": 27.518558156006083
+          },
+          {
+            "species": "goat",
+            "x": -28.284168377757958,
+            "y": 0.8,
+            "z": 9.599594070402317
+          },
+          {
+            "species": "chicken",
+            "x": -28.517825312951274,
+            "y": 0.8,
+            "z": 15.497124116945875
+          },
+          {
+            "species": "goat",
+            "x": -28.689123968209646,
+            "y": 0.8,
+            "z": 23.305358698280205
+          },
+          {
+            "species": "cat",
+            "x": -21.74057314987275,
+            "y": 0.8,
+            "z": 3.200606055954994
+          },
+          {
+            "species": "chicken",
+            "x": -28.416810256415953,
+            "y": 0.8,
+            "z": 27.279175286232473
+          },
+          {
+            "species": "dog",
+            "x": -14.223561860147989,
+            "y": 0.8,
+            "z": 3.4688302011361003
+          }
+        ],
+        "cap": 16,
+        "localOnly": true
+      }
+    }
+  ],
+  "completed": {
+    "time": 202.00769999998153,
+    "paused": false,
+    "complete": true,
+    "jobs": 114,
+    "completed": 114,
+    "profile": "province",
+    "stages": {
+      "queued": 0,
+      "survey": 0,
+      "foundation": 0,
+      "frame": 0,
+      "complete": 114
+    },
+    "objects": 113,
+    "activeSites": [],
+    "localOnly": true,
+    "error": ""
+  },
+  "pauseVerified": true,
+  "cameraZoomRoundTrip": true,
+  "invalidCommandRejected": true,
+  "resourceCycles": {
+    "warm": {
+      "fps": 80.29768899324449,
+      "drawCalls": 173,
+      "triangles": 140788,
+      "geometries": 78,
+      "textures": 21,
+      "programs": 17,
+      "materialResources": {
+        "materials": 150,
+        "surfaceSets": 10,
+        "textures": 40
+      },
+      "projection": "perspective",
+      "dpr": 1,
+      "drawingBufferWidth": 1600,
+      "drawingBufferHeight": 1000,
+      "canvasWidth": 1600,
+      "canvasHeight": 1000,
+      "zoom": 1,
+      "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "meshes": 60
+    },
+    "settled": {
+      "fps": 89.99999999998977,
+      "drawCalls": 173,
+      "triangles": 140788,
+      "geometries": 78,
+      "textures": 21,
+      "programs": 17,
+      "materialResources": {
+        "materials": 150,
+        "surfaceSets": 10,
+        "textures": 40
+      },
+      "projection": "perspective",
+      "dpr": 1,
+      "drawingBufferWidth": 1600,
+      "drawingBufferHeight": 1000,
+      "canvasWidth": 1600,
+      "canvasHeight": 1000,
+      "zoom": 1,
+      "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "meshes": 60
+    }
+  },
+  "mobile": {
+    "metrics": {
+      "fps": 69.98600279936205,
+      "drawCalls": 84,
+      "triangles": 25496,
+      "geometries": 44,
+      "textures": 1,
+      "programs": 8,
+      "materialResources": {
+        "materials": 28,
+        "surfaceSets": 0,
+        "textures": 0
+      },
+      "projection": "perspective",
+      "dpr": 1,
+      "drawingBufferWidth": 390,
+      "drawingBufferHeight": 844,
+      "canvasWidth": 390,
+      "canvasHeight": 844,
+      "zoom": 1,
+      "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "meshes": 47
+    },
+    "ecology": {
+      "birds": 3,
+      "ground": [],
+      "cap": 5,
+      "localOnly": true
+    },
+    "builder": {
+      "time": 15,
+      "paused": true,
+      "complete": false,
+      "jobs": 114,
+      "completed": 13,
+      "profile": "province",
+      "stages": {
+        "queued": 98,
+        "survey": 0,
+        "foundation": 3,
+        "frame": 0,
+        "complete": 13
+      },
+      "objects": 13,
+      "activeSites": [
+        {
+          "asset": "road",
+          "stage": "foundation",
+          "x": -26,
+          "z": -10
+        },
+        {
+          "asset": "road",
+          "stage": "foundation",
+          "x": -18,
+          "z": -18
+        },
+        {
+          "asset": "road",
+          "stage": "foundation",
+          "x": -18,
+          "z": -2
+        }
+      ],
+      "localOnly": true,
+      "error": ""
+    }
+  },
+  "demoApiRequests": [],
+  "source25TablesUnchanged": true,
+  "objects": 32,
+  "revision": 0,
+  "errors": [],
+  "gpu": []
+}

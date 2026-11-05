@@ -6,7 +6,7 @@ import{surface,materialResourceCounts,planarUV}from'../packages/world-engine/mat
 import{LivingSimulation,buildNetwork,traversable,trafficPoint}from'../packages/world-engine/living-world.ts';
 import{VEHICLE_DIMENSIONS}from'../packages/world-engine/vehicle-dimensions.ts';
 test('commercial/public fixtures cannot enter the six-asset world and their solids affect local navigation/placement',()=>{
- const original=starterWorld(),before=JSON.stringify(original),demo=demoCity(),p=demoPresentation(demo)!;assert.equal(demoPresentation(original),null);assert.equal(p.districts.length,5);assert.ok(p.buildings.length>=6);
+ const original=starterWorld(),before=JSON.stringify(original),demo=demoCity(),p=demoPresentation(demo)!;assert.equal(demoPresentation(original),null);assert.equal(p.districts.length,7);assert.ok(p.buildings.length>=6);
  assert.ok(demo.objects.every(o=>Object.hasOwn(ASSETS,o.asset)));const shop=p.buildings.find(b=>b.kind==='shop')!;
  assert.equal(traversable(demo,shop.x,shop.z),false);assert.equal(fixturePlacementConflict(demo,{...original.objects.find(o=>o.asset==='house')!,x:shop.x,z:shop.z}),true);assert.equal(JSON.stringify(original),before);
 });

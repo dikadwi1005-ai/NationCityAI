@@ -1,7 +1,7 @@
 name: Closed beta source checks
 on:
   pull_request:
-    branches: [main, 'release/**']
+    branches: [main, 'release/**', 'review/**']
   workflow_dispatch:
 permissions:
   contents: read

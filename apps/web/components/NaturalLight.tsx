@@ -13,7 +13,7 @@ export default function NaturalLight(){
   scene.background=new Color('#8cabb5');scene.fog=new FogExp2('#8cabb5',quality==='low'?0:.0018);
   if(quality==='low'){scene.environment=null;return}
   const sky=new Sky(),environment=new Scene();sky.scale.setScalar(1000);
-  sky.material.uniforms.turbidity.value=3;sky.material.uniforms.rayleigh.value=1.1;
+  sky.material.uniforms.turbidity.value=2.2;sky.material.uniforms.rayleigh.value=2.2;
   sky.material.uniforms.mieCoefficient.value=.003;sky.material.uniforms.sunPosition.value=new Vector3(30,48,20);
   environment.add(sky);const generator=new PMREMGenerator(gl),target=generator.fromScene(environment,.04,1,2000);
   scene.environment=target.texture;scene.environmentIntensity=.17;environment.remove(sky);sky.scale.setScalar(500);scene.add(sky);generator.dispose();

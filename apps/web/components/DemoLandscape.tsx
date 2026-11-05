@@ -4,7 +4,7 @@ import{demoPresentation}from'../../../packages/world-engine/demo-presentation';
 import{sample,emptyGeo}from'../../../packages/nation-core/geography';
 import type{World}from'../../../packages/nation-core/world';
 export default function DemoLandscape({world}:{world:World}){
- if(!demoPresentation(world))return null;const h=(x:number,z:number)=>sample(world.geo??emptyGeo,x,z).h;
+ if(!demoPresentation(world)||demoPresentation(world)?.scenario==='construction')return null;const h=(x:number,z:number)=>sample(world.geo??emptyGeo,x,z).h;
  return <group name="fixture-district-landscape" raycast={()=>null}>
  <group position={[6,h(6,-12),-12]}>
   <Part p={[0,.015,0]} s={[8,.03,8]} c="#989c8b" kind="stone"/>

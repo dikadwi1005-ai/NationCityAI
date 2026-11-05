@@ -9,6 +9,8 @@ import {visualVariant} from '../../../packages/world-engine/asset-registry';
 import LivingWorld from './LivingWorld';
 import NaturalLight from './NaturalLight';
 import DemoLandscape from './DemoLandscape';
+import CloudLayer from './CloudLayer';
+import EcologyScene from './EcologyScene';
 import {useVisualSettings} from './visual-settings';
 import {QualityContext} from '../../../packages/world-engine/quality-context';
 import {QUALITY} from '../../../packages/world-engine/visual-config';
@@ -27,9 +29,10 @@ function Camera({action,world}:{action:CameraAction;world:World}){
  if(action.kind==='street'){const x=action.x??c.target.x,z=action.z??c.target.z;target.set(x,sample(world.geo??emptyGeo,x,z).h+.45,z);position.copy(target).add(new THREE.Vector3(2,.25,3));fov=50}else if(['home','city','neighborhood','focus','follow'].includes(action.kind))fov=42;
  if(action.kind==='focus'){const x=action.x??0,z=action.z??0,span=action.span??20;target.set(x,sample(world.geo??emptyGeo,x,z).h+.8,z);const offset=Math.max(4,span*(span<=14?.43:.85));position.set(x+offset,target.y+offset*.72,z+offset*1.15);cam.far=Math.max(800,offset*8)}
  if(action.kind==='follow'){cam.position.copy(c.target).add(new THREE.Vector3(3,1.8,4));cam.fov=42;cam.updateProjectionMatrix();c.update();goal.current=null;return;}
- if(action.kind==='in')position.copy(target).add(position.clone().sub(target).multiplyScalar(.8));
- if(action.kind==='out')position.copy(target).add(position.clone().sub(target).multiplyScalar(1.25));
- if(action.kind==='orbit')position.copy(target).add(position.clone().sub(target).applyAxisAngle(new THREE.Vector3(0,1,0),Math.PI/4));
+ const offset=position.clone().sub(target);
+ if(action.kind==='in')position.copy(target).add(offset.multiplyScalar(.8));
+ if(action.kind==='out')position.copy(target).add(offset.multiplyScalar(1.25));
+ if(action.kind==='orbit')position.copy(target).add(offset.applyAxisAngle(new THREE.Vector3(0,1,0),Math.PI/4));
  cam.updateProjectionMatrix();goal.current={position,target,fov};
  },[action,size.width,size.height]);
  useFrame((_,dt)=>{const c=ref.current,g=goal.current;if(!c)return;const cam=c.object as THREE.PerspectiveCamera;if(!g){cam.position.y=Math.max(cam.position.y,sample(world.geo??emptyGeo,cam.position.x,cam.position.z).h+.35);return}const a=1-Math.exp(-9*Math.min(dt,.1));c.object.position.lerp(g.position,a);c.target.lerp(g.target,a);cam.fov=THREE.MathUtils.lerp(cam.fov,g.fov,a);cam.updateProjectionMatrix();cam.position.y=Math.max(cam.position.y,sample(world.geo??emptyGeo,cam.position.x,cam.position.z).h+.35);c.update();if(c.object.position.distanceTo(g.position)<.01&&Math.abs(cam.fov-g.fov)<.01)goal.current=null});
@@ -41,7 +44,7 @@ export default function Scene({children,brush,world,draft,selected,grid,layers=f
  const geo=world.geo??emptyGeo;
  const ground=(e:ThreeEvent<PointerEvent>)=>{onHover(Math.round(e.point.x/2)*2,Math.round(e.point.z/2)*2)};
  return <Canvas shadows={!!preset.shadow} dpr={preset.dpr} camera={{position:[34,29,40],fov:42,near:.08,far:800}} gl={{antialias:!low}} onCreated={({gl})=>{gl.setClearColor('#387f87');gl.toneMapping=THREE.ACESFilmicToneMapping;gl.toneMappingExposure=1.08;gl.shadowMap.type=THREE.PCFSoftShadowMap}}>
- <QualityContext.Provider value={quality}><NaturalLight/>
+ <QualityContext.Provider value={quality}><NaturalLight/><CloudLayer/><EcologyScene world={world}/>
  <Ocean low={quality==='low'} geo={geo}/><WorldDressing world={world}/><RenderMetrics/>
  <Terrain geo={geo}/>{brush&&<mesh rotation={[-Math.PI/2,0,0]} position={[brush.x,sample(geo,brush.x,brush.z).h+.35,brush.z]} renderOrder={5}><ringGeometry args={[brush.radius-.2,brush.radius,64]}/><meshBasicMaterial color="#fff7ba" depthTest={false}/></mesh>}
  {(grid||layers)&&regions(geo).map(r=><mesh key={r.id} position={[r.x,sample(geo,r.x,r.z).h+.2,r.z]} rotation={[-Math.PI/2,0,0]}><ringGeometry args={[r.radius-.25,r.radius,64]}/><meshBasicMaterial color="#ffca64" depthTest={false} transparent opacity={.8}/></mesh>)}
