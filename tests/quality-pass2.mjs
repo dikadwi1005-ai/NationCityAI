@@ -15,7 +15,7 @@ try{
   await mkdir(out,{recursive:true});browser=await chromium.launch({channel:'msedge',args:['--enable-unsafe-swiftshader']});
   const p=await browser.newPage({viewport:{width:1600,height:1000}}),errors=[],gpuErrors=[],demoApi=[],measurements=[];
   p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if(m.type()==='error'&&/THREE|WebGL|shader|geometry/i.test(m.text()))gpuErrors.push(m.text())});
-  p.on('request',r=>{if(p.url().includes('/demo-city')&&new URL(r.url()).pathname.startsWith('/api/'))demoApi.push({url:r.url(),method:r.method()})});
+  p.on('request',r=>{if(p.url().includes('/demo-city-legacy')&&new URL(r.url()).pathname.startsWith('/api/'))demoApi.push({url:r.url(),method:r.method()})});
   const ready=async()=>{await p.waitForFunction(()=>window.__nationSimulation&&window.__nationMetrics);await p.waitForTimeout(1100)};
   const snap=name=>p.screenshot({path:out+'/'+name+'.png'});
   async function densityMeasurements(label){
@@ -37,7 +37,7 @@ try{
   await p.goto(origin);await ready();const permanentFixture=await p.request.get(origin+'/api/world').then(r=>r.json());assert.equal(permanentFixture.objects.length,32);
   await snap('harapan-after');await densityMeasurements('starter');await record('harapan',5000);
   const coast=await p.evaluate(()=>window.__nationProject(24,.15,18));await p.mouse.move(coast.x,coast.y);await p.mouse.down();await p.mouse.move(800,500,{steps:14});await p.mouse.up();await p.getByRole('button',{name:'Perbesar',exact:true}).click();await p.getByRole('button',{name:'Perbesar',exact:true}).click();await p.waitForTimeout(1000);await snap('coast-ocean');
-  await p.getByRole('button',{name:'Menu utama',exact:true}).click();await p.getByRole('link',{name:'Buka Demo City visual'}).click();await ready();await p.getByRole('heading',{name:'Demo City',exact:true}).waitFor();
+  await p.goto(origin+'/demo-city-legacy');await ready();await p.getByRole('heading',{name:'Demo City',exact:true}).waitFor();
   const demo=demoCity();assert.ok(demo.objects.length>200);await snap('demo-overview');await densityMeasurements('demo-city');
   const canvas=await p.locator('.world-canvas canvas').boundingBox();assert.equal(canvas.width,1600);assert.equal(canvas.height,1000);
   async function home(){await p.getByRole('button',{name:'Kamera awal',exact:true}).click();await p.waitForTimeout(1100)}

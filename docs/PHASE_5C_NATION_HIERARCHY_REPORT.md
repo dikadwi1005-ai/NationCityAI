@@ -2,6 +2,8 @@
 
 The National Atlas opens eight separate regional scenes. It groups them under a national, provincial, district and local hierarchy across Pulau Aruna and Pulau Selatan. Regional navigation mounts one scene at a time. Detailed terrain is capped at 40, 64 or 96 chunks according to graphics quality. Distant terrain uses a coarser mesh.
 
+The existing `/demo-city` entry redirects to `/demo-region/metropolis`. The previous fixture is available at `/demo-city-legacy` for historical visual regression checks.
+
 The regional renderer shares the existing HUD and terrain engine. The capital has an Istana and ministries alongside high-rise commercial blocks. Provincial and regency capitals and cities have distinct offices. The village has narrower roads and farm plots. The coastal district has a bay, coastal vegetation and waterfront paths. The 23-asset catalog uses rotated multi-tile lots, setbacks, road envelopes, access paths and collision checks. Explore mode runs a local Chibi without creating a citizen record. Government office bindings identify the intended administrative level. They do not assign elected positions or provide platform administrator access.
 
 Local time advances independently of server clocks. Dawn, noon, dusk and night presets can be selected and paused. Night changes the sky, residential destinations, windows, lamps and vehicle lights. High renders three 2048-pixel cascaded shadow maps. Medium uses one 1536-pixel map. Low omits dynamic shadows. Road scenes reuse meshes and materials. Parked vehicle geometry and the daylight light list were simplified after the first measurement.

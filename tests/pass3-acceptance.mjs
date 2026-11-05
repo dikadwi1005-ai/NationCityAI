@@ -5,7 +5,7 @@ const server=spawn(process.execPath,['node_modules/next/dist/bin/next','start','
 for await(const chunk of server.stdout){output+=chunk;origin=output.match(/http:\/\/127\.0\.0\.1:\d+/)?.[0]??'';if(origin&&output.includes('Ready'))break}
 try{
  await mkdir(out,{recursive:true});browser=await chromium.launch({channel:'msedge',args:['--enable-unsafe-swiftshader','--enable-precise-memory-info']});const context=await browser.newContext({viewport:{width:1600,height:1000}}),p=await context.newPage(),errors=[],gpu=[],api=[],measurements=[];
- p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if((m.type()==='error'||m.type()==='warning')&&/shader|mergeGeometries|too many active WebGL/i.test(m.text()))gpu.push(m.text())});p.on('request',r=>{if(p.url().includes('/demo-city')&&new URL(r.url()).pathname.startsWith('/api/'))api.push(r.method()+' '+new URL(r.url()).pathname)});
+ p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if((m.type()==='error'||m.type()==='warning')&&/shader|mergeGeometries|too many active WebGL/i.test(m.text()))gpu.push(m.text())});p.on('request',r=>{if(p.url().includes('/demo-city-legacy')&&new URL(r.url()).pathname.startsWith('/api/'))api.push(r.method()+' '+new URL(r.url()).pathname)});
  const ready=async()=>{await p.waitForFunction(()=>window.__nationMetrics&&window.__nationSimulation&&window.__nationAssetBounds?.length);await p.waitForTimeout(1200)};
  const snap=name=>p.screenshot({path:out+'/'+name+'.png'});
  async function settings(){await p.getByRole('button',{name:'Pengaturan',exact:true}).click()}
@@ -21,7 +21,7 @@ try{
   await p.waitForTimeout(700);await p.getByRole('button',{name:'Perbesar',exact:true}).click();await p.waitForTimeout(1300);await p.getByRole('button',{name:'Putar kamera',exact:true}).click();await p.waitForTimeout(1300);await p.getByRole('button',{name:'Perkecil',exact:true}).click();await writeFile(out+'/'+name+'.webm',Buffer.from(await recording,'base64'));
  }
  await p.goto(origin);await ready();const starter=await p.request.get(origin+'/api/world').then(r=>r.json());assert.equal(starter.objects.length,32);await snap('harapan-final-fixture');await benchmark('starter');
- await p.goto(origin+'/demo-city');await ready();const demo=demoCity();assert.equal(await p.locator('main').getAttribute('data-world-source'),'demo');await snap('demo-overview-final');await benchmark('demo');
+ await p.goto(origin+'/demo-city-legacy');await ready();const demo=demoCity();assert.equal(await p.locator('main').getAttribute('data-world-source'),'demo');await snap('demo-overview-final');await benchmark('demo');
  const bounds=await p.evaluate(()=>window.__nationAssetBounds),houses=bounds.filter(b=>b.asset==='house'&&!b.fixture);assert.ok(new Set(houses.map(b=>b.variant)).size>=6);for(const h of houses){assert.ok(h.width<=2.06&&h.depth<=2.06);assert.ok(h.height>.9&&h.height<3.2)}
  await district('residential','residential-district');await district('government','government-district');await district('commercial','commercial-district');await district('waterfront','waterfront-district');await district('green','green-district');
  async function select(o){

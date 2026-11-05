@@ -18,14 +18,14 @@ try{
   for(const quality of ['low','medium','high']){await page.getByLabel('Kualitas visual',{exact:true}).selectOption(quality);await page.waitForTimeout(3000);const samples=[];for(let i=0;i<3;i++){await page.waitForTimeout(1000);samples.push(await page.evaluate(()=>window.__nationMetrics))}const state=await page.evaluate(()=>window.__nationSimulation);measurements.push({world,quality,npc:state.npc.length,vehicles:state.vehicles.length,samples})}
   await page.getByLabel('Kualitas visual',{exact:true}).selectOption('medium');await page.getByRole('button',{name:'Tutup panel',exact:true}).click();
  }
- page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(page.url().includes('/demo-city')&&new URL(r.url()).pathname.startsWith('/api/'))demoApi.push(r.url())});
+ page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(page.url().includes('/demo-city-legacy')&&new URL(r.url()).pathname.startsWith('/api/'))demoApi.push(r.url())});
  await page.goto(origin);await page.waitForFunction(()=>window.__nationMetrics&&window.__nationSimulation);await page.waitForTimeout(1800);
  assert.deepEqual(await page.request.get(origin+'/api/world').then(r=>r.json()),expected);
  assert.equal(expected.objects.length,32);assert.equal(expected.revision,0);
  await page.screenshot({path:'docs/phase-5c/pass3/harapan-live.png'});
  const metrics=await page.evaluate(()=>window.__nationMetrics);
  await benchmark('permanent');
- await page.goto(origin+'/demo-city');await page.waitForFunction(()=>window.__nationMetrics&&window.__nationSimulation?.npc.length);await page.waitForTimeout(1200);
+ await page.goto(origin+'/demo-city-legacy');await page.waitForFunction(()=>window.__nationMetrics&&window.__nationSimulation?.npc.length);await page.waitForTimeout(1200);
  assert.equal(await page.locator('main').getAttribute('data-world-source'),'demo');await benchmark('demo');assert.deepEqual(demoApi,[]);
  await page.getByRole('link',{name:'Kembali ke dunia permanen ↗'}).click();await page.waitForFunction(()=>window.__nationMetrics&&window.__nationSimulation);
  assert.deepEqual(await page.request.get(origin+'/api/world').then(r=>r.json()),expected);
