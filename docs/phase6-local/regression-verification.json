@@ -1,0 +1,67 @@
+{
+  "at": "2026-11-05T00:16:13.420Z",
+  "unit": {
+    "passed": 49,
+    "failed": 0
+  },
+  "productionBuild": "PASS",
+  "typecheck": "PASS",
+  "isolatedSuites": [
+    {
+      "suite": "placement",
+      "code": 0
+    },
+    {
+      "suite": "visual-overhaul",
+      "code": 0
+    },
+    {
+      "suite": "living-world-browser",
+      "code": 0
+    },
+    {
+      "suite": "citizens",
+      "code": 0
+    },
+    {
+      "suite": "chat-browser",
+      "code": 0
+    },
+    {
+      "suite": "government-browser",
+      "code": 0
+    },
+    {
+      "suite": "postgres-runtime",
+      "code": 0
+    },
+    {
+      "suite": "government-recovery",
+      "code": 0
+    },
+    {
+      "suite": "recovery-remote",
+      "code": 0
+    },
+    {
+      "suite": "postgres-migration",
+      "code": 0
+    }
+  ],
+  "protectedFilesUnchanged": 41,
+  "tables": 25,
+  "objects": 32,
+  "revision": 0,
+  "allTableSignaturesUnchanged": true,
+  "integrity": [
+    "ok"
+  ],
+  "foreignKeyViolations": 0,
+  "migrations": [
+    1,
+    2,
+    5
+  ],
+  "consistentBackupRestoreCompared": true,
+  "cloudS3": "Stub contract only; no real bucket or paid provisioning."
+}

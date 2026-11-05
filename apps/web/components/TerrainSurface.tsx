@@ -20,6 +20,7 @@ function Chunk({cx,cz,geo,step}:{cx:number;cz:number;geo:Geo;step:number}){
         const h=visualHeight(geo,vx,vz),biome=sample(geo,vx,vz).biome;
         const soil=Math.max(0,Math.min(1,(h-.2)/.65));
         color.copy(sand).lerp(grass,soil);
+        if(biome==='sand')color.lerp(sand,.85);
         if(biome==='forest')color.lerp(new T.Color('#587b53'),.5);
         if(h>2||biome==='rock')color.lerp(rock,Math.min(.8,(h-1)/7));
         color.multiplyScalar(.96+.035*Math.sin(vx*.28+vz*.19)+.025*Math.cos(vx*.66-vz*.41));
