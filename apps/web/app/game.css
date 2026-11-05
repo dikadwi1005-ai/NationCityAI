@@ -21,3 +21,32 @@ body{font-family:'Segoe UI Variable','Segoe UI',system-ui,sans-serif}button,a,in
 .nation-region-nav{max-height:calc(100dvh - 330px);overflow:auto}.nation-lot-tools{display:grid;gap:10px;border-top:1px solid #b8bcae;padding-top:12px}.nation-lot-tools>div{display:flex;gap:6px;flex-wrap:wrap}.nation-lot-tools p{font-size:11px;line-height:1.5;margin:0}.nation-lot-tools small{overflow-wrap:anywhere}.nation-region-nav button{background:#e0decd;border:1px solid #bac0b0;border-radius:4px;padding:7px 9px;font:inherit;color:#244438;cursor:pointer}.nation-region-nav button:disabled{opacity:.5;cursor:default}@media(max-width:700px){.nation-region-nav{max-height:38dvh;width:240px!important}}
 .world-clock-controls{border:0;padding:10px 0;display:grid;gap:9px;min-width:0}.world-clock-controls legend{font-size:11px;font-weight:600}.world-clock-controls>div{display:flex;gap:5px;flex-wrap:wrap}.world-clock-controls input[type=range]{width:100%}.nation-region-nav summary{font-size:11px;cursor:pointer}.explore-directions{display:flex;gap:5px}.explore-directions button{touch-action:none}
 .nation-planning-panel{max-height:calc(100dvh - 260px);width:360px}.nation-planning-panel input:not([type=checkbox]){width:100%;box-sizing:border-box;padding:8px;border:1px solid #b3bead;border-radius:4px;background:#f5f2e7;color:#244438}.nation-planning-panel label:has(input[type=checkbox]){display:block;font-size:11px;line-height:1.5}.nation-stage-counts{display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:10px}.nation-stage-counts span{display:flex;justify-content:space-between}.nation-planning-panel p{font-size:11px;line-height:1.4;margin:0}
+
+@media (max-width: 700px) {
+  .game-shell:has(.nation-region-nav) .demo-world-note {
+    top: 68px;
+    width: max-content;
+    padding: 4px 8px;
+  }
+  .game-shell:has(.nation-region-nav) .demo-world-note span,
+  .game-shell:has(.nation-region-nav) .demo-world-note a {
+    display: none;
+  }
+  .game-shell:has(.nation-region-nav) .world-title {
+    top: 100px;
+    right: 58px;
+  }
+  .game-shell:has(.nation-region-nav) .world-title h1 {
+    font-size: clamp(17px, 5vw, 23px);
+  }
+  .game-shell:has(.nation-region-nav) .simulation-status {
+    right: 12px;
+    left: auto;
+    bottom: 102px;
+  }
+  .nation-region-nav select {
+    min-width: 0;
+    max-width: 100%;
+    flex: 1;
+  }
+}

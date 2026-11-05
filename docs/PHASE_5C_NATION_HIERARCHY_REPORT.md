@@ -19,11 +19,17 @@ Goat, Shiba, chicken, pigeon and seagull use skinned GLBs. The goat model has a 
 | Regency Center | [Overview](nation-scope/regency-final.jpg), [regent's office](nation-scope/regent-final.jpg) |
 | Subdistrict | [Subdistrict](nation-scope/subdistrict-final.jpg) |
 | Rural Village | [Village](nation-scope/village-final.jpg), [goat](nation-scope/fauna-goat.jpg), [chicken](nation-scope/fauna-chicken.jpg) |
-| Coastal District | [Coast](nation-scope/coast-final.jpg), [seagull](nation-scope/fauna-seagull.jpg) |
+| Coastal District | [Coast](nation-scope/coast-final.jpg), [waterfront](nation-scope/waterfront-final.jpg), [seagull](nation-scope/fauna-seagull.jpg) |
 | Construction Lab | [Lab](nation-scope/construction-final.jpg), [construction frame](nation-scope/nation-construction-frame.jpg) |
-| Street scale and lighting | [House](nation-scope/house-final.jpg), [Explore](nation-scope/explore-sandbox.jpg), [High shadows](nation-scope/capital-high-shadow.jpg), [night](nation-scope/capital-high-night.jpg) |
+| Street scale and lighting | [Intersection](nation-scope/intersection-final.jpg), [House](nation-scope/house-final.jpg), [Explore](nation-scope/explore-sandbox.jpg), [High shadows](nation-scope/capital-high-shadow.jpg), [night](nation-scope/capital-high-night.jpg) |
 
 The original PNG captures and two local WebM recordings are in `docs/nation-scope`. `nation-regional-tour.webm` follows [the chapter list](nation-scope/tour-chapters.json). `day-night-transition.webm` records the running application as the clock advances. This capture uses Playwright and is separate from the deferred video generator feature.
+
+## Performance
+
+On Edge with the workstation AMD Radeon GPU at 1440×900, the eight region overviews measured 84–90 FPS median on Medium with 196–274 draw calls. Pulau Harapan measured 89.8 FPS with 247 draw calls. National Capital measured 89.9 FPS on Low, 89.2 on Medium and 56.6 on High. It used 40, 64 and 96 detailed chunks respectively, with three active 2048-pixel shadow cascades on High. Each desktop entry represents five samples after warm-up. These figures describe this workstation and camera path.
+
+Mobile browser emulation at 390×844 verified navigation, one active region, the Low preset and the 40-chunk budget. [Mobile capture](nation-scope/mobile-village-final.jpg) · [Raw benchmark results](nation-scope/performance-final.json)
 
 ## Validation and data
 
