@@ -1,0 +1,12 @@
+import{test}from'node:test';import assert from'node:assert/strict';import{SCENES}from'../packages/nation-sim/atlas.ts';import{regionWorld}from'../packages/nation-sim/regions.ts';import{BUILDINGS,type NationBuilding}from'../packages/nation-sim/catalog.ts';import{architecture}from'../packages/nation-sim/architecture.ts';import{governmentBinding}from'../packages/nation-sim/government-binding.ts';import{buildNetwork,LivingSimulation,traversable}from'../packages/world-engine/living-world.ts';
+const b=(asset:keyof typeof BUILDINGS):NationBuilding=>({id:'test',asset,version:1,x:0,z:0,rotation:0,zone:BUILDINGS[asset].zones[0],region:'demo-capital',variant:0});
+test('architectural silhouettes are distinct, facade geometry is real and low LOD reduces geometry',()=>{
+ const signatures=new Set<string>();for(const asset of Object.keys(BUILDINGS)as(keyof typeof BUILDINGS)[]){const detailed=architecture(b(asset)),coarse=architecture(b(asset),false);assert.ok(detailed.length>=10,asset);assert.ok(detailed.length>=coarse.length);assert.ok(detailed.every(p=>p.s.every(n=>n>0&&Number.isFinite(n))));signatures.add(JSON.stringify(detailed.map(p=>[p.p,p.s,p.shape])))}assert.equal(signatures.size,Object.keys(BUILDINGS).length);
+ assert.ok(architecture(b('tower')).length>architecture(b('tower'),false).length*1.3);
+});
+test('government assets bind to the appropriate hierarchy without granting platform privileges',()=>{
+ for(const [scene,asset,level]of[['capital','palace',0],['province','governor',1],['regency','regent',2],['city','mayor',2],['subdistrict','camat',3],['village','village-hall',4]]as const){const w=regionWorld(scene),object=w.nation.buildings.find(b=>b.asset===asset)!;assert.ok(object);const binding=governmentBinding(object,scene)!;assert.equal(binding.level,level);assert.equal(binding.platformAdmin,false);assert.ok(binding.assignmentRequiresElectionOrAdmin)}assert.equal(governmentBinding(b('cottage'),'capital'),null);
+});
+test('modern regional pedestrians use actual new facility entrances and cannot cross building bodies',()=>{
+ const w=regionWorld('capital'),network=buildNetwork(w);assert.ok(network.goals.length>0);const sim=new LivingSimulation(network,6,4);for(let i=0;i<300;i++)sim.step(1/30);assert.ok(sim.walkers.length>0);assert.ok(sim.vehicles.length>0);for(const a of sim.walkers)assert.ok(traversable(w,a.x,a.z));for(const b of w.nation.buildings)assert.equal(traversable(w,b.x,b.z),false);
+});

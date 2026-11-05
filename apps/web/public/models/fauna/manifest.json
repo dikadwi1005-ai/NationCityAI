@@ -1,0 +1,109 @@
+{
+  "imported": "2026-11-05",
+  "models": [
+    {
+      "model": "Goat",
+      "creator": "Poly by Google",
+      "source": "https://poly.pizza/m/d7dImmjtF8E",
+      "url": "https://static.poly.pizza/6f11087b-2aae-4bea-8a18-c1e8428d31b0.glb",
+      "sourceSha256": "168736a532e53356f948c8d110cc897ea0ed3699c788515752ac0322ec2a72e4",
+      "license": "CC-BY-3.0",
+      "modifications": "Original 13-bone skin, walk, breathing/idle and grazing clips. Original mesh/material/texture retained.",
+      "bytes": 337212,
+      "sha256": "2441746e25d6fef76e007a66ba814d1684b6168dcd17420b1fe28017cffd9f8f",
+      "clips": [
+        "idle",
+        "walk",
+        "graze"
+      ],
+      "bones": 13
+    },
+    {
+      "model": "Shiba",
+      "creator": "Quaternius",
+      "source": "https://poly.pizza/m/y4wdQpg767",
+      "url": "https://static.poly.pizza/ba6d0ee3-bcc0-4ef0-9d3c-a3e245b41c77.glb",
+      "sourceSha256": "9cbd4f1e12f85024126eab6a2c5706c099196df1a10db74e6c8b67bac3fff54a",
+      "license": "CC0-1.0",
+      "modifications": "No mesh modification. Original named skeletal animations.",
+      "bytes": 851196,
+      "sha256": "9cbd4f1e12f85024126eab6a2c5706c099196df1a10db74e6c8b67bac3fff54a",
+      "clips": [
+        "Attack",
+        "Death",
+        "Eating",
+        "Gallop",
+        "Gallop_Jump",
+        "Idle_HitReact_Left",
+        "Idle_HitReact_Right",
+        "Jump_ToIdle",
+        "Walk",
+        "Idle_2_HeadLow",
+        "Idle_2",
+        "Idle",
+        "AnimalArmature|Attack",
+        "AnimalArmature|Death",
+        "AnimalArmature|Eating",
+        "AnimalArmature|Gallop",
+        "AnimalArmature|Gallop_Jump",
+        "AnimalArmature|Idle",
+        "AnimalArmature|Idle_2",
+        "AnimalArmature|Idle_2_HeadLow",
+        "AnimalArmature|Idle_HitReact_Left",
+        "AnimalArmature|Idle_HitReact_Right",
+        "AnimalArmature|Jump_ToIdle",
+        "AnimalArmature|Walk"
+      ],
+      "bones": 46
+    },
+    {
+      "model": "Chicken",
+      "creator": "Quaternius",
+      "source": "https://poly.pizza/m/Z3RCoCYss4",
+      "url": "https://static.poly.pizza/9ba093a4-6525-4f3b-927d-98dca72e1e40.glb",
+      "sourceSha256": "89876da1f94d735b6e1cf0a2ca7151b18623c48fd9b8cb469271de370e092730",
+      "license": "CC0-1.0",
+      "modifications": "No mesh modification. Original named skeletal animations.",
+      "bytes": 172692,
+      "sha256": "89876da1f94d735b6e1cf0a2ca7151b18623c48fd9b8cb469271de370e092730",
+      "clips": [
+        "AnimalArmature|AnimalArmature|AnimalArmature|Attack",
+        "AnimalArmature|AnimalArmature|AnimalArmature|Death",
+        "AnimalArmature|AnimalArmature|AnimalArmature|Idle",
+        "AnimalArmature|AnimalArmature|AnimalArmature|Idle_Peck",
+        "AnimalArmature|AnimalArmature|AnimalArmature|Run"
+      ],
+      "bones": 7
+    },
+    {
+      "model": "Pigeon",
+      "creator": "AI Nation Builder",
+      "license": "Project original",
+      "modifications": "Original loft mesh, 8-bone rig, named idle/walk/peck/fly skeletal clips.",
+      "bytes": 43736,
+      "sha256": "d3d28055405024eda65feea66448b8bad37e845bf8ab2fa7ac0188dcd1b53ec9",
+      "clips": [
+        "idle",
+        "walk",
+        "peck",
+        "fly"
+      ],
+      "bones": 8
+    },
+    {
+      "model": "Seagull",
+      "creator": "AI Nation Builder",
+      "license": "Project original",
+      "modifications": "Original loft mesh, 8-bone rig, named idle/walk/peck/fly skeletal clips.",
+      "bytes": 43736,
+      "sha256": "2a3fe3a1a7088e2cc879eb23e4a7e05289896c249f68b25c3eca1bb9bea5b58d",
+      "clips": [
+        "idle",
+        "walk",
+        "peck",
+        "fly"
+      ],
+      "bones": 8
+    }
+  ]
+}

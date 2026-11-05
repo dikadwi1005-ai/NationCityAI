@@ -2,7 +2,7 @@
 import{useMemo,useRef,useEffect}from'react';import{useFrame}from'@react-three/fiber';
 import{BoxGeometry,CylinderGeometry,MeshStandardMaterial,type Group}from'three';
 import{RoundedBoxGeometry}from'three/examples/jsm/geometries/RoundedBoxGeometry.js';
-import{Part}from'./assets/primitives';import{surface}from'./materials';import{useQuality}from'./quality-context';import{VEHICLE_DIMENSIONS}from'./vehicle-dimensions';
+import{Part}from'./assets/primitives';import{surface}from'./materials';import{useQuality}from'./quality-context';import{localWorldClock}from'../nation-sim/world-clock';import{VEHICLE_DIMENSIONS}from'./vehicle-dimensions';
 const bodies=new Map<number,RoundedBoxGeometry>(),cabins=new Map<number,RoundedBoxGeometry>();
 const brakeGeometry=new BoxGeometry(.1,.045,.025);
 const tire=new CylinderGeometry(.112,.112,.075,16);tire.rotateZ(Math.PI/2);const hub=new CylinderGeometry(.061,.061,.079,12);hub.rotateZ(Math.PI/2);
@@ -11,8 +11,9 @@ export default function VehicleModel({kind,travel,braking=()=>false}:{kind:numbe
  const q=useQuality(),i=kind%5,d=VEHICLE_DIMENSIONS[i],bike=i===1,bus=i===2,wheels=useRef<Group>(null);
  if(!bodies.has(i))bodies.set(i,new RoundedBoxGeometry(d.width,bike?.22:.25,d.length,2,.04));
  if(!cabins.has(i))cabins.set(i,new RoundedBoxGeometry(d.width*.86,bus?.5:.27,d.length*(bus?.8:.48),2,.035));
+ const headlight=useMemo(()=>new MeshStandardMaterial({color:'#ede2bf',emissive:'#ffdfa3',emissiveIntensity:0}),[]),light=useRef<import('three').PointLight>(null);useEffect(()=>()=>headlight.dispose(),[headlight]);
  const brake=useMemo(()=>new MeshStandardMaterial({color:'#8e392d',emissive:'#a33d25',emissiveIntensity:.1,roughness:.55}),[]);useEffect(()=>()=>brake.dispose(),[brake]);
- useFrame(()=>{if(wheels.current)for(const wheel of wheels.current.children)wheel.rotation.x=travel()/.112;brake.emissiveIntensity=braking()?.6:.05});
+ useFrame(()=>{if(wheels.current)for(const wheel of wheels.current.children)wheel.rotation.x=travel()/.112;const night=localWorldClock.sample().night;headlight.emissiveIntensity=night*2.2;if(light.current){light.current.visible=night>.02;light.current.intensity=night*5}brake.emissiveIntensity=braking()?.6:.05+night*.25});
  return <group dispose={null}>
  <mesh geometry={bodies.get(i)} position={[0,.25,0]} material={surface(colors[i],'metal',q)} castShadow dispose={null}/>
  {!bike&&<mesh geometry={cabins.get(i)} position={[0,bus?.57:.48,bus?-.03:-.1]} material={surface(colors[i],'metal',q)} castShadow dispose={null}/>}
@@ -28,7 +29,7 @@ export default function VehicleModel({kind,travel,braking=()=>false}:{kind:numbe
  </group>)}
  </>}
  {[-1,1].map(side=><group key={side}>
-  <Part p={[side*d.width*.33,.28,d.length*.502]} s={[.105,.055,.025]} c="#d9d4b8" kind="glass"/>
+  <mesh position={[side*d.width*.33,.28,d.length*.502]} scale={[1.05,1.2,1]} material={headlight} geometry={brakeGeometry} dispose={null}/>
   <mesh position={[side*d.width*.33,.28,-d.length*.502]} material={brake} geometry={brakeGeometry} dispose={null}/>
  </group>)}
  <Part p={[0,.2,d.length*.51]} s={[d.width*.8,.045,.035]} c="#646e67" kind="metal"/>
@@ -41,7 +42,7 @@ export default function VehicleModel({kind,travel,braking=()=>false}:{kind:numbe
  <Part p={[0,.37,.07]} s={[.15,.13,.22]} shape="sphere" c={colors[i]} kind="metal"/>
  </>}
  {i===4&&<><Part p={[0,.7,-.15]} s={[.07,.54,.07]} c="#aa9759" kind="metal"/><Part p={[0,.92,.15]} s={[.08,.06,.67]} c="#aa9759" kind="metal"/><Part p={[0,.58,.49]} s={[.37,.12,.2]} c="#6b7465" kind="metal"/></>}
- <group ref={wheels}>{(bike?[0]:[-1,1]).flatMap(side=>[-1,1].map(end=><group key={side+':'+end} position={[side*(d.width/2+.012),.112,end*d.length*.33]}>
+ <pointLight ref={light} position={[0,.33,d.length*.6]} color="#ffe4b3" distance={4} decay={2} intensity={0}/><group ref={wheels}>{(bike?[0]:[-1,1]).flatMap(side=>[-1,1].map(end=><group key={side+':'+end} position={[side*(d.width/2+.012),.112,end*d.length*.33]}>
  <mesh geometry={tire} material={surface('#30372f','soil',q)} castShadow dispose={null}/>
  {q!=='low'&&<mesh geometry={hub} material={surface('#8a9790','metal',q)} dispose={null}/>}
  </group>))}</group>

@@ -1,0 +1,332 @@
+{
+  "samples": [
+    {
+      "preset": "Pagi",
+      "time": {
+        "hour": 7,
+        "elevation": 0.25881904510252074,
+        "day": 1,
+        "night": 0,
+        "twilight": 0,
+        "sun": [
+          144.88887394336024,
+          43.999237667428524,
+          13.296929528419621
+        ],
+        "paused": true,
+        "minutesPerSecond": 2,
+        "shadow": {
+          "quality": "medium",
+          "cascades": 1,
+          "mapSize": 1536,
+          "active": true
+        },
+        "backendClockUnaffected": true
+      },
+      "lights": {
+        "lamps": 108,
+        "pointLights": 4,
+        "night": 0,
+        "realIllumination": false
+      },
+      "activity": false,
+      "metrics": {
+        "fps": 60.334760607590006,
+        "drawCalls": 188,
+        "triangles": 190342,
+        "geometries": 111,
+        "textures": 14,
+        "programs": 20,
+        "materialResources": {
+          "materials": 20,
+          "surfaceSets": 7,
+          "textures": 28
+        },
+        "projection": "perspective",
+        "dpr": 1,
+        "drawingBufferWidth": 1440,
+        "drawingBufferHeight": 900,
+        "canvasWidth": 1440,
+        "canvasHeight": 900,
+        "zoom": 1,
+        "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "meshes": 80
+      }
+    },
+    {
+      "preset": "Siang",
+      "time": {
+        "hour": 12,
+        "elevation": 1,
+        "day": 1,
+        "night": 0,
+        "twilight": 0,
+        "sun": [
+          9.184850993605149e-15,
+          170,
+          68.76644452187054
+        ],
+        "paused": true,
+        "minutesPerSecond": 2,
+        "shadow": {
+          "quality": "medium",
+          "cascades": 1,
+          "mapSize": 1536,
+          "active": true
+        },
+        "backendClockUnaffected": true
+      },
+      "lights": {
+        "lamps": 108,
+        "pointLights": 4,
+        "night": 0,
+        "realIllumination": false
+      },
+      "activity": false,
+      "metrics": {
+        "fps": 63.618290258449065,
+        "drawCalls": 188,
+        "triangles": 190342,
+        "geometries": 111,
+        "textures": 14,
+        "programs": 20,
+        "materialResources": {
+          "materials": 20,
+          "surfaceSets": 7,
+          "textures": 28
+        },
+        "projection": "perspective",
+        "dpr": 1,
+        "drawingBufferWidth": 1440,
+        "drawingBufferHeight": 900,
+        "canvasWidth": 1440,
+        "canvasHeight": 900,
+        "zoom": 1,
+        "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "meshes": 80
+      }
+    },
+    {
+      "preset": "Senja",
+      "time": {
+        "hour": 17.700000000000003,
+        "elevation": 0.07845909572784462,
+        "day": 0.5659253418851593,
+        "night": 0.4340746581148407,
+        "twilight": 0.6730871011339807,
+        "sun": [
+          -149.5376000599692,
+          13.338046273733585,
+          81.98738056891284
+        ],
+        "paused": true,
+        "minutesPerSecond": 2,
+        "shadow": {
+          "quality": "medium",
+          "cascades": 1,
+          "mapSize": 1536,
+          "active": true
+        },
+        "backendClockUnaffected": true
+      },
+      "lights": {
+        "lamps": 108,
+        "pointLights": 4,
+        "night": 0.4340746581148407,
+        "realIllumination": false
+      },
+      "activity": false,
+      "metrics": {
+        "fps": 57.930483420155504,
+        "drawCalls": 188,
+        "triangles": 190342,
+        "geometries": 111,
+        "textures": 14,
+        "programs": 20,
+        "materialResources": {
+          "materials": 20,
+          "surfaceSets": 7,
+          "textures": 28
+        },
+        "projection": "perspective",
+        "dpr": 1,
+        "drawingBufferWidth": 1440,
+        "drawingBufferHeight": 900,
+        "canvasWidth": 1440,
+        "canvasHeight": 900,
+        "zoom": 1,
+        "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "meshes": 80
+      }
+    },
+    {
+      "preset": "Malam",
+      "time": {
+        "hour": 21,
+        "elevation": -0.7071067811865475,
+        "day": 0,
+        "night": 1,
+        "twilight": 0,
+        "sun": [
+          -106.06601717798215,
+          -120.20815280171307,
+          60.10407640085654
+        ],
+        "paused": true,
+        "minutesPerSecond": 2,
+        "shadow": {
+          "quality": "medium",
+          "cascades": 1,
+          "mapSize": 1536,
+          "active": true
+        },
+        "backendClockUnaffected": true
+      },
+      "lights": {
+        "lamps": 108,
+        "pointLights": 4,
+        "night": 1,
+        "realIllumination": true
+      },
+      "activity": true,
+      "metrics": {
+        "fps": 65.48918436168572,
+        "drawCalls": 188,
+        "triangles": 190342,
+        "geometries": 111,
+        "textures": 14,
+        "programs": 20,
+        "materialResources": {
+          "materials": 20,
+          "surfaceSets": 7,
+          "textures": 28
+        },
+        "projection": "perspective",
+        "dpr": 1,
+        "drawingBufferWidth": 1440,
+        "drawingBufferHeight": 900,
+        "canvasWidth": 1440,
+        "canvasHeight": 900,
+        "zoom": 1,
+        "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "meshes": 80
+      }
+    }
+  ],
+  "qualities": [
+    {
+      "shadow": {
+        "quality": "low",
+        "cascades": 0,
+        "mapSize": 0,
+        "active": false
+      },
+      "metrics": {
+        "fps": 80.93170153943836,
+        "drawCalls": 121,
+        "triangles": 125634,
+        "geometries": 84,
+        "textures": 14,
+        "programs": 26,
+        "materialResources": {
+          "materials": 35,
+          "surfaceSets": 7,
+          "textures": 28
+        },
+        "projection": "perspective",
+        "dpr": 1,
+        "drawingBufferWidth": 1440,
+        "drawingBufferHeight": 900,
+        "canvasWidth": 1440,
+        "canvasHeight": 900,
+        "zoom": 1,
+        "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "meshes": 56
+      }
+    },
+    {
+      "shadow": {
+        "quality": "medium",
+        "cascades": 1,
+        "mapSize": 1536,
+        "active": true
+      },
+      "metrics": {
+        "fps": 65.28189910979394,
+        "drawCalls": 188,
+        "triangles": 190342,
+        "geometries": 108,
+        "textures": 14,
+        "programs": 31,
+        "materialResources": {
+          "materials": 35,
+          "surfaceSets": 7,
+          "textures": 28
+        },
+        "projection": "perspective",
+        "dpr": 1,
+        "drawingBufferWidth": 1440,
+        "drawingBufferHeight": 900,
+        "canvasWidth": 1440,
+        "canvasHeight": 900,
+        "zoom": 1,
+        "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "meshes": 80
+      }
+    },
+    {
+      "shadow": {
+        "quality": "high",
+        "cascades": 3,
+        "mapSize": 2048,
+        "active": true
+      },
+      "metrics": {
+        "fps": 39.016777214088876,
+        "drawCalls": 220,
+        "triangles": 325818,
+        "geometries": 142,
+        "textures": 29,
+        "programs": 48,
+        "materialResources": {
+          "materials": 55,
+          "surfaceSets": 7,
+          "textures": 28
+        },
+        "projection": "perspective",
+        "dpr": 1.2,
+        "drawingBufferWidth": 1728,
+        "drawingBufferHeight": 1080,
+        "canvasWidth": 1440,
+        "canvasHeight": 900,
+        "zoom": 1,
+        "renderer": "ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "meshes": 118
+      }
+    }
+  ],
+  "pausedExact": true,
+  "automaticAdvanced": true,
+  "final": {
+    "hour": 9.909399999998515,
+    "elevation": 0.853923405381821,
+    "day": 1,
+    "night": 0,
+    "twilight": 0,
+    "sun": [
+      78.05980655353349,
+      145.16697891490958,
+      48.978076318358525
+    ],
+    "paused": false,
+    "minutesPerSecond": 120,
+    "shadow": {
+      "quality": "high",
+      "cascades": 3,
+      "mapSize": 2048,
+      "active": true
+    },
+    "backendClockUnaffected": true
+  },
+  "errors": []
+}

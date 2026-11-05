@@ -1,36 +1,35 @@
 'use client';
-import {useEffect,useMemo,useRef} from 'react';
-import {useFrame,useThree} from '@react-three/fiber';
-import {BoxGeometry,ConeGeometry,Color,InstancedMesh,MeshStandardMaterial,Object3D,SphereGeometry} from 'three';
-import {habitatAnimals,animalPosition} from '../../../packages/world-engine/ecology';
-import {useQuality} from '../../../packages/world-engine/quality-context';
-import {sample,emptyGeo} from '../../../packages/nation-core/geography';
-import type {World} from '../../../packages/nation-core/world';
-const sphere=new SphereGeometry(1,8,6),box=new BoxGeometry(1,1,1),cone=new ConeGeometry(1,1,5),dummy=new Object3D(),color=new Color();
-export default function EcologyScene({world}:{world:World}){
- const quality=useQuality(),mobile=useThree(s=>s.size.width<650),limit=mobile||quality==='low'?5:quality==='high'?16:12,birds=quality==='high'?4:3;
- const animals=useMemo(()=>habitatAnimals(world,limit-birds),[world,limit,birds]),body=useRef<InstancedMesh>(null),head=useRef<InstancedMesh>(null),legs=useRef<InstancedMesh>(null),ears=useRef<InstancedMesh>(null),tails=useRef<InstancedMesh>(null),wings=useRef<InstancedMesh>(null),flock=useRef<InstancedMesh>(null);
- const material=useMemo(()=>new MeshStandardMaterial({roughness:.94}),[]);useEffect(()=>()=>material.dispose(),[material]);
- const positions=useMemo(()=>animals.map(a=>animalPosition(world,a,0)),[world,animals]),lastHabitat=useRef(-1);
- useEffect(()=>{const meshes=[body,head,legs,ears,tails,wings,flock].map(r=>r.current);return()=>{for(const mesh of meshes)mesh?.dispose()}},[animals.length,birds]);
- useFrame(({clock})=>{const t=clock.elapsedTime;
-  if(t-lastHabitat.current>.12){animals.forEach((a,i)=>positions[i]=animalPosition(world,a,t));lastHabitat.current=t;(window as any).__nationEcology={birds,ground:animals.map((a,i)=>({species:a.species,...positions[i]})),cap:limit,localOnly:true}}
-  const put=(mesh:InstancedMesh|null,i:number,x:number,y:number,z:number,sx:number,sy:number,sz:number,c:string,angle=0,roll=0)=>{if(!mesh)return;dummy.position.set(x,y,z);dummy.scale.set(sx,sy,sz);dummy.rotation.set(0,angle,roll);dummy.updateMatrix();mesh.setMatrixAt(i,dummy.matrix);mesh.setColorAt(i,color.set(c));};
-  animals.forEach((a,i)=>{const p=positions[i],s=a.size,y=p.y+s*.7,angle=Math.sin(t*.31+a.id)*.5;
-   put(body.current,i,p.x,y,p.z,s*.7,s*.55,s*1.2,a.color,angle);
-   put(head.current,i,p.x+Math.sin(angle)*s,p.y+s*1.2,p.z+Math.cos(angle)*s,s*.45,s*.5,s*.55,a.color,angle);
-   for(let n=0;n<4;n++)put(legs.current,i*4+n,p.x+(n%2?1:-1)*s*.45,p.y+s*.25,p.z+(n<2?1:-1)*s*.7,a.species==='chicken'&&n>=2?0:.022,s*.5,.022,a.species==='chicken'?'#a68d52':'#655e50',angle);
-   for(let n=0;n<2;n++)put(ears.current,i*2+n,p.x+(n?1:-1)*s*.3,p.y+s*1.72,p.z+Math.cos(angle)*s,s*.18,s*(a.species==='goat'?.65:.3),s*.18,a.species==='chicken'?'#a84f35':a.species==='goat'?'#746d58':a.color,angle);
-   put(tails.current,i,p.x,p.y+s*.95,p.z-s*1.1,.02,s*.65,.02,a.color,angle,.5+Math.sin(t+a.id)*.2);
-  });
-  for(let i=0;i<birds;i++){const x=Math.cos(t*.13+i*2.1)*17+4,z=Math.sin(t*.13+i*2.1)*13+4,y=Math.max(4,sample(world.geo??emptyGeo,x,z).h+4)+Math.sin(t*.6+i)*.3;
-   put(flock.current,i,x,y,z,.045,.04,.10,'#dfdfce',-t*.13-i*2.1);
-   for(let side=0;side<2;side++)put(wings.current,i*2+side,x+(side?1:-1)*.12,y+.02,z,.22,.012,.065,'#e1e0d0',0,(side?1:-1)*Math.sin(t*5+i)*.5);
-  }
-  for(const ref of [body,head,legs,ears,tails,wings,flock]){const mesh=ref.current;if(mesh){mesh.instanceMatrix.needsUpdate=true;if(mesh.instanceColor)mesh.instanceColor.needsUpdate=true;mesh.computeBoundingSphere()}}
+import{Suspense,useEffect,useMemo,useRef}from'react';import{useFrame,useThree}from'@react-three/fiber';import{useGLTF}from'@react-three/drei';import*as T from'three';import{clone}from'three/examples/jsm/utils/SkeletonUtils.js';
+import{faunaHabitat,FAUNA_HEIGHT,type FaunaAgent}from'../../../packages/nation-sim/fauna-habitat';import{localWorldClock}from'../../../packages/nation-sim/world-clock';import{clearSegment}from'../../../packages/world-engine/living-world';import{sample,emptyGeo}from'../../../packages/nation-core/geography';import type{World}from'../../../packages/nation-core/world';import{useQuality}from'../../../packages/world-engine/quality-context';
+function FaunaActor({agent,world}:{agent:FaunaAgent;world:World}){
+ const loaded=useGLTF('/models/fauna/'+agent.model+'.glb'),quality=useQuality(),root=useRef<T.Group>(null),position=useRef({x:agent.x,z:agent.z}),study=useRef(false),last=useRef(''),report=useRef(0);
+ const rig=useMemo(()=>{
+  const object=clone(loaded.scene),mixer=new T.AnimationMixer(object),bones:T.Bone[]=[];
+  object.traverse(o=>{if(o instanceof T.Bone)bones.push(o);if(o instanceof T.Mesh){o.castShadow=true;o.receiveShadow=true;o.frustumCulled=false;o.raycast=()=>{}}});
+  const head=object.getObjectByName('Head')??bones.find(b=>b.position.y>2),wings=bones.filter(b=>Math.abs(b.position.x)>1.3&&b.position.y<1.1),clips:T.AnimationClip[]=[];
+  for(const original of loaded.animations){const suffix=original.name.split('|').at(-1)!.toLowerCase(),name=suffix==='run'?'walk':suffix==='idle_peck'?'peck':suffix==='eating'?'graze':suffix;if(!['idle','walk','peck','graze','fly'].includes(name)||clips.some(c=>c.name===name))continue;const copy=original.clone();copy.name=name;clips.push(copy)}
+
+  const pose=(name:string,parts:{bone:T.Object3D;axis:T.Vector3;amount:number}[],duration:number)=>{if(clips.some(c=>c.name===name))return;const times=[0,duration*.25,duration*.5,duration*.75,duration],tracks=parts.map(({bone,axis,amount})=>{const values=times.flatMap((_,i)=>bone.quaternion.clone().multiply(new T.Quaternion().setFromAxisAngle(axis,[0,amount,0,-amount*.35,0][i])).toArray());return new T.QuaternionKeyframeTrack(bone.uuid+'.quaternion',times,values)});if(tracks.length)clips.push(new T.AnimationClip(name,duration,tracks))};
+  if(head){pose('peck',[{bone:head,axis:new T.Vector3(1,0,0),amount:.55}],1.2);pose('graze',[{bone:head,axis:new T.Vector3(1,0,0),amount:.65}],3.5)}
+  pose('fly',wings.map((bone,i)=>({bone,axis:new T.Vector3(0,0,1),amount:i%2?-.65:.65})),.75);
+  const actions=Object.fromEntries(clips.map(c=>[c.name,mixer.clipAction(c)]));actions.idle?.play();mixer.update(.001);object.updateMatrixWorld(true);object.traverse(o=>{if(o instanceof T.SkinnedMesh){o.skeleton.update();o.computeBoundingBox()}});const bounds=new T.Box3().setFromObject(object),scale=FAUNA_HEIGHT[agent.model]/(bounds.max.y-bounds.min.y),center=bounds.getCenter(new T.Vector3());return{object,scale,offset:0,origin:[-center.x,-bounds.min.y,-center.z] as [number,number,number],mixer,actions,bones};
+ },[loaded,agent.model]);
+ useEffect(()=>{study.current=new URLSearchParams(location.search).get('fauna')===agent.model;return()=>{rig.mixer.stopAllAction();rig.mixer.uncacheRoot(rig.object)}},[rig,agent.model]);
+ useFrame(({camera,clock},dt)=>{
+  const g=root.current;if(!g)return;const t=clock.elapsedTime+agent.phase,night=localWorldClock.sample().night>.5,visible=camera.position.distanceTo(g.position)<(quality==='low'?55:quality==='high'?190:130);g.visible=visible;if(!visible)return;
+  const p=position.current,cycle=t%12,walking=!night&&cycle<6,air=agent.flying&&(!night&&t%20<12||Math.hypot(position.current.x-agent.x,position.current.z-agent.z)>.3);let target={x:agent.x,z:agent.z};
+  if(air)target=!night&&t%20<12?{x:agent.x+Math.cos(t*.24)*5,z:agent.z+Math.sin(t*.24)*4}:{x:agent.x,z:agent.z};else if(walking)target={x:agent.x+Math.sin(t*.28)*.7,z:agent.z+Math.cos(t*.28)*.65};
+  if(study.current)target={x:agent.x,z:agent.z};const distance=Math.hypot(target.x-p.x,target.z-p.z),step=Math.min(distance,Math.min(dt,.05)*(air?1.3:.22)),to={x:p.x+(target.x-p.x)/Math.max(.001,distance)*step,z:p.z+(target.z-p.z)/Math.max(.001,distance)*step},can=air||clearSegment(world,p,to,.13);
+  if(can&&distance>.02){const angle=Math.atan2(to.x-p.x,to.z-p.z);g.rotation.y+=Math.atan2(Math.sin(angle-g.rotation.y),Math.cos(angle-g.rotation.y))*(1-Math.exp(-8*Math.min(dt,.1)));p.x=to.x;p.z=to.z}
+  const ground=sample(world.geo??emptyGeo,p.x,p.z).h;const altitude=air?(!night&&t%20<12?2.8+Math.sin(t*.7)*.2:Math.min(2.8,Math.hypot(p.x-agent.x,p.z-agent.z)*.65)):0;g.position.set(p.x,T.MathUtils.lerp(g.position.y,Math.max(ground,0)+rig.offset+altitude,1-Math.exp(-4*Math.min(dt,.1))),p.z);
+  const clip=air&&rig.actions.fly?'fly':walking&&can&&distance>.02?'walk':night?'idle':agent.model==='Goat'?'graze':agent.model==='Chicken'||agent.model==='Pigeon'||agent.model==='Seagull'?'peck':'idle';
+  if(last.current!==clip){rig.actions[last.current]?.fadeOut(.25);rig.actions[clip]?.reset().fadeIn(.25).play();last.current=clip}rig.mixer.update(Math.min(dt,.08));
+  if(clock.elapsedTime-report.current>.35){report.current=clock.elapsedTime;const debug=(window as any).__nationFauna??={actors:{},localOnly:true};debug.actors[agent.id]={model:agent.model,clip,x:p.x,z:p.z,y:g.position.y,rigBones:rig.bones.length,mixerTime:rig.mixer.time,bonePose:rig.bones.flatMap(b=>b.quaternion.toArray()),scale:rig.scale,origin:rig.origin,visible:true}}
  });
- useEffect(()=>()=>{delete (window as any).__nationEcology},[]);
- return <group name="local-fauna" raycast={()=>null}>
- <instancedMesh ref={body} args={[sphere,material,animals.length]} dispose={null}/><instancedMesh ref={head} args={[sphere,material,animals.length]} dispose={null}/><instancedMesh ref={legs} args={[box,material,animals.length*4]} dispose={null}/><instancedMesh ref={ears} args={[cone,material,animals.length*2]} dispose={null}/><instancedMesh ref={tails} args={[box,material,animals.length]} dispose={null}/><instancedMesh ref={flock} args={[sphere,material,birds]} dispose={null}/><instancedMesh ref={wings} args={[box,material,birds*2]} dispose={null}/>
- </group>;
+ return <group ref={root} position={[agent.x,sample(world.geo??emptyGeo,agent.x,agent.z).h,agent.z]} scale={rig.scale} dispose={null}><group position={rig.origin}><primitive object={rig.object}/></group></group>;
+}
+export default function EcologyScene({world}:{world:World}){
+ const quality=useQuality(),mobile=useThree(s=>s.size.width<650),cap=mobile||quality==='low'?3:quality==='high'?10:7,animals=useMemo(()=>faunaHabitat(world,cap),[world,cap]);
+ useEffect(()=>{(window as any).__nationFauna={actors:{},cap,population:animals.length,localOnly:true};return()=>{delete(window as any).__nationFauna}},[animals,cap]);
+ return <group name="rigged-habitat-fauna"><Suspense fallback={null}>{animals.map(a=><FaunaActor key={a.id} agent={a} world={world}/>)}</Suspense></group>;
 }

@@ -1,0 +1,46 @@
+[
+  {
+    "scene": "National Atlas",
+    "seconds": 0
+  },
+  {
+    "scene": "Pulau Harapan",
+    "seconds": 1.2400598
+  },
+  {
+    "scene": "capital",
+    "seconds": 7.1395716
+  },
+  {
+    "scene": "province",
+    "seconds": 27.9975361
+  },
+  {
+    "scene": "metropolis",
+    "seconds": 48.4200198
+  },
+  {
+    "scene": "city",
+    "seconds": 72.0944476
+  },
+  {
+    "scene": "regency",
+    "seconds": 91.05937510000001
+  },
+  {
+    "scene": "subdistrict",
+    "seconds": 110.95762730000001
+  },
+  {
+    "scene": "village",
+    "seconds": 133.3362099
+  },
+  {
+    "scene": "coast",
+    "seconds": 153.1002026
+  },
+  {
+    "scene": "Nation Construction Lab",
+    "seconds": 176.19066439999997
+  }
+]

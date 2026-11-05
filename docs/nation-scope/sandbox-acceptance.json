@@ -1,0 +1,28 @@
+{
+  "picking": true,
+  "unauthorizedRejected": true,
+  "approvedSave": true,
+  "reloadPersisted": true,
+  "undoExactIds": true,
+  "invalidPreview": true,
+  "exploreMoved": true,
+  "before": {
+    "x": 0,
+    "z": 0,
+    "localOnly": true,
+    "motion": "idle",
+    "keys": [],
+    "dt": 1.0369000000022353,
+    "clear": true
+  },
+  "after": {
+    "x": -0.521478270000222,
+    "z": -0.5997001686886055,
+    "localOnly": true,
+    "motion": "idle",
+    "keys": [],
+    "dt": 0.011199999999254941,
+    "clear": true
+  },
+  "errors": []
+}
